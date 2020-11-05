@@ -20,7 +20,7 @@ Get network from map.osm file and consolidate complex intersections
     >>> og.outputNetToCSV(net, output_folder='consolidated')
 
 # Visualization
-You can visualize generated networks using [NeXTA](https://www.openstreetmap.org/) or [QGis](https://qgis.org/)
+You can visualize generated networks using [NeXTA](https://github.com/xzhou99/NeXTA-GMNS) or [QGis](https://qgis.org/)
 
 ![visualization in NeXTA.](/test/asu.PNG)
 
