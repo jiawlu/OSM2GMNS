@@ -22,5 +22,5 @@ Get network from map.osm file and consolidate complex intersections
 # Visualization
 You can visualize generated networks using [NeXTA](https://github.com/xzhou99/NeXTA-GMNS) or [QGis](https://qgis.org/)
 
-![visualization in NeXTA.](/test/asu.PNG)
+![visualization in NeXTA.](https://github.com/jiawei92/OSM2GMNS/tree/master/test/asu.PNG)
 
