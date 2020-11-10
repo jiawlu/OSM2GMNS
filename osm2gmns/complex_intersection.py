@@ -1,27 +1,39 @@
-# -*- coding:utf-8 -*-
-# @author       Jiawei Lu (jiaweil9@asu.edu)
-# @time         2020/11/3 20:21
-# @desc         [script description]
-
-
-
 def identifyComplexIntersections(network, int_buffer):
     network.complex_intersection_identified = True
 
-    complex_intersection_set = set()
-    for link in network.link_set:
+    link_list = sorted(network.link_set, key=lambda x: x.link_no)
+    group_list = []
+    group_status = []
+    for link in link_list:
         if link.length > int_buffer: continue
-        if not('traffic_signals' in link.from_node.node_type and 'traffic_signals' in link.to_node.node_type): continue
-        new_group = (link.from_node, link.to_node)
-        accessible_group_set = set()
-        for node_group in complex_intersection_set:
-            if (link.from_node in node_group) or (link.to_node in node_group):
-                accessible_group_set.add(node_group)
+        if not('traffic_signals' in link.from_node.osm_highway and 'traffic_signals' in link.to_node.osm_highway): continue
+        group_list.append({link.from_node, link.to_node})
+        group_status.append(1)
 
-        for node_group in accessible_group_set:
-            new_group += node_group
-            complex_intersection_set.remove(node_group)
-        new_group = tuple(set(new_group))
-        complex_intersection_set.add(new_group)
+    number_of_valid_groups = sum(group_status)
+    while True:
+        for group_no1,group1 in enumerate(group_list):
+            if group_status[group_no1] == 0: continue
+            for group_no2,group2 in enumerate(group_list):
+                if group_status[group_no2] == 0: continue
+                if group_no1 == group_no2: continue
+                if len(group1.intersection(group2)) > 0:
+                    group1.update(group2)
+                    group_status[group_no2] = 0
 
-    network.complex_intersection_set = complex_intersection_set
+        new_number_of_valid_groups = sum(group_status)
+        if number_of_valid_groups == new_number_of_valid_groups:
+            break
+        else:
+            number_of_valid_groups = new_number_of_valid_groups
+
+    number_of_main_nodes = 0
+    for group_no, group in enumerate(group_list):
+        if group_status[group_no] == 0: continue
+        for node in group: node.main_node_id = number_of_main_nodes
+        number_of_main_nodes += 1
+
+
+
+
+

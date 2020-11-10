@@ -1,8 +1,3 @@
-# -*- coding:utf-8 -*-
-# @author       Jiawei Lu (jiaweil9@asu.edu)
-# @time         2020/11/3 0:09
-# @desc         [script description]
-
 import math
 
 def getDistanceFromCoord(lon1, lat1, lon2, lat2):

@@ -1,9 +1,3 @@
-# -*- coding:utf-8 -*-
-# @author       Jiawei Lu (jiaweil9@asu.edu)
-#               Xuesong Zhou (xzhou74@asu.edu)
-# @time         2020/10/27 17:46
-# @desc         [script description]
-
 from .util import *
 
 
@@ -18,12 +12,16 @@ class Segment:
 
 class Node:
     def __init__(self):
+        self.name = None
         self.node_id = 0
-        self.osm_node_id = 0
-        # self.node_no = 0
+        self.osm_node_id = None
+        self.node_no = 0
         self.x_coord = 0.0
         self.y_coord = 0.0
+        self.main_node_id = None
+        self.osm_highway = ''
         self.node_type = ''
+        self.ctrl_type = 0
         self.in_region = True
         self.is_crossing = False
         self.is_isolated = False
@@ -37,16 +35,17 @@ class Link:
     def __init__(self):
         self.link_id = 0
         self.osm_way_id = 0
+        self.link_no = 0
         self.name = ''
-        self.link_type = ''
-        self.from_node_id = -1
-        self.to_node_id = -1
+        self.link_type_name = ''
+        self.link_type = 0
         self.from_node = None
         self.to_node = None
-        self.lanes = -1
+        self.lanes = None
         self.lanes_list = []
-        self.free_speed = -1
+        self.free_speed = None
         self.length = 0.0
+        self.allowed_uses = ''
         self.geometry_point_list = []
         self.geometry_str = ''
         self.is_isolated = False
@@ -71,13 +70,26 @@ class Way:
     def __init__(self):
         self.osm_way_id = 0
         self.highway = ''
-        self.link_type = ''
+        self.link_type_name = ''
+        self.link_type = 0
         self.name = ''
-        self.lanes = -1
-        self.forward_lanes = -1
-        self.backward_lanes = -1
-        self.maxspeed = -1
+        self.lanes = None
+        self.forward_lanes = None
+        self.backward_lanes = None
+        self.maxspeed = None
         self.oneway = None
+
+        self.area = None
+        self.motor_vehicle = None
+        self.motorcar = None
+        self.service = None
+        self.access = None
+        self.foot = None
+        self.bicycle = None
+        self.allowable_agent_type_list = []
+        self.allowed_uses = ''
+
+        self.is_reversed = False
         self.is_cycle = False
         self.ref_node_list = []
         self.number_of_segments = 0
@@ -107,6 +119,12 @@ class Network:
         self.minlon = 0.0
         self.maxlat = 0.0
         self.maxlon = 0.0
+
+        self.created_nodes = 0
+        self.created_links = 0
+
+        self.default_lanes = False
+        self.default_speed = False
 
         self.simplified = False
         self.complex_intersection_identified = False

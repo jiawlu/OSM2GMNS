@@ -14,9 +14,9 @@ Get network from map.osm file and consolidate complex intersections
     # output node.csv, link.csv and complex_intersection.csv (automatically generated complex intersection information)
     >>> og.outputNetToCSV(net)  
 
-    # check and modify (if necessary) complex_intersection.csv before complex intersection consolidation
+    # check and modify (if necessary) network files before complex intersection consolidation
     >>> net = og.getNetFromCSV()
-    >>> og.consolidateComplexIntersections(net, external_file='complex_intersection.csv')
+    >>> og.consolidateComplexIntersections(net)
     >>> og.outputNetToCSV(net, output_folder='consolidated')
 
 # Visualization

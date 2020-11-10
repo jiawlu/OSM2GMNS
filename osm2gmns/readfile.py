@@ -1,9 +1,3 @@
-# -*- coding:utf-8 -*-
-# @author       Jiawei Lu (jiaweil9@asu.edu)
-# @time         2020/11/3 23:24
-# @desc         [script description]
-
-
 import xml.etree.cElementTree as ET
 import pandas as pd
 import os
@@ -57,8 +51,8 @@ def readCSVFile(folder):
         node_filepath = 'node.csv'
         link_filepath = 'link.csv'
 
-    node_data = pd.read_csv(node_filepath)
-    link_data = pd.read_csv(link_filepath)
+    node_data = pd.read_csv(node_filepath,encoding='gb18030')
+    link_data = pd.read_csv(link_filepath,encoding='gb18030')
 
     return node_data, link_data
 

@@ -1,8 +1,3 @@
-# -*- coding:utf-8 -*-
-# @author       Jiawei Lu (jiaweil9@asu.edu)
-# @time         2020/11/3 22:37
-# @desc         [script description]
-
 from .classes import *
 
 
@@ -15,13 +10,13 @@ def checkTpologyForTwoDegreeNodes(node):
 
 
 def checkTpologyForFourDegreeNodes(node):
+    ob_link_set = set()
     for ib_link in node.incoming_link_list:
-        # if not ib_link.valid: return False
         for ob_link in node.outgoing_link_list:
-            # if not ob_link.valid: return False
             if ib_link.from_node is not ob_link.to_node:
-                if ib_link.ob_comb_link is None:
+                if (ib_link.ob_comb_link is None) and (ob_link not in ob_link_set):
                     ib_link.ob_comb_link = ob_link
+                    ob_link_set.add(ob_link)
                 else:
                     return False
     for ib_link in node.incoming_link_list:
@@ -58,14 +53,26 @@ def getSpeedForTheCombinedLink(ib_link):
         return None
 
 
-def newLinkFromLinks(up_link, down_link, new_link_attr_dict):
+def checkLinkAttr(ib_link):
+    ob_link = ib_link.ob_comb_link
+    if ib_link.name != ob_link.name: return False
+    if ib_link.link_type != ob_link.link_type: return False
+    if ib_link.free_speed != ob_link.free_speed: return False
+    if ib_link.allowed_uses != ob_link.allowed_uses: return False
+    if (ib_link.lanes is None and ob_link.lanes is not None) or (ib_link.lanes is not None and ob_link.lanes is None): return False
+    return True
+
+
+def newLinkFromLinks(link_no, up_link, down_link):
     link = Link()
     link.osm_way_id = f'{up_link.osm_way_id};{down_link.osm_way_id}'
-    link.name = new_link_attr_dict['name']
-    link.link_type = new_link_attr_dict['link_type']
-    link.free_speed = new_link_attr_dict['free_speed']
+    link.link_no = link_no
+    link.name = up_link.name
+    link.link_type_name = up_link.link_type_name
+    link.link_type = up_link.link_type
+    link.free_speed = up_link.free_speed
+    link.allowed_uses = up_link.allowed_uses
 
-    # self.ref_node_list = up_link.ref_node_list + down_link.ref_node_list[1:]
     link.from_node = up_link.from_node
     link.to_node = down_link.to_node
     link.from_node.outgoing_link_list.remove(up_link)
@@ -73,7 +80,6 @@ def newLinkFromLinks(up_link, down_link, new_link_attr_dict):
     link.from_node.outgoing_link_list.append(link)
     link.to_node.incoming_link_list.append(link)
 
-    # self.geometry_str = up_link.geometry_str[:-1] + ', ' + down_link.geometry_str[12:]
     link.geometry_point_list = up_link.geometry_point_list + down_link.geometry_point_list[1:]
     link.getGeometryStr()
     link.length = up_link.length + down_link.length
@@ -95,8 +101,9 @@ def combLinks(network):
     removal_node_set = set()
     removal_link_set = set()
 
-    for node in network.node_set:
-        if 'traffic_signals' in node.node_type: continue                         # todo: check node type before eliminating
+    node_list = sorted(network.node_set, key=lambda x:x.node_no)        # keep order unchanged between different runs
+    for node in node_list:
+        if 'traffic_signals' in node.osm_highway: continue                         # todo: check node type before simplifying
 
         # check topology
         if len(node.incoming_link_list) == 1 and len(node.outgoing_link_list) == 1:
@@ -107,38 +114,20 @@ def combLinks(network):
             topology_flag = False
         if not topology_flag: continue
 
-        # check link attributes, name, link_type, lanes, free_speed
+        # check link attributes, name, link_type, free_speed
         attr_flag = True
-        new_link_attr_dict_list = []
-
         for ib_link in node.incoming_link_list:
-            # if ib_link.ob_comb_link is None: continue
-
-            name = getNameForTheCombinedLink(ib_link)
-            if name is None:
-                attr_flag = False
-                break
-
-            link_type = getLinktypeForTheCombinedLink(ib_link)
-            if link_type is None:
-                attr_flag = False
-                break
-
-            free_speed = getSpeedForTheCombinedLink(ib_link)
-            if free_speed is None:
-                attr_flag = False
-                break
-
-            new_link_attr_dict_list.append({'name': name, 'link_type': link_type, 'free_speed': free_speed})
-
+            attr_flag = checkLinkAttr(ib_link)
+            if not attr_flag: break
         if not attr_flag: continue
 
         node.valid = False
         removal_node_set.add(node)
         for ib_link_idx, ib_link in enumerate(node.incoming_link_list):
             ob_comb_link = ib_link.ob_comb_link
-            new_link = newLinkFromLinks(ib_link, ob_comb_link, new_link_attr_dict_list[ib_link_idx])
+            new_link = newLinkFromLinks(network.created_links, ib_link, ob_comb_link)
             network.link_set.add(new_link)
+            network.created_links += 1
             ib_link.valid = False
             ob_comb_link.valid = False
             removal_link_set.add(ib_link)
