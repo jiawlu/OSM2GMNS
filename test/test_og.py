@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-import osm2gmns_0_0_2 as og
+import osm2gmns as og
 
 """
 Step 1: get network from .osm file
