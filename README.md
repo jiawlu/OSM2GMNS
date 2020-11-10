@@ -1,5 +1,5 @@
 # OSM2GMNS
-OSM2GMNS is a open-source python package which can help users easily convert networks from [OpenStreetMap](https://www.openstreetmap.org/) to .csv files with standard [GMNS](https://github.com/zephyr-data-specs/GMNS) format for visualization, traffic simulation and planning purpose.
+OSM2GMNS is an open-source python package which can help users easily convert networks from [OpenStreetMap](https://www.openstreetmap.org/) to .csv files with standard [GMNS](https://github.com/zephyr-data-specs/GMNS) format for visualization, traffic simulation and planning purpose.
 
 # Install
 Install OSM2GMNS via pip
