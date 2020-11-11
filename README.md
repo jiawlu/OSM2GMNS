@@ -1,26 +1,38 @@
 # OSM2GMNS
-OSM2GMNS is an open-source python package which can help users easily convert networks from [OpenStreetMap](https://www.openstreetmap.org/) to .csv files with standard [GMNS](https://github.com/zephyr-data-specs/GMNS) format for visualization, traffic simulation and planning purpose.
+
+OSM2GMNS is an open-source python package which can help users easily convert
+networks from [OpenStreetMap](https://www.openstreetmap.org/) to .csv files with
+standard [GMNS](https://github.com/zephyr-data-specs/GMNS) format for
+visualization, traffic simulation and planning purpose.
 
 # Install
+
 Install OSM2GMNS via pip
-```shell
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 pip install osm2gmns
-```
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Simple example
-Get network from map.osm file and consolidate complex intersections
 
-    >>> net = og.getNetFromOSMFile('map.osm')
-    # output node.csv, link.csv and complex_intersection.csv (automatically generated complex intersection information)
-    >>> og.outputNetToCSV(net)  
+Create a network from map.osm file and consolidate complex intersections
 
-    # check and modify (if necessary) network files before complex intersection consolidation
-    >>> net = og.getNetFromCSV()
-    >>> og.consolidateComplexIntersections(net)
-    >>> og.outputNetToCSV(net, output_folder='consolidated')
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>> net = og.getNetFromOSMFile('map.osm')
+# output node.csv, link.csv and complex_intersection.csv (automatically generated complex intersection information)
+>>> og.outputNetToCSV(net)  
 
-# Visualization
-You can visualize generated networks using [NeXTA](https://github.com/xzhou99/NeXTA-GMNS) or [QGis](https://qgis.org/)
+# check and modify (if necessary) network files before complex intersection consolidation
+>>> net = og.getNetFromCSV()
+>>> og.consolidateComplexIntersections(net)
+>>> og.outputNetToCSV(net, output_folder='consolidated')
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-![visualization in NeXTA.](https://github.com/jiawei92/OSM2GMNS/blob/master/test/asu.PNG)
+# Visualization and User Guide 
 
+You can visualize generated networks using
+[NeXTA](https://github.com/xzhou99/NeXTA-GMNS) or [QGis](https://qgis.org/)
+
+![](<https://github.com/jiawei92/OSM2GMNS/blob/master/test/asu.PNG>)
+
+https://github.com/asu-trans-ai-lab/OSM2GMNS/blob/master/doc/readme.md
