@@ -1,6 +1,7 @@
 import xml.etree.cElementTree as ET
 import pandas as pd
 import os
+import locale
 
 
 def getBounds(element):
@@ -51,8 +52,15 @@ def readCSVFile(folder):
         node_filepath = 'node.csv'
         link_filepath = 'link.csv'
 
-    node_data = pd.read_csv(node_filepath,encoding='gb18030')
-    link_data = pd.read_csv(link_filepath,encoding='gb18030')
+    local_encoding = locale.getdefaultlocale()
+    try:
+        node_data = pd.read_csv(node_filepath)
+    except UnicodeDecodeError:
+        node_data = pd.read_csv(node_filepath,encoding=local_encoding[1])
+    try:
+        link_data = pd.read_csv(link_filepath)
+    except UnicodeDecodeError:
+        link_data = pd.read_csv(link_filepath, encoding=local_encoding[1])
 
     return node_data, link_data
 
