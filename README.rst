@@ -9,7 +9,7 @@ traffic simulation and planning purpose.
 Install
 -------
 
-Install OSM2GMNS via pip
+Install OSM2GMNS via pip::
 
     $ pip install osm2gmns
 
