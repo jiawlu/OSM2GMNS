@@ -33,4 +33,5 @@ Visualization
 
 You can visualize generated networks using `NeXTA <https://github.com/xzhou99/NeXTA-GMNS>`_ 
 or `QGis <https://qgis.org/>`_.
+
 .. image:: https://github.com/jiawei92/OSM2GMNS/blob/master/test/asu.PNG
