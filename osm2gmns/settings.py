@@ -1,3 +1,8 @@
+import logging
+
+print_log = False
+print_log_level = logging.NOTSET
+
 osm_highway_type_dict = {'motorway': 'motorway',
                          'motorway_link': 'motorway',
                          'trunk': 'trunk',

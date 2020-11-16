@@ -155,6 +155,7 @@ def generateSegments(network):
         segment.start_lr = link.lanes_change_point_list[-1]
         segment.end_lr = link.length
         segment.l_lanes_added = link.lanes_list[-1] - link.lanes
+        segment.r_lanes_added = 0
         network.segment_set.add(segment)
 
 

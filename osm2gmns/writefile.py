@@ -28,7 +28,9 @@ def outputNetToCSV(network, output_folder=''):
                      'is_boundary', 'x_coord', 'y_coord', 'geometry','main_node_id'])
     node_list = sorted(network.node_set, key=lambda x: x.node_id)
     for node in node_list:
-        line = [node.name, node.node_id, node.osm_node_id, node.osm_highway, '', node.ctrl_type, '', '', '', node.x_coord, node.y_coord,'',node.main_node_id]
+        is_boundary = 1 if node.is_boundary else 0
+        line = [node.name, node.node_id, node.osm_node_id, node.osm_highway, '', node.ctrl_type, '', node.activity_type,
+                is_boundary, node.x_coord, node.y_coord,'',node.main_node_id]
         writer.writerow(line)
     outfile.close()
 
@@ -62,6 +64,7 @@ def outputNetToCSV(network, output_folder=''):
                          'ped_facility','parking','allowed_uses','l_lanes_added','r_lanes_added'])
         segment_list = sorted(network.segment_set, key=lambda x: x.link.link_id)
         for segment_no, segment in enumerate(segment_list):
-            line = [segment_no, segment.link.link_id,'',segment.start_lr,segment.end_lr,'','','','','','',segment.l_lanes_added,'']
+            line = [segment_no, segment.link.link_id,segment.link.from_node.node_id,segment.start_lr,segment.end_lr,'',
+                    '','','','','',segment.l_lanes_added,segment.r_lanes_added]
             writer.writerow(line)
         outfile.close()

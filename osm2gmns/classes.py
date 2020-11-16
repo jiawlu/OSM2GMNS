@@ -14,7 +14,7 @@ class Node:
     def __init__(self):
         self.name = None
         self.node_id = 0
-        self.osm_node_id = None
+        self.osm_node_id = None     # str
         self.node_no = 0
         self.x_coord = 0.0
         self.y_coord = 0.0
@@ -26,6 +26,8 @@ class Node:
         self.is_crossing = False
         self.is_isolated = False
         self.valid = True
+        self.activity_type = ''
+        self.is_boundary = False
         self.incoming_link_list = []
         self.outgoing_link_list = []
 
@@ -34,7 +36,7 @@ class Node:
 class Link:
     def __init__(self):
         self.link_id = 0
-        self.osm_way_id = 0
+        self.osm_way_id = None      # str
         self.link_no = 0
         self.name = ''
         self.link_type_name = ''
@@ -68,7 +70,7 @@ class Link:
 
 class Way:
     def __init__(self):
-        self.osm_way_id = 0
+        self.osm_way_id = None          # string
         self.highway = ''
         self.link_type_name = ''
         self.link_type = 0

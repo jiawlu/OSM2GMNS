@@ -54,16 +54,12 @@ def readCSVFile(folder):
 
     local_encoding = locale.getdefaultlocale()
     try:
-        node_data = pd.read_csv(node_filepath)
+        node_data = pd.read_csv(node_filepath,dtype={'osm_node_id':str})
     except UnicodeDecodeError:
-        node_data = pd.read_csv(node_filepath,encoding=local_encoding[1])
+        node_data = pd.read_csv(node_filepath,dtype={'osm_node_id':str},encoding=local_encoding[1])
     try:
-        link_data = pd.read_csv(link_filepath)
+        link_data = pd.read_csv(link_filepath,dtype={'osm_way_id':str})
     except UnicodeDecodeError:
-        link_data = pd.read_csv(link_filepath, encoding=local_encoding[1])
+        link_data = pd.read_csv(link_filepath,dtype={'osm_way_id':str},encoding=local_encoding[1])
 
     return node_data, link_data
-
-
-if __name__ == '__main__':
-    readXMLFile()
