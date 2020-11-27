@@ -3,6 +3,7 @@ from .util import *
 
 class Segment:
     def __init__(self):
+        self.segment_id = 0
         self.link = None
         self.start_lr = 0.0
         self.end_lr = 0.0
@@ -15,9 +16,7 @@ class Node:
         self.name = None
         self.node_id = 0
         self.osm_node_id = None     # str
-        self.node_no = 0
-        self.x_coord = 0.0
-        self.y_coord = 0.0
+        self.geometry = None
         self.main_node_id = None
         self.osm_highway = ''
         self.node_type = ''
@@ -28,6 +27,7 @@ class Node:
         self.valid = True
         self.activity_type = ''
         self.is_boundary = False
+        self.poi_id = None
         self.incoming_link_list = []
         self.outgoing_link_list = []
 
@@ -37,7 +37,6 @@ class Link:
     def __init__(self):
         self.link_id = 0
         self.osm_way_id = None      # str
-        self.link_no = 0
         self.name = ''
         self.link_type_name = ''
         self.link_type = 0
@@ -48,30 +47,27 @@ class Link:
         self.free_speed = None
         self.length = 0.0
         self.allowed_uses = ''
-        self.geometry_point_list = []
-        self.geometry_str = ''
+        self.from_bidirectional_way = False
+        self.geometry = None
         self.is_isolated = False
         self.valid = True
         self.ob_comb_link = None
         self.lanes_change_point_list = []
 
     def calculateLength(self):
-        for i in range(len(self.geometry_point_list)-1):
-            from_point = self.geometry_point_list[i]
-            to_point = self.geometry_point_list[i+1]
-            self.length += getDistanceFromCoord(from_point[0], from_point[1], to_point[0], to_point[1]) * 1000
-
-    def getGeometryStr(self):
-        geometry_str = 'LINESTRING (' + f'{self.geometry_point_list[0][0]} {self.geometry_point_list[0][1]}'
-        for point in self.geometry_point_list[1:]: geometry_str += f', {point[0]} {point[1]}'
-        geometry_str += ')'
-        self.geometry_str = geometry_str
+        coord_list = self.geometry.coords[:]
+        for i in range(len(coord_list)-1):
+            from_coord = coord_list[i]
+            to_coord = coord_list[i+1]
+            self.length += getDistanceFromCoord(from_coord[0], from_coord[1], to_coord[0], to_coord[1]) * 1000
 
 
 class Way:
     def __init__(self):
         self.osm_way_id = None          # string
         self.highway = ''
+        self.railway = ''
+        self.aeroway = ''
         self.link_type_name = ''
         self.link_type = 0
         self.name = ''
@@ -88,11 +84,14 @@ class Way:
         self.access = None
         self.foot = None
         self.bicycle = None
+        self.building = None
+        self.amenity = None
         self.allowable_agent_type_list = []
         self.allowed_uses = ''
 
         self.is_reversed = False
         self.is_cycle = False
+        self.is_pure_cycle = False          # cycle without crossing nodes
         self.ref_node_list = []
         self.number_of_segments = 0
         self.segment_node_list = []         # ref node sequence for each segment
@@ -115,15 +114,32 @@ class Way:
             if idx == number_of_ref_nodes-1: break
 
 
+class Relation:
+    def __init__(self):
+        self.osm_relation_id = None
+        self.member_list = []
+        self.member_role_list = []
+        self.name = ''
+        self.building = None
+        self.amenity = None
+
+
+class POI:
+    def __init__(self):
+        self.poi_id = 0
+        self.osm_way_id = None      # str
+        self.osm_relation_id = None
+        self.name = ''
+        self.geometry = None
+        self.nearest_node = None
+        self.building = None
+        self.amenity = None
+
+
+
 class Network:
     def __init__(self):
-        self.minlat = 0.0
-        self.minlon = 0.0
-        self.maxlat = 0.0
-        self.maxlon = 0.0
-
-        self.created_nodes = 0
-        self.created_links = 0
+        self.bounds = None
 
         self.default_lanes = False
         self.default_speed = False
@@ -133,10 +149,19 @@ class Network:
         self.consolidated = False
         self.new_id = True
 
-        self.node_set = set()
-        self.link_set = set()
-        self.segment_set = set()
-        self.complex_intersection_set = set()
+        self.node_coordstr_to_node_dict = {}
 
-        self.osm_node_id_to_node_dict = {}
-        self.node_id_to_node_dict = {}
+        self.osm_node_dict = {}
+        self.osm_way_dict = {}
+
+        self.max_node_id = 0
+        self.max_link_id = 0
+        self.max_segment_id = 0
+        self.max_main_node_id = 0
+        self.max_poi_id = 0
+
+        self.node_dict = {}
+        self.link_dict = {}
+        self.segment_list = []
+        self.complex_intersection_list = []
+        self.POI_list = []

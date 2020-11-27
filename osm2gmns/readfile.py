@@ -2,6 +2,10 @@ import xml.etree.cElementTree as ET
 import pandas as pd
 import os
 import locale
+import json
+import sys
+from .util import *
+
 
 
 def getBounds(element):
@@ -25,13 +29,12 @@ def getBounds(element):
 
 
 def readXMLFile(osm_filename='map.osm'):
-    # print(f'Loaing Network Data from ({osm_filename})')
-    osmtree = ET.ElementTree(file=osm_filename)
-
-    bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}
+    bounds = default_bounds.copy()
     nodes = []
     ways = []
+    relations = []
 
+    osmtree = ET.ElementTree(file=osm_filename)
     osmnet = osmtree.getroot()
     for element in osmnet:
         if element.tag == 'bounds':
@@ -40,8 +43,41 @@ def readXMLFile(osm_filename='map.osm'):
             nodes.append(element)
         elif element.tag == 'way':
             ways.append(element)
+        elif element.tag == 'relation':
+            relations.append(element)
 
-    return bounds, nodes, ways
+    return bounds, nodes, ways, relations
+
+
+def readJSONFile(folder, POIs):
+    pointjson_path = os.path.join(folder,'point.geojson')
+    if not os.path.exists(pointjson_path):
+        print('cannot open file point.geojson')
+        sys.exit()
+    with open(pointjson_path) as json_file:
+        pointdata = json.load(json_file)
+        points = pointdata['features']
+
+    linejson_path = os.path.join(folder,'line.geojson')
+    if not os.path.exists(linejson_path):
+        print('cannot open file line.geojson')
+        sys.exit()
+    with open(linejson_path) as json_file:
+        linedata = json.load(json_file)
+        lines = linedata['features']
+
+    if not POIs:
+        return points, lines, None
+
+    areajson_path = os.path.join(folder,'area.geojson')
+    if os.path.exists(areajson_path):
+        with open(areajson_path) as json_file:
+            areadata = json.load(json_file)
+            areas = areadata['features']
+    else:
+        areas = None
+
+    return points, lines, areas
 
 
 def readCSVFile(folder):

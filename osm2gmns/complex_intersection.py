@@ -1,10 +1,10 @@
+
 def identifyComplexIntersections(network, int_buffer):
     network.complex_intersection_identified = True
 
-    link_list = sorted(network.link_set, key=lambda x: x.link_no)
     group_list = []
     group_status = []
-    for link in link_list:
+    for link_id,link in network.link_dict.items():
         if link.length > int_buffer: continue
         if not('traffic_signals' in link.from_node.osm_highway and 'traffic_signals' in link.to_node.osm_highway): continue
         group_list.append({link.from_node, link.to_node})

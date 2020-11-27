@@ -20,7 +20,7 @@ Get network from map.osm file and consolidate complex intersections
 
 .. code:: python
 
-    >>> import networkx as nx
+    >>> import osm2gmns as og
     >>> net = og.getNetFromOSMFile('map.osm')
     >>> og.outputNetToCSV(net)
     # check and modify (if necessary) network files before complex intersection consolidation

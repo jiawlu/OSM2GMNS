@@ -2,37 +2,31 @@ from .classes import *
 
 
 def consolidateComplexIntersections(network):
-    max_node_id = 0
     node_group_dict = {}
-    for node in network.node_set:
-        if node.node_id > max_node_id:
-            max_node_id = node.node_id
+    for node_id, node in network.node_dict.items():
         if node.main_node_id is not None:
             if node.main_node_id in node_group_dict.keys():
                 node_group_dict[node.main_node_id].append(node)
             else:
                 node_group_dict[node.main_node_id] = [node]
 
-    current_node_id = max_node_id + 1
     removal_node_set = set()
     removal_link_set = set()
 
     for main_node_id, node_group in node_group_dict.items():
         new_node = Node()
-        new_node.node_id = current_node_id
+        new_node.node_id = network.max_node_id
         new_node.main_node_id = main_node_id
         new_node.ctrl_type = 1
         x_coord_sum = 0
         y_coord_sum = 0
-        osm_node_id_list = []
 
         for node in node_group:
             node.valid = False
             removal_node_set.add(node)
 
-            x_coord_sum += node.x_coord
-            y_coord_sum += node.y_coord
-            osm_node_id_list.append(node.osm_node_id)
+            x_coord_sum += node.geometry.x
+            y_coord_sum += node.geometry.y
 
             for link in node.incoming_link_list:
                 if link.from_node in node_group:
@@ -51,12 +45,11 @@ def consolidateComplexIntersections(network):
 
             new_node.osm_highway = node.osm_highway
 
-        new_node.x_coord = x_coord_sum / len(node_group)
-        new_node.y_coord = y_coord_sum / len(node_group)
-        new_node.osm_node_id = ';'.join(osm_node_id_list)
+        new_node.geometry = geometry.Point(x_coord_sum / len(node_group), y_coord_sum / len(node_group))
 
-        network.node_set.add(new_node)
-        current_node_id += 1
+        network.node_dict[new_node.node_id] = new_node
+        network.max_node_id += 1
 
-    for node in removal_node_set: network.node_set.remove(node)
-    for link in removal_link_set: network.link_set.remove(link)
+
+    for node in removal_node_set: del network.node_dict[node.node_id]
+    for link in removal_link_set: del network.link_dict[link.link_id]

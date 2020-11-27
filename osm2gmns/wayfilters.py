@@ -26,6 +26,7 @@ filters['walk'] = {'area':['yes'],
                    'access':['private']
                    }
 
+
 def getAllowableAgentType(way):
     allowable_agent_type_list = []
     for agent_type, m_filter in filters.items():
@@ -34,6 +35,8 @@ def getAllowableAgentType(way):
             if eval(f'way.{tag} in exclude_list'):
                 allowed = False
                 break
-
         if allowed: allowable_agent_type_list.append(agent_type)
+
+    if 'track' in way.highway: allowable_agent_type_list.append('track')
+
     return allowable_agent_type_list
