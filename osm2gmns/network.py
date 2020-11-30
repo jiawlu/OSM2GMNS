@@ -314,7 +314,7 @@ def parseOSM(network, nodes, ways, relations, strict_mode, network_type, POIs):
     parseWays(network, ways, relations, network_type, POIs)
 
 
-def removeIsolated(network):
+def removeIsolated(network,min_nodes):
     node_list = []
     node_to_idx_dict = {}
     for idx, (node_id,node) in enumerate(network.node_dict.items()):
@@ -360,7 +360,7 @@ def removeIsolated(network):
     group_isolated_dict = {}
     for group_id in group_id_set:
         group_size = node_group_id_list.count(group_id)
-        if group_size < isolated_threshold:
+        if group_size < min_nodes:
             group_isolated_dict[group_id] = True
         else:
             group_isolated_dict[group_id] = False
@@ -413,14 +413,14 @@ def updateDefaultLaneSpeed(default_lanes, default_speed, network):
             print('unsupported type for argument default_lanes, has set it to default value: False')
 
 
-def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False,strict_mode=True, remove_isolated=True,
+def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False,strict_mode=True, min_nodes=1,
                       simplify=True, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
     """
     :param osm_filename:
     :param network_type:
     :param POIs:
     :param strict_mode:
-    :param remove_isolated:
+    :param min_nodes:
     :param simplify:
     :param int_buffer:
     :param bbox:  (minlat, minlon, maxlat, maxlon)
@@ -443,7 +443,7 @@ def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False
     del nodes, ways, relations
 
     # remove isolated nodes and links
-    if remove_isolated: removeIsolated(network)
+    if min_nodes > 1: removeIsolated(network, min_nodes)
 
     # merge adjacent links at two-degree nodes
     if simplify: simplifyNetwork(network)
@@ -452,86 +452,6 @@ def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False
     identifyComplexIntersections(network,int_buffer)
 
     return network
-
-
-# def parsePoints(network, nodes, strict_mode):
-#     osm_node_dict = {}
-#     node_coordstr_to_node_dict = {}
-#
-#     for osm_node in nodes:
-#         attrs = osm_node['properties']
-#
-#         node = Node()
-#         node.osm_node_id = attrs['osm_id']
-#         coord_list = osm_node['geometry']['coordinates']
-#         node.geometry = geometry.Point(coord_list)
-#
-#         if strict_mode:
-#             if not node.geometry.within(network.bounds):
-#                 node.in_region = False
-#
-#         if attrs['highway']:
-#             node.osm_highway = attrs['highway']
-#         if 'signal' in node.osm_highway: node.ctrl_type = 1         # todo: check signalized tag
-#
-#         coord_str_list = list(map(str, coord_list))
-#         node_coordstr_to_node_dict[' '.join(coord_str_list)] = node
-#         osm_node_dict[node.osm_node_id] = node
-#
-#     network.osm_node_dict = osm_node_dict
-#     network.node_coordstr_to_node_dict = node_coordstr_to_node_dict
-#
-#
-# def parseLines(network, lines):
-#     osm_way_dict = {}
-#     for osm_way in lines:
-#         attrs = osm_way['properties']
-#         way = Way()
-#         way.osm_way_id = attrs['osm_id']
-#
-#         coord_list = osm_way['geometry']['coordinates']
-#         for coord in coord_list:
-#             coord_str_list = list(map(str, coord))
-#             coord_str = ' '.join(coord_str_list)
-#             way.ref_node_list.append(network.node_coordstr_to_node_dict[coord_str])
-#
-#
-#
-# def parseAreas(network, areas):
-#     if areas is None: return
-#
-#
-# def parseOSMJSON(network, points, lines, areas, strict_mode):
-#     parsePoints(network, points, strict_mode)
-#     parseLines(network, lines)
-#     parseAreas(network, areas)
-#
-#
-# def getNetFromJSONFile(folder='', POIs=False,strict_mode=True, remove_isolated=True, simplify=True,
-#                        int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
-#     network = Network()
-#     updateDefaultLaneSpeed(default_lanes, default_speed, network)
-#
-#     points, lines, areas = readJSONFile(folder, POIs)
-#
-#     bounds = default_bounds.copy()
-#     minlat, minlon, maxlat, maxlon = bbox if bbox else bounds['minlat'], bounds['minlon'], bounds['maxlat'], bounds['maxlon']
-#     network.bounds = geometry.Polygon([(minlon,maxlat),(maxlon,maxlat),(maxlon,minlat),(minlon,minlat)])
-#
-#     parseOSMJSON(network, points, lines, areas, strict_mode)
-#     del points, lines, areas
-#
-#     # remove isolated nodes and links
-#     if remove_isolated: removeIsolated(network)
-#
-#     # merge adjacent links at two-degree nodes
-#     if simplify: simplifyNetwork(network)
-#
-#     # identify complex intersections which contains multiple nodes
-#     identifyComplexIntersections(network,int_buffer)
-#
-#     return network
-
 
 
 def getNetFromCSV(folder=''):

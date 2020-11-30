@@ -41,7 +41,7 @@ negligible_link_type_list = ['path','construction','proposed','raceway','bridlew
 
 network_type_all = ['auto','bike','walk','railway','aeroway']
 
-isolated_threshold = 5
+
 default_int_buffer = 20.0
 
 

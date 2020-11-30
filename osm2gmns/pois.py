@@ -52,7 +52,9 @@ def POIFromWay(POI_way_list):
         poi.name = way.name
         poi.building = way.building
         poi.amenity = way.amenity
-        poi.geometry = getPolygonFromRefNodes(way.ref_node_list)
+        ln = getPolygonFromRefNodes(way.ref_node_list)
+        if ln is None: continue
+        poi.geometry = ln
         POI_list1.append(poi)
     return POI_list1
 
