@@ -1,14 +1,10 @@
-import xml.etree.cElementTree as ET
 import pandas as pd
 import os
 import locale
-import json
-import sys
 from .util import *
 
 
-
-def getBounds(element):
+def _getBounds(element):
     try:
         minlat = float(element.attrib['minlat'])
     except KeyError:
@@ -28,56 +24,81 @@ def getBounds(element):
     return {'minlat':minlat, 'minlon':minlon, 'maxlat':maxlat, 'maxlon':maxlon}
 
 
-def readXMLFile(osm_filename='map.osm'):
+def readXMLFile(osm_filename):
+    import xml.etree.cElementTree as ET
+    from .file import Node, Way, Relation
+
     bounds = default_bounds.copy()
-    nodes = []
-    ways = []
-    relations = []
+    nodes, ways, relations = [], [], []
 
     osmtree = ET.ElementTree(file=osm_filename)
     osmnet = osmtree.getroot()
     for element in osmnet:
         if element.tag == 'bounds':
-            bounds = getBounds(element)
+            bounds = _getBounds(element)
+
         elif element.tag == 'node':
-            nodes.append(element)
+            node_id = element.attrib['id']
+            lonlat = (float(element.attrib['lon']),float(element.attrib['lat']))
+            tags = {}
+            for info in element:
+                if info.tag == 'tag':
+                    tags[info.attrib['k']] = info.attrib['v']
+
+            node = Node(node_id, tags, lonlat)
+            nodes.append(node)
+
         elif element.tag == 'way':
-            ways.append(element)
+            way_id = element.attrib['id']
+            refs = []
+            tags = {}
+            for info in element:
+                if info.tag == 'nd':
+                    ref_node_id = info.attrib['ref']
+                    refs.append(ref_node_id)
+                elif info.tag == 'tag':
+                    tags[info.attrib['k']] = info.attrib['v']
+
+            way = Way(way_id,tags, refs)
+            ways.append(way)
+
         elif element.tag == 'relation':
-            relations.append(element)
+            relation_id = element.attrib['id']
+            members = []
+            tags = {}
+            for info in element:
+                if info.tag == 'member':
+                    member_type = info.attrib['type']
+                    ref_id = info.attrib['ref']
+                    member_role = info.attrib['role']
+                    members.append((ref_id,member_type,member_role))
+                elif info.tag == 'tag':
+                    tags[info.attrib['k']] = info.attrib['v']
 
-    return bounds, nodes, ways, relations
+            relation = Relation(relation_id, tags, members)
+            relations.append(relation)
+
+    return {'bounds':bounds, 'nodes':nodes, 'ways':ways, 'relations':relations}
 
 
-def readJSONFile(folder, POIs):
-    pointjson_path = os.path.join(folder,'point.geojson')
-    if not os.path.exists(pointjson_path):
-        print('cannot open file point.geojson')
-        sys.exit()
-    with open(pointjson_path) as json_file:
-        pointdata = json.load(json_file)
-        points = pointdata['features']
+def readPBFFile(pbf_filename):
+    from .file import File, Node, Way, Relation
 
-    linejson_path = os.path.join(folder,'line.geojson')
-    if not os.path.exists(linejson_path):
-        print('cannot open file line.geojson')
-        sys.exit()
-    with open(linejson_path) as json_file:
-        linedata = json.load(json_file)
-        lines = linedata['features']
+    bounds = default_bounds.copy()
+    nodes, ways, relations = [], [], []
+    pbf_data = File(pbf_filename)
 
-    if not POIs:
-        return points, lines, None
+    for item in pbf_data:
+        if isinstance(item,Node):
+            nodes.append(item)
+        elif isinstance(item, Way):
+            ways.append(item)
+        elif isinstance(item, Relation):
+            relations.append(item)
+        else:
+            print('unsupported type')
 
-    areajson_path = os.path.join(folder,'area.geojson')
-    if os.path.exists(areajson_path):
-        with open(areajson_path) as json_file:
-            areadata = json.load(json_file)
-            areas = areadata['features']
-    else:
-        areas = None
-
-    return points, lines, areas
+    return {'bounds':bounds, 'nodes':nodes, 'ways':ways, 'relations':relations}
 
 
 def readCSVFile(folder):

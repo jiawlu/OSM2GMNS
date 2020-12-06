@@ -2,7 +2,7 @@ from .classes import *
 from shapely import ops
 
 
-def checkTpologyForTwoDegreeNodes(node):
+def _checkTpologyForTwoDegreeNodes(node):
     ib_link, ob_link = node.incoming_link_list[0], node.outgoing_link_list[0]
     # if not (ib_link.valid and ob_link.valid): return False
     if ib_link.from_node is ob_link.to_node: return False
@@ -10,7 +10,7 @@ def checkTpologyForTwoDegreeNodes(node):
     return True
 
 
-def checkTpologyForFourDegreeNodes(node):
+def _checkTpologyForFourDegreeNodes(node):
     ob_link_set = set()
     for ib_link in node.incoming_link_list:
         for ob_link in node.outgoing_link_list:
@@ -25,7 +25,7 @@ def checkTpologyForFourDegreeNodes(node):
     return True
 
 
-def getNameForTheCombinedLink(ib_link):
+def _getNameForTheCombinedLink(ib_link):
     if ib_link.name == ib_link.ob_comb_link.name:
         return ib_link.name
     elif ib_link.name == '' and ib_link.ob_comb_link.name != '':
@@ -36,14 +36,14 @@ def getNameForTheCombinedLink(ib_link):
         return None
 
 
-def getLinktypeForTheCombinedLink(ib_link):
+def _getLinktypeForTheCombinedLink(ib_link):
     if ib_link.link_type == ib_link.ob_comb_link.link_type:
         return ib_link.link_type
     else:
         return None
 
 
-def getSpeedForTheCombinedLink(ib_link):
+def _getSpeedForTheCombinedLink(ib_link):
     if ib_link.free_speed == ib_link.ob_comb_link.free_speed:
         return ib_link.free_speed
     elif ib_link.free_speed == -1 and ib_link.ob_comb_link.free_speed != -1:
@@ -54,7 +54,7 @@ def getSpeedForTheCombinedLink(ib_link):
         return None
 
 
-def checkLinkAttr(ib_link):
+def _checkLinkAttr(ib_link):
     ob_link = ib_link.ob_comb_link
     if ib_link.name != ob_link.name: return False
     if ib_link.link_type != ob_link.link_type: return False
@@ -65,7 +65,7 @@ def checkLinkAttr(ib_link):
     return True
 
 
-def newLinkFromLinks(link_id, up_link, down_link):
+def _newLinkFromLinks(link_id, up_link, down_link):
     link = Link()
     link.osm_way_id = f'{up_link.osm_way_id};{down_link.osm_way_id}'
     link.link_id = link_id
@@ -98,7 +98,7 @@ def newLinkFromLinks(link_id, up_link, down_link):
     return link
 
 
-def combLinks(network):
+def _combLinks(network):
 
     removal_node_set = set()
     removal_link_set = set()
@@ -108,9 +108,9 @@ def combLinks(network):
 
         # check topology
         if len(node.incoming_link_list) == 1 and len(node.outgoing_link_list) == 1:
-            topology_flag = checkTpologyForTwoDegreeNodes(node)
+            topology_flag = _checkTpologyForTwoDegreeNodes(node)
         elif len(node.incoming_link_list) == 2 and len(node.outgoing_link_list) == 2:
-            topology_flag = checkTpologyForFourDegreeNodes(node)
+            topology_flag = _checkTpologyForFourDegreeNodes(node)
         else:
             topology_flag = False
         if not topology_flag: continue
@@ -118,7 +118,7 @@ def combLinks(network):
         # check link attributes, name, link_type, free_speed
         attr_flag = True
         for ib_link in node.incoming_link_list:
-            attr_flag = checkLinkAttr(ib_link)
+            attr_flag = _checkLinkAttr(ib_link)
             if not attr_flag: break
         if not attr_flag: continue
 
@@ -126,7 +126,7 @@ def combLinks(network):
         removal_node_set.add(node.node_id)
         for ib_link_idx, ib_link in enumerate(node.incoming_link_list):
             ob_comb_link = ib_link.ob_comb_link
-            new_link = newLinkFromLinks(network.max_link_id, ib_link, ob_comb_link)
+            new_link = _newLinkFromLinks(network.max_link_id, ib_link, ob_comb_link)
             network.link_dict[new_link.link_id] = new_link
             network.max_link_id += 1
             ib_link.valid = False
@@ -138,7 +138,7 @@ def combLinks(network):
     for link_id in removal_link_set: del network.link_dict[link_id]
 
 
-def generateSegments(network):
+def _generateSegments(network):
     segment_list = []
     max_segment_id = network.max_segment_id
     for link_id, link in network.link_dict.items():
@@ -170,5 +170,5 @@ def generateSegments(network):
 
 def simplifyNetwork(network):
     network.simplified = True
-    combLinks(network)
-    generateSegments(network)
+    _combLinks(network)
+    _generateSegments(network)

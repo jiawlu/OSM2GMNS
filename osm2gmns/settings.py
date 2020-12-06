@@ -1,6 +1,6 @@
 import logging
 
-print_log = False
+print_log = True
 print_log_level = logging.WARNING
 
 osm_highway_type_dict = {'motorway': 'motorway',
@@ -16,6 +16,7 @@ osm_highway_type_dict = {'motorway': 'motorway',
                          'residential': 'residential',
                          'residential_link': 'residential',
                          'service': 'service',
+                         'services': 'service',
                          'cycleway':'cycleway',
                          'footway': 'footway',
                          'pedestrian': 'footway',

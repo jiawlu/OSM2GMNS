@@ -7,7 +7,7 @@ from .settings import *
 
 
 
-print('osm2gmns, version 0.1.1')
+print('osm2gmns, version 0.2.0')
 
 if print_log:
     logging.basicConfig(level=print_log_level,

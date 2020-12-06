@@ -6,31 +6,8 @@ from .pois import *
 import re
 from shapely import wkt
 
-# todo: xml to dict
 
-def parseNodes(network, nodes, strict_mode):
-    osm_node_dict = {}
-    for osm_node in nodes:
-        node = Node()
-        node.osm_node_id = osm_node.attrib['id']
-        node.geometry = geometry.Point(float(osm_node.attrib['lon']), float(osm_node.attrib['lat']))
-
-        if strict_mode:
-            if not node.geometry.within(network.bounds):
-                node.in_region = False
-
-        for info in osm_node:
-            if info.tag == 'tag':
-                if info.attrib['k'] == 'highway':
-                    node.osm_highway = info.attrib['v']
-
-        if 'signal' in node.osm_highway: node.ctrl_type = 1         # todo: check signalized tag
-
-        osm_node_dict[node.osm_node_id] = node
-    network.osm_node_dict = osm_node_dict
-
-
-def newLinkFromWay(link_id, way, direction, ref_node_list):
+def _newLinkFromWay(link_id, way, direction, ref_node_list):
     link = Link()
     link.osm_way_id = way.osm_way_id
     link.link_id = link_id
@@ -69,7 +46,7 @@ def newLinkFromWay(link_id, way, direction, ref_node_list):
     return link
 
 
-def createNodeOnBoundary(node_in,node_outside,network):
+def _createNodeOnBoundary(node_in,node_outside,network):
     node = Node()
     node.node_id = network.max_node_id
     line = network.bounds.intersection(geometry.LineString([node_in.geometry,node_outside.geometry]))
@@ -80,7 +57,7 @@ def createNodeOnBoundary(node_in,node_outside,network):
     return node
 
 
-def getSegmentNodeList(way, segment_no, network):
+def _getSegmentNodeList(way, segment_no, network):
     m_segment_node_list = way.segment_node_list[segment_no]
     if way.is_reversed: m_segment_node_list = list(reversed(m_segment_node_list))
     number_of_nodes = len(m_segment_node_list)
@@ -98,7 +75,7 @@ def getSegmentNodeList(way, segment_no, network):
             m_segment_node_list_group.append(m_segment_node_list)
             return m_segment_node_list_group
         else:
-            new_node = createNodeOnBoundary(m_segment_node_list[idx_first_outside-1],m_segment_node_list[idx_first_outside], network)
+            new_node = _createNodeOnBoundary(m_segment_node_list[idx_first_outside-1],m_segment_node_list[idx_first_outside], network)
             m_segment_node_list_group.append(m_segment_node_list[:idx_first_outside] + [new_node])
 
     if m_segment_node_list[-1].in_region:
@@ -107,33 +84,33 @@ def getSegmentNodeList(way, segment_no, network):
             if not m_segment_node_list[idx].in_region:
                 idx_last_outside = idx
                 break
-        new_node = createNodeOnBoundary(m_segment_node_list[idx_last_outside+1],m_segment_node_list[idx_last_outside], network)
+        new_node = _createNodeOnBoundary(m_segment_node_list[idx_last_outside+1],m_segment_node_list[idx_last_outside], network)
         m_segment_node_list_group.append([new_node] + m_segment_node_list[idx_last_outside+1:])
 
     return m_segment_node_list_group
 
 
-def createLinks(network, link_way_list):
+def _createLinks(network, link_way_list):
     link_dict = {}
     max_link_id = network.max_link_id
     for way in link_way_list:
         if way.is_pure_cycle: continue
         way.getNodeListForSegments()
         for segment_no in range(way.number_of_segments):
-            m_segment_node_list_group = getSegmentNodeList(way, segment_no, network)
+            m_segment_node_list_group = _getSegmentNodeList(way, segment_no, network)
             for m_segment_node_list in m_segment_node_list_group:
-                link = newLinkFromWay(max_link_id, way, 1, m_segment_node_list)
+                link = _newLinkFromWay(max_link_id, way, 1, m_segment_node_list)
                 link_dict[link.link_id] = link
                 max_link_id += 1
                 if not way.oneway:
-                    linkb = newLinkFromWay(max_link_id, way, -1, list(reversed(m_segment_node_list)))
+                    linkb = _newLinkFromWay(max_link_id, way, -1, list(reversed(m_segment_node_list)))
                     link_dict[linkb.link_id] = linkb
                     max_link_id += 1
     network.link_dict = link_dict
     network.max_link_id = max_link_id
 
 
-def identifyCrossingNodes(link_way_list):
+def _identifyCrossingNodes(link_way_list):
     used_node_set = set()
     for way in link_way_list:
         way.ref_node_list[0].is_crossing = True
@@ -145,7 +122,7 @@ def identifyCrossingNodes(link_way_list):
                 used_node_set.add(node)
 
 
-def identifyPureCycleWays(link_way_list):
+def _identifyPureCycleWays(link_way_list):
     for way in link_way_list:
         if way.is_cycle:
             way.is_pure_cycle = True
@@ -155,7 +132,7 @@ def identifyPureCycleWays(link_way_list):
                     break
 
 
-def getNetworkNodes(network):
+def _getNetworkNodes(network):
     node_dict = {}
     max_node_id = network.max_node_id
     for osm_node_id, node in network.osm_node_dict.items():
@@ -167,75 +144,195 @@ def getNetworkNodes(network):
     network.max_node_id = max_node_id
 
 
-def parseWays(network, ways, relations, network_type, POIs):
+def _removeIsolated(network,min_nodes):
+    node_list = []
+    node_to_idx_dict = {}
+    for idx, (node_id,node) in enumerate(network.node_dict.items()):
+        node_list.append(node)
+        node_to_idx_dict[node] = idx
+
+    number_of_nodes = len(node_list)
+    node_group_id_list = [-1] * number_of_nodes
+
+    group_id = 0
+    start_idx = 0
+
+    while True:
+        unprocessed_node_list = [node_list[start_idx]]
+        node_group_id_list[start_idx] = group_id
+        while unprocessed_node_list:
+            node = unprocessed_node_list.pop()
+            for ob_link in node.outgoing_link_list:
+                ob_node = ob_link.to_node
+                if node_group_id_list[node_to_idx_dict[ob_node]] == -1:
+                    node_group_id_list[node_to_idx_dict[ob_node]] = group_id
+                    unprocessed_node_list.append(ob_node)
+
+            for ib_link in node.incoming_link_list:
+                ib_node = ib_link.from_node
+                if node_group_id_list[node_to_idx_dict[ib_node]] == -1:
+                    node_group_id_list[node_to_idx_dict[ib_node]] = group_id
+                    unprocessed_node_list.append(ib_node)
+
+        unreachable_node_exits = False
+        for idx in range(start_idx+1,number_of_nodes):
+            if node_group_id_list[idx] == -1:
+                unreachable_node_exits = True
+                break
+
+        if unreachable_node_exits:
+            start_idx = idx
+            group_id += 1
+        else:
+            break
+
+    group_id_set = set(node_group_id_list)
+    group_isolated_dict = {}
+    for group_id in group_id_set:
+        group_size = node_group_id_list.count(group_id)
+        if group_size < min_nodes:
+            group_isolated_dict[group_id] = True
+        else:
+            group_isolated_dict[group_id] = False
+
+    removal_link_set = set()
+    for idx, node in enumerate(node_list):
+        if group_isolated_dict[node_group_id_list[idx]]:
+            del network.node_dict[node.node_id]
+            for ob_link in node.outgoing_link_list: removal_link_set.add(ob_link)
+            for ib_link in node.incoming_link_list: removal_link_set.add(ib_link)
+    for link in removal_link_set:
+        del network.link_dict[link.link_id]
+
+
+def _getValidNetworkType(network_type):
+    if isinstance(network_type,str):
+        network_type_temp = (network_type,)
+    else:
+        network_type_temp = network_type
+
+    network_type_valid = []
+    for net_type in network_type_temp:
+        if net_type not in network_type_all:
+            print(f'network type \'{net_type}\' does not belong to {network_type_all}, it will be skipped')
+        else:
+            network_type_valid.append(net_type)
+    return network_type_valid
+
+
+def _updateDefaultLaneSpeed(default_lanes, default_speed, network):
+    if default_lanes:
+        if isinstance(default_lanes,bool):
+            network.default_lanes = default_lanes_dict
+        elif isinstance(default_lanes,dict):
+            network.default_lanes = default_lanes
+            for link_type_name, lanes in default_lanes_dict.items():
+                if link_type_name not in default_lanes.keys():
+                    network.default_lanes[link_type_name] = lanes
+        else:
+            print('unsupported type for argument default_lanes, has set it to default value: False')
+    if default_speed:
+        if isinstance(default_speed,bool):
+            network.default_speed = default_speed_dict
+        elif isinstance(default_speed,dict):
+            network.default_speed = default_speed
+            for link_type_name, speed in default_speed_dict.items():
+                if link_type_name not in default_speed.keys():
+                    network.default_speed[link_type_name] = speed
+        else:
+            print('unsupported type for argument default_lanes, has set it to default value: False')
+
+
+def _parseNodes(network, nodes, strict_mode):
+    osm_node_dict = {}
+    for osm_node in nodes:
+        node = Node()
+        node.osm_node_id = str(osm_node.id)
+        lon,lat = osm_node.lonlat
+        node.geometry = geometry.Point((round(lon,7),round(lat,7)))
+        # node.geometry = geometry.Point(osm_node.lonlat)
+
+        if strict_mode:
+            if not node.geometry.within(network.bounds):
+                node.in_region = False
+
+        tags = osm_node.tags
+        if 'highway' in tags.keys():
+            node.osm_highway = tags['highway']
+        if 'signal' in node.osm_highway: node.ctrl_type = 1         # todo: check signalized tag
+
+        osm_node_dict[node.osm_node_id] = node
+    network.osm_node_dict = osm_node_dict
+
+
+def _parseWays(network, ways, relations, network_type, POIs):
     osm_way_dict = {}
 
     for osm_way in ways:
         way = Way()
-        way.osm_way_id = osm_way.attrib['id']
+        way.osm_way_id = str(osm_way.id)
 
-        for info in osm_way:
-            if info.tag == 'nd':
-                ref_node_id = info.attrib['ref']
-                try:
-                    way.ref_node_list.append(network.osm_node_dict[ref_node_id])
-                except KeyError:
-                    print(f'  warning: ref node {ref_node_id} in way {way.osm_way_id} is not defined')
-            elif info.tag == 'tag':
-                if info.attrib['k'] == 'highway':
-                    way.highway = info.attrib['v']
-                elif info.attrib['k'] == 'railway':
-                    way.railway = info.attrib['v']
-                elif info.attrib['k'] == 'aeroway':
-                    way.aeroway = info.attrib['v']
-                elif info.attrib['k'] == 'lanes':
-                    lanes = re.findall(r'\d+\.?\d*', info.attrib['v'])
-                    if len(lanes) > 0:
-                        way.lanes = int(float(lanes[0]))        # in case of decimals
-                    else:
-                        printlog(f'new lanes type detected at way {way.osm_way_id}, {info.attrib["v"]}','warning')
-                elif info.attrib['k'] == 'lanes:forward':
-                    way.forward_lanes = int(info.attrib['v'])
-                elif info.attrib['k'] == 'lanes:backward':
-                    way.backward_lanes = int(info.attrib['v'])
-                elif info.attrib['k'] == 'name':
-                    way.name = info.attrib['v']
-                elif info.attrib['k'] == 'maxspeed':
-                    speeds = re.findall(r'\d+\.?\d*', info.attrib['v'])
-                    if len(speeds) > 0:
-                        way.maxspeed = speeds[0]
-                    else:
-                        printlog(f'new maxspeed type detected at way {way.osm_way_id}, {info.attrib["v"]}','warning')
-                elif info.attrib['k'] == 'oneway':
-                    oneway_flag = info.attrib['v']
-                    if oneway_flag == 'yes' or oneway_flag == '1':
-                        way.oneway = True
-                    elif oneway_flag == 'no' or oneway_flag == '0':
-                        way.oneway = False
-                    elif oneway_flag == '-1':
-                        way.oneway = True
-                        way.is_reversed = True
-                    elif oneway_flag in ['reversible', 'alternating']:
-                        # todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
-                        way.oneway = False
-                    else:
-                        printlog(f'new maxspeed type detected at way {way.osm_way_id}, {info.attrib["v"]}','warning')
-                elif info.attrib['k'] == 'area':
-                    way.area = info.attrib['v']
-                elif info.attrib['k'] == 'motor_vehicle':
-                    way.motor_vehicle = info.attrib['v']
-                elif info.attrib['k'] == 'motorcar':
-                    way.motorcar = info.attrib['v']
-                elif info.attrib['k'] == 'service':
-                    way.service = info.attrib['v']
-                elif info.attrib['k'] == 'foot':
-                    way.foot = info.attrib['v']
-                elif info.attrib['k'] == 'bicycle':
-                    way.bicycle = info.attrib['v']
-                elif info.attrib['k'] == 'building':
-                    way.building = info.attrib['v']
-                elif info.attrib['k'] == 'amenity':
-                    way.amenity = info.attrib['v']
+        for ref_node_id in osm_way.refs:
+            try:
+                way.ref_node_list.append(network.osm_node_dict[str(ref_node_id)])
+            except KeyError:
+                print(f'  warning: ref node {ref_node_id} in way {way.osm_way_id} is not defined')
+
+        tags = osm_way.tags
+        if 'highway' in tags.keys():
+            way.highway = tags['highway']
+        if 'railway' in tags.keys():
+            way.railway = tags['railway']
+        if 'aeroway' in tags.keys():
+            way.aeroway = tags['aeroway']
+        if 'lanes' in tags.keys():
+            lanes = re.findall(r'\d+\.?\d*', tags['lanes'])
+            if len(lanes) > 0:
+                way.lanes = int(float(lanes[0]))  # in case of decimals
+            else:
+                printlog(f'new lanes type detected at way {way.osm_way_id}, {tags["lanes"]}', 'warning')
+        if 'lanes:forward' in tags.keys():
+            way.forward_lanes = int(tags['lanes:forward'])
+        if 'lanes:backward' in tags.keys():
+            way.backward_lanes = int(tags['lanes:backward'])
+        if 'name' in tags.keys():
+            way.name = tags['name']
+        if 'maxspeed' in tags.keys():
+            speeds = re.findall(r'\d+\.?\d*', tags['maxspeed'])
+            if len(speeds) > 0:
+                way.maxspeed = speeds[0]
+            else:
+                printlog(f'new maxspeed type detected at way {way.osm_way_id}, {tags["maxspeed"]}', 'warning')
+        if 'oneway' in tags.keys():
+            oneway_flag = tags['oneway']
+            if oneway_flag == 'yes' or oneway_flag == '1':
+                way.oneway = True
+            elif oneway_flag == 'no' or oneway_flag == '0':
+                way.oneway = False
+            elif oneway_flag == '-1':
+                way.oneway = True
+                way.is_reversed = True
+            elif oneway_flag in ['reversible', 'alternating']:
+                # todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
+                way.oneway = False
+            else:
+                printlog(f'new maxspeed type detected at way {way.osm_way_id}, {tags["oneway"]}', 'warning')
+        if 'area' in tags.keys():
+            way.area = tags['area']
+        if 'motor_vehicle' in tags.keys():
+            way.motor_vehicle = tags['motor_vehicle']
+        if 'motorcar' in tags.keys():
+            way.motorcar = tags['motorcar']
+        if 'service' in tags.keys():
+            way.service = tags['service']
+        if 'foot' in tags.keys():
+            way.foot = tags['foot']
+        if 'bicycle' in tags.keys():
+            way.bicycle = tags['bicycle']
+        if 'building' in tags.keys():
+            way.building = tags['building']
+        if 'amenity' in tags.keys():
+            way.building = tags['amenity']
 
         osm_way_dict[way.osm_way_id] = way
     network.osm_way_dict = osm_way_dict
@@ -298,122 +395,47 @@ def parseWays(network, ways, relations, network_type, POIs):
         else:
             pass
 
-    identifyCrossingNodes(link_way_list)
-    getNetworkNodes(network)
+    _identifyCrossingNodes(link_way_list)
+    _getNetworkNodes(network)
 
-    identifyPureCycleWays(link_way_list)
-    createLinks(network, link_way_list)
+    _identifyPureCycleWays(link_way_list)
+    _createLinks(network, link_way_list)
 
     if POIs:
         POI_list = generatePOIs(POI_way_list, relations, network)
         network.POI_list = POI_list
 
 
-def parseOSM(network, nodes, ways, relations, strict_mode, network_type, POIs):
-    parseNodes(network, nodes, strict_mode)
-    parseWays(network, ways, relations, network_type, POIs)
+def _parseOSM(network, nodes, ways, relations, strict_mode, network_type, POIs):
+    _parseNodes(network, nodes, strict_mode)
+    _parseWays(network, ways, relations, network_type, POIs)
 
 
-def removeIsolated(network,min_nodes):
-    node_list = []
-    node_to_idx_dict = {}
-    for idx, (node_id,node) in enumerate(network.node_dict.items()):
-        node_list.append(node)
-        node_to_idx_dict[node] = idx
+def _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_buffer, bbox, default_lanes, default_speed):
+    network = Network()
+    _updateDefaultLaneSpeed(default_lanes, default_speed, network)
 
-    number_of_nodes = len(node_list)
-    node_group_id_list = [-1] * number_of_nodes
+    bounds, nodes, ways, relations = netdata['bounds'], netdata['nodes'], netdata['ways'], netdata['relations']
 
-    group_id = 0
-    start_idx = 0
+    minlat, minlon, maxlat, maxlon = bbox if bbox else bounds['minlat'], bounds['minlon'], bounds['maxlat'], bounds['maxlon']
+    network.bounds = geometry.Polygon([(minlon, maxlat), (maxlon, maxlat), (maxlon, minlat), (minlon, minlat)])
 
-    while True:
-        unprocessed_node_list = [node_list[start_idx]]
-        node_group_id_list[start_idx] = group_id
-        while unprocessed_node_list:
-            node = unprocessed_node_list.pop()
-            for ob_link in node.outgoing_link_list:
-                ob_node = ob_link.to_node
-                if node_group_id_list[node_to_idx_dict[ob_node]] == -1:
-                    node_group_id_list[node_to_idx_dict[ob_node]] = group_id
-                    unprocessed_node_list.append(ob_node)
+    network_type_valid = _getValidNetworkType(network_type)
+    _parseOSM(network, nodes, ways, relations, strict_mode, network_type_valid, POIs)
 
-            for ib_link in node.incoming_link_list:
-                ib_node = ib_link.from_node
-                if node_group_id_list[node_to_idx_dict[ib_node]] == -1:
-                    node_group_id_list[node_to_idx_dict[ib_node]] = group_id
-                    unprocessed_node_list.append(ib_node)
+    # remove isolated nodes and links
+    if min_nodes > 1: _removeIsolated(network, min_nodes)
 
-        unreachable_node_exits = False
-        for idx in range(start_idx+1,number_of_nodes):
-            if node_group_id_list[idx] == -1:
-                unreachable_node_exits = True
-                break
+    # merge adjacent links at two-degree nodes
+    if simplify: simplifyNetwork(network)
 
-        if unreachable_node_exits:
-            start_idx = idx
-            group_id += 1
-        else:
-            break
+    # identify complex intersections which contains multiple nodes
+    identifyComplexIntersections(network, int_buffer)
 
-    group_id_set = set(node_group_id_list)
-    group_isolated_dict = {}
-    for group_id in group_id_set:
-        group_size = node_group_id_list.count(group_id)
-        if group_size < min_nodes:
-            group_isolated_dict[group_id] = True
-        else:
-            group_isolated_dict[group_id] = False
-
-    removal_link_set = set()
-    for idx, node in enumerate(node_list):
-        if group_isolated_dict[node_group_id_list[idx]]:
-            del network.node_dict[node.node_id]
-            for ob_link in node.outgoing_link_list: removal_link_set.add(ob_link)
-            for ib_link in node.incoming_link_list: removal_link_set.add(ib_link)
-    for link in removal_link_set:
-        del network.link_dict[link.link_id]
+    return network
 
 
-def getValidNetworkType(network_type):
-    if isinstance(network_type,str):
-        network_type_temp = (network_type,)
-    else:
-        network_type_temp = network_type
-
-    network_type_valid = []
-    for net_type in network_type_temp:
-        if net_type not in network_type_all:
-            print(f'network type \'{net_type}\' does not belong to {network_type_all}, it will be skipped')
-        else:
-            network_type_valid.append(net_type)
-    return network_type_valid
-
-
-def updateDefaultLaneSpeed(default_lanes, default_speed, network):
-    if default_lanes:
-        if isinstance(default_lanes,bool):
-            network.default_lanes = default_lanes_dict
-        elif isinstance(default_lanes,dict):
-            network.default_lanes = default_lanes
-            for link_type_name, lanes in default_lanes_dict.items():
-                if link_type_name not in default_lanes.keys():
-                    network.default_lanes[link_type_name] = lanes
-        else:
-            print('unsupported type for argument default_lanes, has set it to default value: False')
-    if default_speed:
-        if isinstance(default_speed,bool):
-            network.default_speed = default_speed_dict
-        elif isinstance(default_speed,dict):
-            network.default_speed = default_speed
-            for link_type_name, speed in default_speed_dict.items():
-                if link_type_name not in default_speed.keys():
-                    network.default_speed[link_type_name] = speed
-        else:
-            print('unsupported type for argument default_lanes, has set it to default value: False')
-
-
-def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False,strict_mode=True, min_nodes=1,
+def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False, strict_mode=True, min_nodes=1,
                       simplify=True, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
     """
     :param osm_filename:
@@ -423,34 +445,34 @@ def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False
     :param min_nodes:
     :param simplify:
     :param int_buffer:
-    :param bbox:  (minlat, minlon, maxlat, maxlon)
-    :param default_lanes:  True; False; Dict
-    :param default_speed:  True; False; Dict
-    :return:  a network instance
+    :param bbox: (minlat, minlon, maxlat, maxlon)
+    :param default_lanes: True; False; Dict
+    :param default_speed: True; False; Dict
+    :return: a network instance
     """
 
-    # build network
-    network = Network()
-    updateDefaultLaneSpeed(default_lanes, default_speed, network)
+    netdata = readXMLFile(osm_filename)
+    network = _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_buffer, bbox, default_lanes, default_speed)
+    return network
 
-    bounds, nodes, ways, relations = readXMLFile(osm_filename)
 
-    minlat, minlon, maxlat, maxlon = bbox if bbox else bounds['minlat'], bounds['minlon'], bounds['maxlat'], bounds['maxlon']
-    network.bounds = geometry.Polygon([(minlon,maxlat),(maxlon,maxlat),(maxlon,minlat),(minlon,minlat)])
-
-    network_type_valid = getValidNetworkType(network_type)
-    parseOSM(network, nodes, ways, relations, strict_mode, network_type_valid, POIs)
-    del nodes, ways, relations
-
-    # remove isolated nodes and links
-    if min_nodes > 1: removeIsolated(network, min_nodes)
-
-    # merge adjacent links at two-degree nodes
-    if simplify: simplifyNetwork(network)
-
-    # identify complex intersections which contains multiple nodes
-    identifyComplexIntersections(network,int_buffer)
-
+def getNetFromPBFFile(pbf_filename='map.osm.pbf', network_type=('auto',), POIs=False, strict_mode=True, min_nodes=1,
+                      simplify=True, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
+    """
+    :param pbf_filename:
+    :param network_type:
+    :param POIs:
+    :param strict_mode:
+    :param min_nodes:
+    :param simplify:
+    :param int_buffer:
+    :param bbox: (minlat, minlon, maxlat, maxlon)
+    :param default_lanes: True; False; Dict
+    :param default_speed: True; False; Dict
+    :return: a network instance
+    """
+    netdata = readPBFFile(pbf_filename)
+    network = _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_buffer, bbox, default_lanes, default_speed)
     return network
 
 

@@ -1,4 +1,3 @@
-
 def identifyComplexIntersections(network, int_buffer):
     network.complex_intersection_identified = True
 

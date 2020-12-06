@@ -2,49 +2,46 @@ from .classes import *
 import numpy as np
 
 
-def parseRelations(relations, network):
+def _parseRelations(relations, network):
     POI_relation_list = []
     for osm_relation in relations:
         relation = Relation()
-        relation.osm_relation_id = osm_relation.attrib['id']
+        relation.osm_relation_id = str(osm_relation.id)
 
-        for info in osm_relation:
-            if info.tag == 'member':
-                ref_id = info.attrib['ref']
-                member_type = info.attrib['type']
-                if member_type == 'node':
-                    try:
-                        relation.member_list.append(network.osm_node_dict[ref_id])
-                    except KeyError:
-                        printlog(f'ref node {ref_id} in relation {relation.osm_relation_id} is not defined', 'info')
-                elif member_type == 'way':
-                    try:
-                        relation.member_list.append(network.osm_way_dict[ref_id])
-                    except KeyError:
-                        printlog(f'ref way {ref_id} in relation {relation.osm_relation_id} is not defined', 'info')
-                elif member_type == 'relation':
-                    pass
-                else:
-                    printlog(f'new member type at relation {relation.osm_relation_id}, {member_type}', 'warning')
+        for member_id, member_type, member_role in osm_relation.members:
+            member_id_str = str(member_id)
+            member_type_lc = member_type.lower()
+            if member_type_lc == 'node':
                 try:
-                    relation.member_role_list.append(info.attrib['role'])
+                    relation.member_list.append(network.osm_node_dict[member_id_str])
                 except KeyError:
-                    relation.member_role_list.append(None)
+                    printlog(f'ref node {member_id} in relation {relation.osm_relation_id} is not defined', 'info')
+            elif member_type_lc == 'way':
+                try:
+                    relation.member_list.append(network.osm_way_dict[member_id_str])
+                except KeyError:
+                    printlog(f'ref way {member_id} in relation {relation.osm_relation_id} is not defined', 'info')
+            elif member_type_lc == 'relation':
+                pass
+            else:
+                printlog(f'new member type at relation {relation.osm_relation_id}, {member_type}', 'warning')
 
-            elif info.tag == 'tag':
-                if info.attrib['k'] == 'building':
-                    relation.building = info.attrib['v']
-                elif info.attrib['k'] == 'amenity':
-                    relation.amenity = info.attrib['v']
-                elif info.attrib['k'] == 'name':
-                    relation.name = info.attrib['v']
+            relation.member_role_list.append(member_role)
+
+        tags = osm_relation.tags
+        if 'building' in tags.keys():
+            relation.building = tags['building']
+        if 'amenity' in tags.keys():
+            relation.amenity = tags['amenity']
+        if 'name' in tags.keys():
+            relation.name = tags['name']
 
         if relation.building or relation.amenity:
             POI_relation_list.append(relation)
     return POI_relation_list
 
 
-def POIFromWay(POI_way_list):
+def _POIFromWay(POI_way_list):
     POI_list1 = []
     for way in POI_way_list:
         poi = POI()
@@ -59,7 +56,7 @@ def POIFromWay(POI_way_list):
     return POI_list1
 
 
-def POIFromRelation(POI_relation_list):
+def _POIFromRelation(POI_relation_list):
     POI_list2 = []
     for relation in POI_relation_list:
         poi = POI()
@@ -122,10 +119,10 @@ def POIFromRelation(POI_relation_list):
 
 
 def generatePOIs(POI_way_list,relations, network):
-    POI_list1 = POIFromWay(POI_way_list)
+    POI_list1 = _POIFromWay(POI_way_list)
 
-    POI_relation_list = parseRelations(relations, network)
-    POI_list2 = POIFromRelation(POI_relation_list)
+    POI_relation_list = _parseRelations(relations, network)
+    POI_list2 = _POIFromRelation(POI_relation_list)
 
     POI_list = POI_list1 + POI_list2
 
@@ -137,7 +134,7 @@ def generatePOIs(POI_way_list,relations, network):
     return POI_list
 
 
-def findNearestNode(network):
+def _findNearestNode(network):
     coord_list = []
     idx_to_node_dict = {}
     for idx, (node_id, node) in enumerate(network.node_dict.items()):
@@ -155,7 +152,7 @@ def findNearestNode(network):
         poi.nearest_node = idx_to_node_dict[idx]
 
 
-def createConnector(from_node, to_node, link_id):
+def _createConnector(from_node, to_node, link_id):
     link = Link()
     # link.osm_way_id = way.osm_way_id
     link.link_id = link_id
@@ -176,7 +173,7 @@ def createConnector(from_node, to_node, link_id):
     return link
 
 
-def addPOIs(network):
+def _addPOIs(network):
     for poi in network.POI_list:
         node = Node()
         node.node_id = network.max_node_id
@@ -186,10 +183,10 @@ def addPOIs(network):
         network.node_dict[node.node_id] = node
         network.max_node_id += 1
 
-        link1 = createConnector(node,poi.nearest_node,network.max_link_id)
+        link1 = _createConnector(node,poi.nearest_node,network.max_link_id)
         network.link_dict[link1.link_id] = link1
         network.max_link_id += 1
-        link2 = createConnector(poi.nearest_node, node, network.max_link_id)
+        link2 = _createConnector(poi.nearest_node, node, network.max_link_id)
         network.link_dict[link2.link_id] = link2
         network.max_link_id += 1
 
@@ -199,8 +196,8 @@ def connectPOIWithNet(network):
         print('No POIs found in the network. Please set POIs=True when creating network from osm file')
         return
 
-    findNearestNode(network)
-    addPOIs(network)
+    _findNearestNode(network)
+    _addPOIs(network)
 
 
 
