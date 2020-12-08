@@ -40,6 +40,8 @@ You can visualize generated networks using `NeXTA`_ or `QGis`_.
     Arizona State Unversity, Tempe Campus
 
 
+Users' guide
+-------------
 For detailed users' guide, readers can visit the online `documentation`_.
 
 
