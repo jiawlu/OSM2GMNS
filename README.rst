@@ -7,7 +7,7 @@ to node and link network files in the `GMNS`_ format. Users can convert and mode
 walkable, railway, or aeroway networks with a single line of Python code.
 
 Installation
--------
+------------
 
 .. code-block:: bash
 
