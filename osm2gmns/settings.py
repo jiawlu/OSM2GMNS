@@ -1,6 +1,6 @@
 import logging
 
-print_log = True
+print_log = False
 print_log_level = logging.WARNING
 
 osm_highway_type_dict = {'motorway': 'motorway',

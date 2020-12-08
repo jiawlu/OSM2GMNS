@@ -50,7 +50,8 @@ def _createNodeOnBoundary(node_in,node_outside,network):
     node = Node()
     node.node_id = network.max_node_id
     line = network.bounds.intersection(geometry.LineString([node_in.geometry,node_outside.geometry]))
-    node.geometry = geometry.Point(line.coords[1])
+    lon, lat = line.coords[1]
+    node.geometry = geometry.Point((round(lon,7),round(lat,7)))
     node.is_crossing = True
     network.node_dict[node.node_id] = node
     network.max_node_id += 1
@@ -292,9 +293,15 @@ def _parseWays(network, ways, relations, network_type, POIs):
             else:
                 printlog(f'new lanes type detected at way {way.osm_way_id}, {tags["lanes"]}', 'warning')
         if 'lanes:forward' in tags.keys():
-            way.forward_lanes = int(tags['lanes:forward'])
+            try:
+                way.forward_lanes = int(tags['lanes:forward'])
+            except:
+                pass
         if 'lanes:backward' in tags.keys():
-            way.backward_lanes = int(tags['lanes:backward'])
+            try:
+                way.backward_lanes = int(tags['lanes:backward'])
+            except:
+                pass
         if 'name' in tags.keys():
             way.name = tags['name']
         if 'maxspeed' in tags.keys():
@@ -377,18 +384,18 @@ def _parseWays(network, ways, relations, network_type, POIs):
         elif way.railway:
             if not include_railway: continue
             if way.area: continue
-            way.link_type_name = 'railway'
-            way.link_type = link_type_no_dict[way.link_type_name]
+            way.link_type_name = way.railway
+            way.link_type = link_type_no_dict['railway']
             if way.oneway is None:
-                way.oneway = default_oneway_flag_dict[way.link_type_name]
+                way.oneway = default_oneway_flag_dict['railway']
             link_way_list.append(way)
         elif way.aeroway:
             if not include_aeroway: continue
             if way.area: continue
-            way.link_type_name = 'aeroway'
-            way.link_type = link_type_no_dict[way.link_type_name]
+            way.link_type_name = way.aeroway
+            way.link_type = link_type_no_dict['aeroway']
             if way.oneway is None:
-                way.oneway = default_oneway_flag_dict[way.link_type_name]
+                way.oneway = default_oneway_flag_dict['aeroway']
             link_way_list.append(way)
         elif way.building or way.amenity:
             POI_way_list.append(way)
