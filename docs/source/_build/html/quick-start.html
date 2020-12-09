@@ -94,8 +94,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="case-net.html">Case Network</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acknowledge.html">Acknowledge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample-net.html">Sample Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgement.html">Acknowledgement</a></li>
 </ul>
 
             
@@ -163,49 +163,50 @@
             
   <div class="section" id="quick-start">
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
-<p>In this section, some examples will be used to demonstrate how to use osm2gmns to generate, manipulate
+<p>In this section, some examples are provided to demonstrate how to use osm2gmns to generate, manipulate
 and output networks.</p>
 <div class="section" id="download-osm-data">
 <h2>Download OSM Data<a class="headerlink" href="#download-osm-data" title="Permalink to this headline">¶</a></h2>
-<p>To reduce the uncertainty while directly downloading data from osm server via APIs, osm2gmns uses offline
-osm files to extract useful network information. Thus, the first step is preparing osm files.</p>
-<p>Thanks to the open-source nature of openstreetmap, there are lots of APIs and mirrors that we can use to
-download osm data. We listed some frequently used approaches here for users to choose.</p>
-<ul class="simple">
-<li><p>Openstreetmap Homepage</p></li>
-</ul>
-<p>Go to openstreetmap <a class="reference external" href="https://www.openstreetmap.org">homepage</a>, then click the <code class="docutils literal notranslate"><span class="pre">Export</span></code> button to enter Export mode. Before downloading,
-you may need to span and zoom in/out the map to make your target area is properly shown on the screen.
-Or, you can use <code class="docutils literal notranslate"><span class="pre">Manually</span> <span class="pre">select</span> <span class="pre">a</span> <span class="pre">different</span> <span class="pre">area</span></code> to select the area more precisely. Click the <code class="docutils literal notranslate"><span class="pre">Export</span></code>
-button in blue to export the network you selected.</p>
-<p>Note that if the target area is too large, you may get an error message: You requested too many nodes
-(limit is 50000). Either request a smaller area, or use planet.osm. In that situation, you can alway click
-<code class="docutils literal notranslate"><span class="pre">Overpass</span> <span class="pre">API</span></code> to download the network you need via a mirror.</p>
+<p>To reduce uncertainties while directly parsing network data from the osm server via APIs, osm2gmns uses downloaded
+osm files to extract useful network information. As a result, the first step is preparing osm files.</p>
+<p>Thanks to the open-source nature of OpenStreetMap, there are lots of APIs and mirror sites that we can use to
+download osm map data. We list several popular sites here for users to choose.</p>
+<ol class="arabic simple">
+<li><p>OpenStreetMap Homepage</p></li>
+</ol>
+<p>On OpenStreetMap <a class="reference external" href="https://www.openstreetmap.org">homepage</a>, click the <code class="docutils literal notranslate"><span class="pre">Export</span></code> button to enter Export mode. Before downloading,
+you may need to span and zoom in/out the map to make sure that your target area is properly shown on the screen.
+Or, you can use <code class="docutils literal notranslate"><span class="pre">Manually</span> <span class="pre">select</span> <span class="pre">a</span> <span class="pre">different</span> <span class="pre">area</span></code> to select your area more precisely. Click the <code class="docutils literal notranslate"><span class="pre">Export</span></code>
+button in blue to export the network you want.</p>
+<p>Note that if the target area is too large, you may get an error message: “You requested too many nodes
+(limit is 50000). Either request a smaller area, or use planet.osm”. In this case, you can always click
+<code class="docutils literal notranslate"><span class="pre">Overpass</span> <span class="pre">API</span></code> to download the network you need via a mirror site.</p>
 <div class="figure align-center" id="osmhp-pic">
 <a class="reference internal image-reference" href="_images/osmhp.png"><img alt="_images/osmhp.png" src="_images/osmhp.png" style="width: 100%;" /></a>
-<p class="caption"><span class="caption-text">Download osm data from openstreetmap homepage</span><a class="headerlink" href="#osmhp-pic" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Download osm data from OpenStreetMap homepage</span><a class="headerlink" href="#osmhp-pic" title="Permalink to this image">¶</a></p>
 </div>
-<ul class="simple">
+<ol class="arabic simple" start="2">
 <li><p>Geofabrik</p></li>
-</ul>
-<p>Different from downloading network from openstreetmap homepage, <a class="reference external" href="https://download.geofabrik.de/">Geofabrik</a> enables you to download network data for
-administrative areas. In openstreetmap homepage, we can only download areas defined by rectangles. In Geofabrik
-homepage, you can click the corresponding quick link of your interseted region to download the network data you
-need. You can always click the name of regions to check if sub region data are available.</p>
-<p>Generally, network data of each region are stored in three file format, including <code class="docutils literal notranslate"><span class="pre">.pbf</span></code>, <code class="docutils literal notranslate"><span class="pre">.shp</span></code> and
-<code class="docutils literal notranslate"><span class="pre">.osm</span></code>. Users can choose any one to download. osm2gmns supports <code class="docutils literal notranslate"><span class="pre">.pbf</span></code> and <code class="docutils literal notranslate"><span class="pre">.osm</span></code> files. In osm2gmns,
-networks stored in <code class="docutils literal notranslate"><span class="pre">.osm</span></code> files are parsed quickly than those stored in <code class="docutils literal notranslate"><span class="pre">.pbf</span></code> files. However, compared with
-<code class="docutils literal notranslate"><span class="pre">.pbf</span></code> files, <code class="docutils literal notranslate"><span class="pre">.osm</span></code> files take much more hard disk space to store networks and much more space in RAM while parsing.</p>
+</ol>
+<p>Different from the way of downloading map data from OpenStreetMap homepage, <a class="reference external" href="https://download.geofabrik.de/">Geofabrik</a> enables you to
+download network data for administrative areas. On OpenStreetMap homepage, we can only download areas
+defined by rectangles. In Geofabrik, you can click the corresponding quick link of your interested
+region to download the map data you need. You can always click the name of regions to check if sub region
+data are available.</p>
+<p>Generally, there are three types of file format for users to choose when downloading map data.
+osm2gmns supports <code class="docutils literal notranslate"><span class="pre">.pbf</span></code> and <code class="docutils literal notranslate"><span class="pre">.osm</span></code> files. In osm2gmns, networks stored in <code class="docutils literal notranslate"><span class="pre">.osm</span></code> files
+are parsed quickly than those stored in <code class="docutils literal notranslate"><span class="pre">.pbf</span></code> files. However, compared with <code class="docutils literal notranslate"><span class="pre">.pbf</span></code> files,
+<code class="docutils literal notranslate"><span class="pre">.osm</span></code> files take much more hard disk space to store networks and much more space in RAM while parsing.</p>
 <div class="figure align-center" id="geofabrik-pic">
 <a class="reference internal image-reference" href="_images/geofabrik.png"><img alt="_images/geofabrik.png" src="_images/geofabrik.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Download osm data from Geofabrik</span><a class="headerlink" href="#geofabrik-pic" title="Permalink to this image">¶</a></p>
 </div>
-<ul class="simple">
+<ol class="arabic simple" start="3">
 <li><p>BBBike</p></li>
-</ul>
+</ol>
 <p>If your target area is neither an administrative region nor a rectangle, <a class="reference external" href="https://extract.bbbike.org/">BBBike</a> may be a good choice.
-<a class="reference external" href="https://extract.bbbike.org/">BBBike</a> enables you to select your own region using a polygon. <a class="reference external" href="https://extract.bbbike.org/">BBBike</a> supports numerous file formats
-to output and store network data. Users can select a propoer one according to their requirements.</p>
+<a class="reference external" href="https://extract.bbbike.org/">BBBike</a> enables you to select your region using a polygon. <a class="reference external" href="https://extract.bbbike.org/">BBBike</a> supports numerous file formats
+to output and store network data. Users can select a proper one according to their requirements.</p>
 <div class="figure align-center" id="bbbike-pic">
 <a class="reference internal image-reference" href="_images/bbbike.png"><img alt="_images/bbbike.png" src="_images/bbbike.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Download osm data from BBBike</span><a class="headerlink" href="#bbbike-pic" title="Permalink to this image">¶</a></p>
@@ -213,18 +214,26 @@ to output and store network data. Users can select a propoer one according to th
 </div>
 <div class="section" id="parse-osm-data">
 <h2>Parse OSM Data<a class="headerlink" href="#parse-osm-data" title="Permalink to this headline">¶</a></h2>
-<p>We use the region around Arizona State University, Tempe Campus in this guide to introduce major functions
+<p>We use the region around Arizona State University, Tempe Campus in this guide to introduce some major functions
 in osm2gmns.</p>
-<p>Get network from osm file.</p>
+<p>Obtain a transportation network from an osm file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">osm2gmns</span> <span class="k">as</span> <span class="nn">og</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">getNetFromOSMFile</span><span class="p">(</span><span class="s1">&#39;asu.osm&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># we recommend using getNetFromOSMFile() for large networks</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># net = og.getNetFromPBFFile(&#39;***.osm.pbf&#39;)</span>
 </pre></div>
 </div>
-<p>A link will be included into the network file from osm database if part of the link lies in the region
-that user selected. If argument <code class="docutils literal notranslate"><span class="pre">strict_mode</span></code> (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>) is set as <code class="docutils literal notranslate"><span class="pre">True</span></code>, link parts that
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">getNetFromPBFFile()</span></code> is supported in release (0.2.0) or later.</p></li>
+</ul>
+</div>
+<p>A link will be included in the network file from osm database if part of the link lies in the region
+that users selected. If argument <code class="docutils literal notranslate"><span class="pre">strict_mode</span></code> (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>) is set as <code class="docutils literal notranslate"><span class="pre">True</span></code>, link segments that
 outside the region will be cut off when parsing osm data. If argument <code class="docutils literal notranslate"><span class="pre">strict_mode</span></code> is set as <code class="docutils literal notranslate"><span class="pre">False</span></code>,
-all links in the network file will be kept.</p>
+all links in the network file will be imported.</p>
 <div class="figure align-center" id="bstrict1">
 <a class="reference internal image-reference" href="_images/bstrict1.png"><img alt="_images/bstrict1.png" src="_images/bstrict1.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Parsed network with <code class="docutils literal notranslate"><span class="pre">strict_mode=False</span></code></span><a class="headerlink" href="#bstrict1" title="Permalink to this image">¶</a></p>
@@ -233,16 +242,16 @@ all links in the network file will be kept.</p>
 <a class="reference internal image-reference" href="_images/bstrict2.png"><img alt="_images/bstrict2.png" src="_images/bstrict2.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Parsed network with <code class="docutils literal notranslate"><span class="pre">strict_mode=True</span></code></span><a class="headerlink" href="#bstrict2" title="Permalink to this image">¶</a></p>
 </div>
-<p>One loaded network may contain several sub networks, with any sub network is not accessible from others.
+<p>One loaded network may contain several sub networks, with some sub networks are not accessible from others.
 In most cases, these sub networks include a large sub network and some isolated nodes or links. When the
 number of nodes of a sub network is less than argument <code class="docutils literal notranslate"><span class="pre">min_nodes</span></code> (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>), this sub network
 will be discarded.</p>
-<p>In order to simplify the resulting network, argument <code class="docutils literal notranslate"><span class="pre">simplify</span></code> is set as <code class="docutils literal notranslate"><span class="pre">True</span></code> by default. When
-<code class="docutils literal notranslate"><span class="pre">simplify</span></code> is enabled, two-degree nodes (one incoming link and one outgoing link) will be removed, and
-two adjacent links will be combined to generate a new link.</p>
-<p>Noticed that most links do not have lanes information in the network file provided by openstreetmap, there
-is a default lanes dictionary for each link type in osm2gmns. By setting <code class="docutils literal notranslate"><span class="pre">default_lanes</span></code> (default:  <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-as <code class="docutils literal notranslate"><span class="pre">True</span></code>, a default value will be assigned to a link if it does not come with lanes information. The
+<p>Users can use argument <code class="docutils literal notranslate"><span class="pre">combine</span></code> (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>) to control short link combinations. If <code class="docutils literal notranslate"><span class="pre">combine</span></code>
+is enabled, two-degree nodes (one incoming link and one outgoing link) will be removed, and two adjacent
+links will be combined to generate a new link.</p>
+<p>Noticed that most links do not have “lanes” information in the map data provided by OpenStreetMap. Thus,
+we use a default lanes dictionary for each link type in osm2gmns. By setting <code class="docutils literal notranslate"><span class="pre">default_lanes</span></code> (default:  <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+as <code class="docutils literal notranslate"><span class="pre">True</span></code>, the default value will be assigned to a link if it does not come with “lanes” information. The
 default dictionary in osm2gmns:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">default_lanes_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;motorway&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;trunk&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;primary&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;secondary&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;tertiary&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
                       <span class="s1">&#39;residential&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;service&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;cycleway&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;footway&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;track&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
@@ -253,49 +262,42 @@ default dictionary in osm2gmns:</p>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">default_lanes</span></code> also accepts a dictionary. In that case, osm2gmns will use the dictionary provided by users
-to update the default dictionary, and keep defualt lanes of link types not in user’s dictionary unchanged.</p>
-<p>Similarly for argument <code class="docutils literal notranslate"><span class="pre">default_speed</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>In the current release (0.1.1), osm2gmns can only load networks from <code class="docutils literal notranslate"><span class="pre">.osm</span></code> files. <code class="docutils literal notranslate"><span class="pre">.pbf</span></code>
-format will be supported in the next release (0.2.0).</p></li>
-</ul>
-</div>
+to update the default dictionary.</p>
+<p>A similar fashion applies for argument <code class="docutils literal notranslate"><span class="pre">default_speed</span></code>.</p>
 </div>
 <div class="section" id="output-networks-to-csv">
 <h2>Output Networks to CSV<a class="headerlink" href="#output-networks-to-csv" title="Permalink to this headline">¶</a></h2>
-<p>Based on the <code class="docutils literal notranslate"><span class="pre">net</span></code> instance from the last step, <code class="docutils literal notranslate"><span class="pre">outputNetToCSV</span></code> can be called to output the parsed network
-to csv files.</p>
+<p>Based on the <code class="docutils literal notranslate"><span class="pre">net</span></code> instance obtained from the last step, <code class="docutils literal notranslate"><span class="pre">outputNetToCSV</span></code> can be used to output the parsed network
+to CSV files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">og</span><span class="o">.</span><span class="n">outputNetToCSV</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Users can use argument <code class="docutils literal notranslate"><span class="pre">output_folder</span></code> to specify the folder to store output files. Node information will be
 written to <code class="docutils literal notranslate"><span class="pre">node.csv</span></code>, while link information will be written to <code class="docutils literal notranslate"><span class="pre">link.csv</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">simplify</span></code> is set as <code class="docutils literal notranslate"><span class="pre">True</span></code>
-when parsing the network, <code class="docutils literal notranslate"><span class="pre">segment.csv</span></code> will also be created to store lane changes in links. Lane changes occur
-when combining two adjacent links with different lanes in the simplification step.</p>
+<p>If argument <code class="docutils literal notranslate"><span class="pre">combine</span></code> is set as <code class="docutils literal notranslate"><span class="pre">True</span></code> when parsing the network, <code class="docutils literal notranslate"><span class="pre">segment.csv</span></code> will also be created to
+store lane changes in links. Lane changes occur when combining two adjacent links with different lanes in the
+combination step.</p>
 </div>
 <div class="section" id="consolidate-intersections">
 <h2>Consolidate Intersections<a class="headerlink" href="#consolidate-intersections" title="Permalink to this headline">¶</a></h2>
-<p>In openstreetmap, one large intersection is often represented by multiple nodes. This structure brings some
+<p>In OpenStreetMap, one large intersection is often represented by multiple nodes. This structure brings some
 difficulties when conducting traffic simulations (hard to model traffic signals in these intersections).
-osm2gmns enables users to consolidate interstions while parsing networks, e.g. generate a new node to replace
+osm2gmns enables users to consolidate intersections while parsing networks, i.e., generate a new node to replace
 existing nodes for each large intersection.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">getNetFromOSMFile</span><span class="p">(</span><span class="s1">&#39;asu.osm&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">og</span><span class="o">.</span><span class="n">consolidateComplexIntersections</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>When conducting function <code class="docutils literal notranslate"><span class="pre">getNetFromOSMFile</span></code>, osm2gmns will automatically identify complex intersections based
+<p>When executing function <code class="docutils literal notranslate"><span class="pre">getNetFromOSMFile</span></code>, osm2gmns will automatically identify complex intersections based
 on the argument <code class="docutils literal notranslate"><span class="pre">int_buffer</span></code> (defalut: <code class="docutils literal notranslate"><span class="pre">20.0</span></code>). Nodes that belong to one complex intersection will be assigned
-with a same <code class="docutils literal notranslate"><span class="pre">main_node_id</span></code>, but these nodes will not be consolidated into one node until function
+with the same <code class="docutils literal notranslate"><span class="pre">main_node_id</span></code>, but these nodes will not be consolidated into one node unless function
 <code class="docutils literal notranslate"><span class="pre">consolidateComplexIntersections</span></code> is called.</p>
 <div class="figure align-center" id="consolidate-pic">
 <a class="reference internal image-reference" href="_images/consolidate.png"><img alt="_images/consolidate.png" src="_images/consolidate.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Complex intersection consolidation</span><a class="headerlink" href="#consolidate-pic" title="Permalink to this image">¶</a></p>
 </div>
-<p>Users can also check and revise the complex intersection identification results first, then conduct the consolidating
-operation to achieve more reasonable outcomes.</p>
+<p>Users can also check and revise complex intersection identification results first, then conduct the consolidating
+operation to obtain more reasonable outcomes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">getNetFromOSMFile</span><span class="p">(</span><span class="s1">&#39;asu.osm&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">og</span><span class="o">.</span><span class="n">outputNetToCSV</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># check the main_node_id column in node.csv</span>
@@ -307,29 +309,30 @@ operation to achieve more reasonable outcomes.</p>
 </div>
 <div class="section" id="network-types-and-poi">
 <h2>Network Types and POI<a class="headerlink" href="#network-types-and-poi" title="Permalink to this headline">¶</a></h2>
-<p>osm2gmns supports five network types in total, including <code class="docutils literal notranslate"><span class="pre">auto</span></code>, <code class="docutils literal notranslate"><span class="pre">bike</span></code>, <code class="docutils literal notranslate"><span class="pre">walk</span></code>, <code class="docutils literal notranslate"><span class="pre">railway</span></code>, <code class="docutils literal notranslate"><span class="pre">aeroway</span></code>.
-Extract the auto and railway network from a osm file by setting <code class="docutils literal notranslate"><span class="pre">network_type</span></code> (default: <code class="docutils literal notranslate"><span class="pre">(auto,)</span></code>) as
+<p>osm2gmns supports five different network types, including <code class="docutils literal notranslate"><span class="pre">auto</span></code>, <code class="docutils literal notranslate"><span class="pre">bike</span></code>, <code class="docutils literal notranslate"><span class="pre">walk</span></code>, <code class="docutils literal notranslate"><span class="pre">railway</span></code>, <code class="docutils literal notranslate"><span class="pre">aeroway</span></code>.
+Extract the auto and railway network from an osm file by setting <code class="docutils literal notranslate"><span class="pre">network_type</span></code> (default: <code class="docutils literal notranslate"><span class="pre">(auto,)</span></code>) as
 <code class="docutils literal notranslate"><span class="pre">(auto,railway)</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">getNetFromOSMFile</span><span class="p">(</span><span class="s1">&#39;asu.osm&#39;</span><span class="p">,</span> <span class="n">network_type</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span><span class="s1">&#39;railway&#39;</span><span class="p">,</span><span class="s1">&#39;aeroway&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Get POIs (Point of Interest) from osm files.</p>
+<p>Obtain POIs (Point of Interest) from osm map data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">getNetFromOSMFile</span><span class="p">(</span><span class="s1">&#39;asu.osm&#39;</span><span class="p">,</span> <span class="n">POIs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>If <code class="docutils literal notranslate"><span class="pre">POIs</span></code> (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>) is set as <code class="docutils literal notranslate"><span class="pre">True</span></code>, a file named <code class="docutils literal notranslate"><span class="pre">poi.csv</span></code> will be generated when calling
-function <code class="docutils literal notranslate"><span class="pre">outputNetToCSV</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">POIs</span></code> (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>) is set as <code class="docutils literal notranslate"><span class="pre">True</span></code>, a file named <code class="docutils literal notranslate"><span class="pre">poi.csv</span></code> will be generated when outputting
+a network using function <code class="docutils literal notranslate"><span class="pre">outputNetToCSV</span></code>.</p>
 <div class="figure align-center" id="poi1">
 <a class="reference internal image-reference" href="_images/poi1.png"><img alt="_images/poi1.png" src="_images/poi1.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Network with POIs</span><a class="headerlink" href="#poi1" title="Permalink to this image">¶</a></p>
 </div>
-<p>Connect POIs with network.</p>
+<p>Connect POIs with transportation network.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">net</span> <span class="o">=</span> <span class="n">og</span><span class="o">.</span><span class="n">getNetFromOSMFile</span><span class="p">(</span><span class="s1">&#39;asu.osm&#39;</span><span class="p">,</span> <span class="n">POIs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">og</span><span class="o">.</span><span class="n">connectPOIWithNet</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>By calling function <code class="docutils literal notranslate"><span class="pre">connectPOIWithNet</span></code>, a node located at the centroid of each POI will be generated to
-represent the POI, then connector links will be used to connect the POI node with the nearest node in the network.</p>
+<p>By using function <code class="docutils literal notranslate"><span class="pre">connectPOIWithNet</span></code>, a node located at the centroid of each POI will be generated to
+represent the POI, then connector links will be built to connect the POI node with the nearest node in the
+transportation network.</p>
 <div class="figure align-center" id="poi2">
 <a class="reference internal image-reference" href="_images/poi2.png"><img alt="_images/poi2.png" src="_images/poi2.png" style="width: 100%;" /></a>
 <p class="caption"><span class="caption-text">Connect POIs with network</span><a class="headerlink" href="#poi2" title="Permalink to this image">¶</a></p>
@@ -358,7 +361,7 @@ represent the POI, then connector links will be used to connect the POI node wit
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Jiawei Lu, Xuesong Zhou
+        &copy; Copyright 2020, Jiawei Lu, Xuesong (Simon) Zhou
 
     </p>
   </div>

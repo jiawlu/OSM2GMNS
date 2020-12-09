@@ -2,49 +2,50 @@
 Quick Start
 ===========
 
-In this section, some examples will be used to demonstrate how to use osm2gmns to generate, manipulate
+In this section, some examples are provided to demonstrate how to use osm2gmns to generate, manipulate
 and output networks.
 
 Download OSM Data
 =========================
 
-To reduce the uncertainty while directly downloading data from osm server via APIs, osm2gmns uses offline
-osm files to extract useful network information. Thus, the first step is preparing osm files.
+To reduce uncertainties while directly parsing network data from the osm server via APIs, osm2gmns uses downloaded
+osm files to extract useful network information. As a result, the first step is preparing osm files.
 
-Thanks to the open-source nature of openstreetmap, there are lots of APIs and mirrors that we can use to
-download osm data. We listed some frequently used approaches here for users to choose.
+Thanks to the open-source nature of OpenStreetMap, there are lots of APIs and mirror sites that we can use to
+download osm map data. We list several popular sites here for users to choose.
 
 
-- Openstreetmap Homepage
+1) OpenStreetMap Homepage
 
-Go to openstreetmap `homepage`_, then click the ``Export`` button to enter Export mode. Before downloading,
-you may need to span and zoom in/out the map to make your target area is properly shown on the screen.
-Or, you can use ``Manually select a different area`` to select the area more precisely. Click the ``Export``
-button in blue to export the network you selected.
+On OpenStreetMap `homepage`_, click the ``Export`` button to enter Export mode. Before downloading,
+you may need to span and zoom in/out the map to make sure that your target area is properly shown on the screen.
+Or, you can use ``Manually select a different area`` to select your area more precisely. Click the ``Export``
+button in blue to export the network you want.
 
-Note that if the target area is too large, you may get an error message: You requested too many nodes
-(limit is 50000). Either request a smaller area, or use planet.osm. In that situation, you can alway click
-``Overpass API`` to download the network you need via a mirror.
+Note that if the target area is too large, you may get an error message: "You requested too many nodes
+(limit is 50000). Either request a smaller area, or use planet.osm". In this case, you can always click
+``Overpass API`` to download the network you need via a mirror site.
 
 .. figure:: _images/osmhp.png
     :name: osmhp_pic
     :align: center
     :width: 100%
 
-    Download osm data from openstreetmap homepage
+    Download osm data from OpenStreetMap homepage
 
 
-- Geofabrik
+2) Geofabrik
 
-Different from downloading network from openstreetmap homepage, `Geofabrik`_ enables you to download network data for
-administrative areas. In openstreetmap homepage, we can only download areas defined by rectangles. In Geofabrik
-homepage, you can click the corresponding quick link of your interseted region to download the network data you
-need. You can always click the name of regions to check if sub region data are available.
+Different from the way of downloading map data from OpenStreetMap homepage, `Geofabrik`_ enables you to
+download network data for administrative areas. On OpenStreetMap homepage, we can only download areas
+defined by rectangles. In Geofabrik, you can click the corresponding quick link of your interested
+region to download the map data you need. You can always click the name of regions to check if sub region
+data are available.
 
-Generally, network data of each region are stored in three file format, including ``.pbf``, ``.shp`` and
-``.osm``. Users can choose any one to download. osm2gmns supports ``.pbf`` and ``.osm`` files. In osm2gmns,
-networks stored in ``.osm`` files are parsed quickly than those stored in ``.pbf`` files. However, compared with
-``.pbf`` files, ``.osm`` files take much more hard disk space to store networks and much more space in RAM while parsing.
+Generally, there are three types of file format for users to choose when downloading map data.
+osm2gmns supports ``.pbf`` and ``.osm`` files. In osm2gmns, networks stored in ``.osm`` files
+are parsed quickly than those stored in ``.pbf`` files. However, compared with ``.pbf`` files,
+``.osm`` files take much more hard disk space to store networks and much more space in RAM while parsing.
 
 .. figure:: _images/geofabrik.png
     :name: geofabrik_pic
@@ -54,11 +55,11 @@ networks stored in ``.osm`` files are parsed quickly than those stored in ``.pbf
     Download osm data from Geofabrik
 
 
-- BBBike
+3) BBBike
 
 If your target area is neither an administrative region nor a rectangle, `BBBike`_ may be a good choice.
-`BBBike`_ enables you to select your own region using a polygon. `BBBike`_ supports numerous file formats
-to output and store network data. Users can select a propoer one according to their requirements.
+`BBBike`_ enables you to select your region using a polygon. `BBBike`_ supports numerous file formats
+to output and store network data. Users can select a proper one according to their requirements.
 
 .. figure:: _images/bbbike.png
     :name: bbbike_pic
@@ -72,21 +73,27 @@ to output and store network data. Users can select a propoer one according to th
 Parse OSM Data
 =========================
 
-We use the region around Arizona State University, Tempe Campus in this guide to introduce major functions
+We use the region around Arizona State University, Tempe Campus in this guide to introduce some major functions
 in osm2gmns.
 
-Get network from osm file.
+Obtain a transportation network from an osm file.
 
 .. code-block:: python
 
     >>> import osm2gmns as og
 
     >>> net = og.getNetFromOSMFile('asu.osm')
+    >>> # we recommend using getNetFromOSMFile() for large networks
+    >>> # net = og.getNetFromPBFFile('***.osm.pbf')
 
-A link will be included into the network file from osm database if part of the link lies in the region
-that user selected. If argument ``strict_mode`` (default: ``True``) is set as ``True``, link parts that
+.. note::
+
+    - ``getNetFromPBFFile()`` is supported in release (0.2.0) or later.
+
+A link will be included in the network file from osm database if part of the link lies in the region
+that users selected. If argument ``strict_mode`` (default: ``True``) is set as ``True``, link segments that
 outside the region will be cut off when parsing osm data. If argument ``strict_mode`` is set as ``False``,
-all links in the network file will be kept.
+all links in the network file will be imported.
 
 .. figure:: _images/bstrict1.png
     :name: bstrict1
@@ -103,19 +110,18 @@ all links in the network file will be kept.
     Parsed network with ``strict_mode=True``
 
 
-One loaded network may contain several sub networks, with any sub network is not accessible from others.
+One loaded network may contain several sub networks, with some sub networks are not accessible from others.
 In most cases, these sub networks include a large sub network and some isolated nodes or links. When the
 number of nodes of a sub network is less than argument ``min_nodes`` (default: ``1``), this sub network
 will be discarded.
 
-In order to simplify the resulting network, argument ``simplify`` is set as ``True`` by default. When
-``simplify`` is enabled, two-degree nodes (one incoming link and one outgoing link) will be removed, and
-two adjacent links will be combined to generate a new link.
+Users can use argument ``combine`` (default: ``False``) to control short link combinations. If ``combine``
+is enabled, two-degree nodes (one incoming link and one outgoing link) will be removed, and two adjacent
+links will be combined to generate a new link.
 
-
-Noticed that most links do not have lanes information in the network file provided by openstreetmap, there
-is a default lanes dictionary for each link type in osm2gmns. By setting ``default_lanes`` (default:  ``False``)
-as ``True``, a default value will be assigned to a link if it does not come with lanes information. The
+Noticed that most links do not have "lanes" information in the map data provided by OpenStreetMap. Thus,
+we use a default lanes dictionary for each link type in osm2gmns. By setting ``default_lanes`` (default:  ``False``)
+as ``True``, the default value will be assigned to a link if it does not come with "lanes" information. The
 default dictionary in osm2gmns:
 
 .. code-block:: python
@@ -128,21 +134,16 @@ default dictionary in osm2gmns:
                           'unclassified': 29, 'connector':59}
 
 ``default_lanes`` also accepts a dictionary. In that case, osm2gmns will use the dictionary provided by users
-to update the default dictionary, and keep defualt lanes of link types not in user's dictionary unchanged.
+to update the default dictionary.
 
-Similarly for argument ``default_speed``.
-
-.. note::
-
-    - In the current release (0.1.1), osm2gmns can only load networks from ``.osm`` files. ``.pbf``
-      format will be supported in the next release (0.2.0).
+A similar fashion applies for argument ``default_speed``.
 
 
 Output Networks to CSV
 =========================
 
-Based on the ``net`` instance from the last step, ``outputNetToCSV`` can be called to output the parsed network
-to csv files.
+Based on the ``net`` instance obtained from the last step, ``outputNetToCSV`` can be used to output the parsed network
+to CSV files.
 
 .. code-block:: python
 
@@ -151,17 +152,17 @@ to csv files.
 Users can use argument ``output_folder`` to specify the folder to store output files. Node information will be
 written to ``node.csv``, while link information will be written to ``link.csv``.
 
-If ``simplify`` is set as ``True``
-when parsing the network, ``segment.csv`` will also be created to store lane changes in links. Lane changes occur
-when combining two adjacent links with different lanes in the simplification step.
+If argument ``combine`` is set as ``True`` when parsing the network, ``segment.csv`` will also be created to
+store lane changes in links. Lane changes occur when combining two adjacent links with different lanes in the
+combination step.
 
 
 Consolidate Intersections
 =========================
 
-In openstreetmap, one large intersection is often represented by multiple nodes. This structure brings some
+In OpenStreetMap, one large intersection is often represented by multiple nodes. This structure brings some
 difficulties when conducting traffic simulations (hard to model traffic signals in these intersections).
-osm2gmns enables users to consolidate interstions while parsing networks, e.g. generate a new node to replace
+osm2gmns enables users to consolidate intersections while parsing networks, i.e., generate a new node to replace
 existing nodes for each large intersection.
 
 .. code-block:: python
@@ -169,9 +170,9 @@ existing nodes for each large intersection.
     >>> net = og.getNetFromOSMFile('asu.osm')
     >>> og.consolidateComplexIntersections(net)
 
-When conducting function ``getNetFromOSMFile``, osm2gmns will automatically identify complex intersections based
+When executing function ``getNetFromOSMFile``, osm2gmns will automatically identify complex intersections based
 on the argument ``int_buffer`` (defalut: ``20.0``). Nodes that belong to one complex intersection will be assigned
-with a same ``main_node_id``, but these nodes will not be consolidated into one node until function
+with the same ``main_node_id``, but these nodes will not be consolidated into one node unless function
 ``consolidateComplexIntersections`` is called.
 
 .. figure:: _images/consolidate.png
@@ -181,8 +182,8 @@ with a same ``main_node_id``, but these nodes will not be consolidated into one 
 
     Complex intersection consolidation
 
-Users can also check and revise the complex intersection identification results first, then conduct the consolidating
-operation to achieve more reasonable outcomes.
+Users can also check and revise complex intersection identification results first, then conduct the consolidating
+operation to obtain more reasonable outcomes.
 
 .. code-block:: python
 
@@ -197,22 +198,22 @@ operation to achieve more reasonable outcomes.
 Network Types and POI
 =========================
 
-osm2gmns supports five network types in total, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
-Extract the auto and railway network from a osm file by setting ``network_type`` (default: ``(auto,)``) as
+osm2gmns supports five different network types, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
+Extract the auto and railway network from an osm file by setting ``network_type`` (default: ``(auto,)``) as
 ``(auto,railway)``:
 
 .. code-block:: python
 
     >>> net = og.getNetFromOSMFile('asu.osm', network_type=('auto','railway','aeroway'))
 
-Get POIs (Point of Interest) from osm files.
+Obtain POIs (Point of Interest) from osm map data.
 
 .. code-block:: python
 
     >>> net = og.getNetFromOSMFile('asu.osm', POIs=True)
 
-If ``POIs`` (default: ``False``) is set as ``True``, a file named ``poi.csv`` will be generated when calling
-function ``outputNetToCSV``.
+If ``POIs`` (default: ``False``) is set as ``True``, a file named ``poi.csv`` will be generated when outputting
+a network using function ``outputNetToCSV``.
 
 .. figure:: _images/poi1.png
     :name: poi1
@@ -221,15 +222,16 @@ function ``outputNetToCSV``.
 
     Network with POIs
 
-Connect POIs with network.
+Connect POIs with transportation network.
 
 .. code-block:: python
 
     >>> net = og.getNetFromOSMFile('asu.osm', POIs=True)
     >>> og.connectPOIWithNet(net)
 
-By calling function ``connectPOIWithNet``, a node located at the centroid of each POI will be generated to
-represent the POI, then connector links will be used to connect the POI node with the nearest node in the network.
+By using function ``connectPOIWithNet``, a node located at the centroid of each POI will be generated to
+represent the POI, then connector links will be built to connect the POI node with the nearest node in the
+transportation network.
 
 .. figure:: _images/poi2.png
     :name: poi2

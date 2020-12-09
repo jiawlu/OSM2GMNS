@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'osm2gmns'
-copyright = '2020, Jiawei Lu, Xuesong Zhou'
-author = 'Jiawei Lu, Xuesong Zhou'
+copyright = '2020, Jiawei Lu, Xuesong (Simon) Zhou'
+author = 'Jiawei Lu, Xuesong (Simon) Zhou'
 
 # The full version, including alpha/beta/rc tags
 release = '0.2.0'

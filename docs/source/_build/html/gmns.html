@@ -87,8 +87,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">GMNS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quick-start.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="case-net.html">Case Network</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acknowledge.html">Acknowledge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sample-net.html">Sample Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgement.html">Acknowledgement</a></li>
 </ul>
 
             
@@ -156,13 +156,261 @@
             
   <div class="section" id="gmns">
 <h1>GMNS<a class="headerlink" href="#gmns" title="Permalink to this headline">¶</a></h1>
-<p>TO BE UPDATED</p>
-<p>GMNS (General Travel Network Format Specification), proposed by the Zephyr Foundation,
+<p><a class="reference external" href="https://github.com/zephyr-data-specs/GMNS">GMNS</a> (General Modeling Network Specification), proposed by the Zephyr Foundation,
 which aims to advance the field through flexible and efficient support, education,
-guidance, encouragement, and incubation. Further details can be found at
-<a class="reference external" href="https://zephyrtransport.org/projects/2-network-standard-and-tools/">https://zephyrtransport.org/projects/2-network-standard-and-tools/</a>
-Typically, a transportation network in GMNS format includes node.csv and link.csv files,
-as shown in the following tables:</p>
+guidance, encouragement, and incubation.</p>
+<p>The two necessary files used in GMNS to describe a network: <code class="docutils literal notranslate"><span class="pre">node.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">link.csv</span></code>.</p>
+<ul class="simple">
+<li><p>node.csv</p></li>
+</ul>
+<p>The node file is a list of vertices that locate points on a map. Typically, they will
+represent intersections, but may also represent other points, such as a transition between
+divided and undivided highway<sup>[1]</sup>. We add several additional attributes to the node file
+to make it more suitable for transportation modelling. Detailed node data dictionary is
+listed below.</p>
+<table class="classic docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 15%" />
+<col style="width: 10%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>node_id</p></td>
+<td><p>int</p></td>
+<td><p>yes</p></td>
+<td><p>unique key</p></td>
+</tr>
+<tr class="row-even"><td><p>osm_node_id</p></td>
+<td><p>string or int</p></td>
+<td></td>
+<td><p>corresponding point id in osm data</p></td>
+</tr>
+<tr class="row-odd"><td><p>osm_highway</p></td>
+<td><p>string</p></td>
+<td></td>
+<td><p>point type in osm data</p></td>
+</tr>
+<tr class="row-even"><td><p>zone_id</p></td>
+<td><p>int</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>ctrl_type</p></td>
+<td><p>int</p></td>
+<td></td>
+<td><p>1: Signalized; 0: not</p></td>
+</tr>
+<tr class="row-even"><td><p>node_type</p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>activity_type</p></td>
+<td><p>string</p></td>
+<td></td>
+<td><p>defined by adjacent links</p></td>
+</tr>
+<tr class="row-even"><td><p>is_boundary</p></td>
+<td><p>bool</p></td>
+<td></td>
+<td><p>1: boundary; 0: not</p></td>
+</tr>
+<tr class="row-odd"><td><p>x_coord</p></td>
+<td><p>double</p></td>
+<td><p>yes</p></td>
+<td><p>WGS 84 is used in osm</p></td>
+</tr>
+<tr class="row-even"><td><p>y_coord</p></td>
+<td><p>double</p></td>
+<td><p>yes</p></td>
+<td><p>WGS 84 is used in osm</p></td>
+</tr>
+<tr class="row-odd"><td><p>main_node_id</p></td>
+<td><p>int</p></td>
+<td></td>
+<td><p>nodes belonging to one complex intersection have the same id</p></td>
+</tr>
+<tr class="row-even"><td><p>poi_id</p></td>
+<td><p>int</p></td>
+<td></td>
+<td><p>id of the corresponding poi</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p>link.csv</p></li>
+</ul>
+<p>A link is an edge in a network, defined by the nodes it travels from and to. It may have associated geometry
+information<sup>[2]</sup>. Similar to node.csv, We also added several new attributes to the link file. Detailed
+link data dictionary is listed below.</p>
+<table class="classic docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 14%" />
+<col style="width: 10%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>link_id</p></td>
+<td><p>int</p></td>
+<td><p>yes</p></td>
+<td><p>unique key</p></td>
+</tr>
+<tr class="row-even"><td><p>osm_way_id</p></td>
+<td><p>string or int</p></td>
+<td></td>
+<td><p>corresponding way id in osm data</p></td>
+</tr>
+<tr class="row-odd"><td><p>from_node_id</p></td>
+<td><p>int</p></td>
+<td><p>yes</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>to_node_id</p></td>
+<td><p>int</p></td>
+<td><p>yes</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>dir_flag</p></td>
+<td><p>enum</p></td>
+<td></td>
+<td><p>1: forward, -1: backward, 0:bidirectionial</p></td>
+</tr>
+<tr class="row-even"><td><p>length</p></td>
+<td><p>float</p></td>
+<td></td>
+<td><p>unit: meter</p></td>
+</tr>
+<tr class="row-odd"><td><p>lanes</p></td>
+<td><p>int</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>free_speed</p></td>
+<td><p>float</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>capacity</p></td>
+<td><p>float</p></td>
+<td></td>
+<td><p>unit: veh/hr/lane</p></td>
+</tr>
+<tr class="row-even"><td><p>link_type_name</p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>link_type</p></td>
+<td><p>int</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>geometry</p></td>
+<td><p>Geometry</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">wkt</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>allowed_uses</p></td>
+<td><p>enum</p></td>
+<td></td>
+<td><p>auto, bike, walk</p></td>
+</tr>
+<tr class="row-even"><td><p>from_biway</p></td>
+<td><p>bool</p></td>
+<td></td>
+<td><p>1: link created from a bidirectional way, 0: not</p></td>
+</tr>
+</tbody>
+</table>
+<p>Other two optional files including <code class="docutils literal notranslate"><span class="pre">movement.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">segement.csv</span></code> follow the exact same format as what
+being defined in the GMMS standard. Readers can check the GMNS website for details.</p>
+<p>In addition to the above files defined in the GMNS standard, osm2gmns can also produce <code class="docutils literal notranslate"><span class="pre">poi.csv</span></code> files
+where point of interest information is stored. Detailed poi data dictionary is listed below.</p>
+<table class="classic docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 14%" />
+<col style="width: 10%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Required?</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>string</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>poi_id</p></td>
+<td><p>int</p></td>
+<td><p>yes</p></td>
+<td><p>unique key</p></td>
+</tr>
+<tr class="row-even"><td><p>osm_way_id</p></td>
+<td><p>string or int</p></td>
+<td></td>
+<td><p>corresponding way id in osm data</p></td>
+</tr>
+<tr class="row-odd"><td><p>osm_relation_id</p></td>
+<td><p>string or int</p></td>
+<td></td>
+<td><p>corresponding relation id in osm data</p></td>
+</tr>
+<tr class="row-even"><td><p>building</p></td>
+<td><p>string</p></td>
+<td></td>
+<td><p>building tag in osm data</p></td>
+</tr>
+<tr class="row-odd"><td><p>amenity</p></td>
+<td><p>string</p></td>
+<td></td>
+<td><p>amenity tag in osm data</p></td>
+</tr>
+<tr class="row-even"><td><p>geometry</p></td>
+<td><p>Geometry</p></td>
+<td><p>yes</p></td>
+<td><p><a class="reference external" href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">wkt</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>centroid</p></td>
+<td><p>Geometry</p></td>
+<td></td>
+<td><p><a class="reference external" href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">wkt</a></p></td>
+</tr>
+</tbody>
+</table>
+<p><sup>[1]</sup> <a class="reference external" href="https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Node.md">https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Node.md</a></p>
+<p><sup>[2]</sup> <a class="reference external" href="https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Link.md">https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Link.md</a></p>
 </div>
 
 
@@ -186,7 +434,7 @@ as shown in the following tables:</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Jiawei Lu, Xuesong Zhou
+        &copy; Copyright 2020, Jiawei Lu, Xuesong (Simon) Zhou
 
     </p>
   </div>
