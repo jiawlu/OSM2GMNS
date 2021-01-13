@@ -12,6 +12,14 @@ After running the command above, the osm2gmns package along with three necessary
 (`Shapely`_, `pandas`_ and `protobuf`_) will be installed to your computer (if they have not 
 been installed yet).
 
+If you install osm2gmns in a conda environment, you may get an error message: "OSError: [WinError 126]
+The specified module could not be found" when importing osm2gmns. To resolve this issue, you need to uninstall
+the `Shapely`_ package first, and reinstall it manually using the command below.
+
+.. code-block:: bash
+
+    conda install shapely
+
 
 .. _`PyPI`: https://pypi.org/project/pydriosm/
 .. _`pip`: https://packaging.python.org/key_projects/#pip

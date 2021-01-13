@@ -83,7 +83,7 @@ Obtain a transportation network from an osm file.
     >>> import osm2gmns as og
 
     >>> net = og.getNetFromOSMFile('asu.osm')
-    >>> # we recommend using getNetFromOSMFile() for large networks
+    >>> # we recommend using getNetFromPBFFile() for large networks
     >>> # net = og.getNetFromPBFFile('***.osm.pbf')
 
 .. note::
@@ -169,6 +169,7 @@ existing nodes for each large intersection.
 
     >>> net = og.getNetFromOSMFile('asu.osm')
     >>> og.consolidateComplexIntersections(net)
+    >>> og.outputNetToCSV(net)
 
 When executing function ``getNetFromOSMFile``, osm2gmns will automatically identify complex intersections based
 on the argument ``int_buffer`` (defalut: ``20.0``). Nodes that belong to one complex intersection will be assigned
