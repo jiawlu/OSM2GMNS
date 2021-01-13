@@ -1,11 +1,13 @@
 from .readfile import *
-from .simplification import *
+from .combine_links import *
 from .complex_intersection import *
 from .wayfilters import *
 from .pois import *
 import re
 from shapely import wkt
 
+
+# todo: highway type britain-and-ireland
 
 def _newLinkFromWay(link_id, way, direction, ref_node_list):
     link = Link()
@@ -53,6 +55,7 @@ def _createNodeOnBoundary(node_in,node_outside,network):
     lon, lat = line.coords[1]
     node.geometry = geometry.Point((round(lon,7),round(lat,7)))
     node.is_crossing = True
+    node.notes = 'boundary node created by osm2gmns'
     network.node_dict[node.node_id] = node
     network.max_node_id += 1
     return node
@@ -268,16 +271,21 @@ def _parseNodes(network, nodes, strict_mode):
 
 def _parseWays(network, ways, relations, network_type, POIs):
     osm_way_dict = {}
+    osm_node_dict = network.osm_node_dict
 
     for osm_way in ways:
         way = Way()
         way.osm_way_id = str(osm_way.id)
 
+        valid = True
         for ref_node_id in osm_way.refs:
             try:
-                way.ref_node_list.append(network.osm_node_dict[str(ref_node_id)])
+                way.ref_node_list.append(osm_node_dict[str(ref_node_id)])
             except KeyError:
-                print(f'  warning: ref node {ref_node_id} in way {way.osm_way_id} is not defined')
+                valid = False
+                print(f'  warning: ref node {ref_node_id} in way {way.osm_way_id} is not defined, way {way.osm_way_id} will not be imported')
+        if not valid:
+            continue
 
         tags = osm_way.tags
         if 'highway' in tags.keys():
@@ -323,7 +331,7 @@ def _parseWays(network, ways, relations, network_type, POIs):
                 # todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
                 way.oneway = False
             else:
-                printlog(f'new maxspeed type detected at way {way.osm_way_id}, {tags["oneway"]}', 'warning')
+                printlog(f'new lane type detected at way {way.osm_way_id}, {tags["oneway"]}', 'warning')
         if 'area' in tags.keys():
             way.area = tags['area']
         if 'motor_vehicle' in tags.keys():
@@ -352,13 +360,23 @@ def _parseWays(network, ways, relations, network_type, POIs):
     include_aeroway = True if 'aeroway' in network_type_set else False
 
     for osm_way_id, way in osm_way_dict.items():
-        if way.highway:
+        if way.building or way.amenity:
+            POI_way_list.append(way)
+        elif way.highway:
+            if way.highway in highway_poi_set:
+                way.way_poi = way.highway
+                POI_way_list.append(way)
+                continue
+            if way.area and way.area != 'no':
+                continue
+            if way.highway in negligible_highway_type_set:
+                continue
+
             try:
                 way.link_type_name = osm_highway_type_dict[way.highway]
                 way.link_type = link_type_no_dict[way.link_type_name]
             except KeyError:
-                if way.highway not in negligible_link_type_list:
-                    printlog(f'new highway type at way {way.osm_way_id}, {way.highway}', 'warning')
+                printlog(f'new highway type at way {way.osm_way_id}, {way.highway}', 'warning')
                 continue
 
             if len(way.ref_node_list) < 2: continue
@@ -383,22 +401,40 @@ def _parseWays(network, ways, relations, network_type, POIs):
 
         elif way.railway:
             if not include_railway: continue
-            if way.area: continue
+
+            if way.railway in railway_poi_set:
+                way.way_poi = way.railway
+                POI_way_list.append(way)
+                continue
+            if way.area and way.area != 'no':
+                continue
+            if way.railway in negligible_railway_type_set:
+                continue
+
             way.link_type_name = way.railway
             way.link_type = link_type_no_dict['railway']
             if way.oneway is None:
                 way.oneway = default_oneway_flag_dict['railway']
             link_way_list.append(way)
+
         elif way.aeroway:
             if not include_aeroway: continue
-            if way.area: continue
+
+            if way.aeroway in aeroway_poi_set:
+                way.way_poi = way.aeroway
+                POI_way_list.append(way)
+                continue
+            if way.area and way.area != 'no':
+                continue
+            if way.aeroway in negligible_aeroway_type_set:
+                continue
+
             way.link_type_name = way.aeroway
             way.link_type = link_type_no_dict['aeroway']
             if way.oneway is None:
                 way.oneway = default_oneway_flag_dict['aeroway']
             link_way_list.append(way)
-        elif way.building or way.amenity:
-            POI_way_list.append(way)
+
         else:
             pass
 
@@ -418,8 +454,9 @@ def _parseOSM(network, nodes, ways, relations, strict_mode, network_type, POIs):
     _parseWays(network, ways, relations, network_type, POIs)
 
 
-def _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_buffer, bbox, default_lanes, default_speed):
+def _buildNet(netdata,network_type_valid, POIs,strict_mode, min_nodes, combine, int_buffer, bbox, default_lanes, default_speed):
     network = Network()
+
     _updateDefaultLaneSpeed(default_lanes, default_speed, network)
 
     bounds, nodes, ways, relations = netdata['bounds'], netdata['nodes'], netdata['ways'], netdata['relations']
@@ -427,14 +464,13 @@ def _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_b
     minlat, minlon, maxlat, maxlon = bbox if bbox else bounds['minlat'], bounds['minlon'], bounds['maxlat'], bounds['maxlon']
     network.bounds = geometry.Polygon([(minlon, maxlat), (maxlon, maxlat), (maxlon, minlat), (minlon, minlat)])
 
-    network_type_valid = _getValidNetworkType(network_type)
     _parseOSM(network, nodes, ways, relations, strict_mode, network_type_valid, POIs)
 
     # remove isolated nodes and links
     if min_nodes > 1: _removeIsolated(network, min_nodes)
 
-    # merge adjacent links at two-degree nodes
-    if simplify: simplifyNetwork(network)
+    # combine adjacent links at two-degree nodes
+    if combine: combineShortLinks(network)
 
     # identify complex intersections which contains multiple nodes
     identifyComplexIntersections(network, int_buffer)
@@ -442,15 +478,27 @@ def _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_b
     return network
 
 
+def _getNetClassDict(network_type_valid):
+    # was used to reduce memory usage
+    net_class_dict = {'highway':False, 'railway':False, 'aeroway':False}
+    if 'auto' in network_type_valid or 'bike' in network_type_valid or 'walk' in network_type_valid:
+        net_class_dict['highway'] = True
+    if 'railway' in network_type_valid:
+        net_class_dict['railway'] = True
+    if 'aeroway' in network_type_valid:
+        net_class_dict['aeroway'] = True
+    return net_class_dict
+
+
 def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False, strict_mode=True, min_nodes=1,
-                      simplify=True, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
+                      combine=False, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
     """
     :param osm_filename:
     :param network_type:
     :param POIs:
     :param strict_mode:
     :param min_nodes:
-    :param simplify:
+    :param combine:
     :param int_buffer:
     :param bbox: (minlat, minlon, maxlat, maxlon)
     :param default_lanes: True; False; Dict
@@ -458,28 +506,31 @@ def getNetFromOSMFile(osm_filename='map.osm', network_type=('auto',), POIs=False
     :return: a network instance
     """
 
+    network_type_valid = _getValidNetworkType(network_type)
     netdata = readXMLFile(osm_filename)
-    network = _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_buffer, bbox, default_lanes, default_speed)
+    network = _buildNet(netdata,network_type_valid, POIs,strict_mode, min_nodes, combine, int_buffer, bbox, default_lanes, default_speed)
     return network
 
 
 def getNetFromPBFFile(pbf_filename='map.osm.pbf', network_type=('auto',), POIs=False, strict_mode=True, min_nodes=1,
-                      simplify=True, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
+                      combine=False, int_buffer=default_int_buffer, bbox=None, default_lanes=False, default_speed=False):
     """
     :param pbf_filename:
     :param network_type:
     :param POIs:
     :param strict_mode:
     :param min_nodes:
-    :param simplify:
+    :param combine:
     :param int_buffer:
     :param bbox: (minlat, minlon, maxlat, maxlon)
     :param default_lanes: True; False; Dict
     :param default_speed: True; False; Dict
     :return: a network instance
     """
+
+    network_type_valid = _getValidNetworkType(network_type)
     netdata = readPBFFile(pbf_filename)
-    network = _buildNet(netdata,network_type, POIs,strict_mode, min_nodes, simplify, int_buffer, bbox, default_lanes, default_speed)
+    network = _buildNet(netdata,network_type_valid, POIs,strict_mode, min_nodes, combine, int_buffer, bbox, default_lanes, default_speed)
     return network
 
 

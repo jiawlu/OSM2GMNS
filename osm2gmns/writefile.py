@@ -27,11 +27,14 @@ def outputNetToCSV(network, output_folder=''):
             input()
     writer = csv.writer(outfile)
     writer.writerow(['name', 'node_id', 'osm_node_id', 'osm_highway', 'zone_id', 'ctrl_type', 'node_type', 'activity_type',
-                     'is_boundary', 'x_coord', 'y_coord', 'main_node_id','poi_id'])
+                     'is_boundary', 'x_coord', 'y_coord', 'main_node_id','poi_id','notes'])
     for node_id,node in network.node_dict.items():
-        is_boundary = 1 if node.is_boundary else 0
+        if node.is_boundary is None:
+            is_boundary = ''
+        else:
+            is_boundary = 1 if node.is_boundary else 0
         line = [node.name, node.node_id, node.osm_node_id, node.osm_highway, '', node.ctrl_type, '', node.activity_type,
-                is_boundary, node.geometry.x, node.geometry.y,node.main_node_id,node.poi_id]
+                is_boundary, node.geometry.x, node.geometry.y,node.main_node_id,node.poi_id,node.notes]
         writer.writerow(line)
     outfile.close()
 
@@ -52,7 +55,7 @@ def outputNetToCSV(network, output_folder=''):
         writer.writerow(line)
     outfile.close()
 
-    if network.simplified:
+    if network.link_combined:
         while True:
             try:
                 outfile = open(segment_filepath, 'w', newline='',errors='ignore')
@@ -72,13 +75,14 @@ def outputNetToCSV(network, output_folder=''):
     if network.POI_list:
         while True:
             try:
-                outfile = open(structure_filpath, 'w', newline='',errors='ignore')
+                outfile = open(structure_filpath, 'w', newline='',errors='ignore')     # ,errors='ignore'
                 break
             except PermissionError:
                 print('POI.csv may be locked by other programs. please release it then press Enter to try again')
                 input()
         writer = csv.writer(outfile)
-        writer.writerow(['name', 'osm_way_id', 'osm_relation_id','building','amenity','geometry','centroid'])
+        writer.writerow(['name', 'poi_id', 'osm_way_id', 'osm_relation_id','building','amenity','way','geometry','centroid','area'])
         for poi in network.POI_list:
-            line = [poi.name, poi.osm_way_id, poi.osm_relation_id, poi.building, poi.amenity, poi.geometry, poi.geometry.centroid]
+            line = [poi.name, poi.poi_id, poi.osm_way_id, poi.osm_relation_id, poi.building, poi.amenity, poi.way, poi.geometry,
+                    poi.geometry.centroid, poi.area]
             writer.writerow(line)

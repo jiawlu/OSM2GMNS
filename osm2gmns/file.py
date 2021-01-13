@@ -1,5 +1,5 @@
 '''
-this script belongs to esy-osm-pbf (https://pypi.org/project/esy-osm-pbf/)
+this script is adopted from esy-osm-pbf (https://pypi.org/project/esy-osm-pbf/)
 
 esy.osm.pbf.file
 ================

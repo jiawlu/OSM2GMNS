@@ -26,8 +26,9 @@ class Node:
         self.is_isolated = False
         self.valid = True
         self.activity_type = ''
-        self.is_boundary = False
+        self.is_boundary = None
         self.poi_id = None
+        self.notes = ''
         self.incoming_link_list = []
         self.outgoing_link_list = []
 
@@ -86,6 +87,7 @@ class Way:
         self.bicycle = None
         self.building = None
         self.amenity = None
+        self.way_poi = None     # used for poi
         self.allowable_agent_type_list = []
         self.allowed_uses = ''
 
@@ -134,6 +136,8 @@ class POI:
         self.nearest_node = None
         self.building = None
         self.amenity = None
+        self.way = None         # highway,railway,aeroway poi
+        self.area = 0.0
 
 
 
@@ -144,7 +148,7 @@ class Network:
         self.default_lanes = False
         self.default_speed = False
 
-        self.simplified = False
+        self.link_combined = False
         self.complex_intersection_identified = False
         self.consolidated = False
         self.new_id = True

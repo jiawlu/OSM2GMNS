@@ -18,6 +18,7 @@ def consolidateComplexIntersections(network):
         new_node.node_id = network.max_node_id
         new_node.main_node_id = main_node_id
         new_node.ctrl_type = 1
+        osm_node_id_list = []
         x_coord_sum = 0
         y_coord_sum = 0
 
@@ -25,6 +26,7 @@ def consolidateComplexIntersections(network):
             node.valid = False
             removal_node_set.add(node)
 
+            osm_node_id_list.append(node.osm_node_id)
             x_coord_sum += node.geometry.x
             y_coord_sum += node.geometry.y
 
@@ -45,6 +47,7 @@ def consolidateComplexIntersections(network):
 
             new_node.osm_highway = node.osm_highway
 
+        new_node.osm_node_id = ';'.join(osm_node_id_list)
         new_node.geometry = geometry.Point(x_coord_sum / len(node_group), y_coord_sum / len(node_group))
 
         network.node_dict[new_node.node_id] = new_node

@@ -1,5 +1,8 @@
 from .classes import *
 import numpy as np
+from shapely.ops import transform
+from functools import partial
+from .coordconvertor import from_latlon
 
 
 def _parseRelations(relations, network):
@@ -49,6 +52,7 @@ def _POIFromWay(POI_way_list):
         poi.name = way.name
         poi.building = way.building
         poi.amenity = way.amenity
+        poi.way = way.way_poi
         ln = getPolygonFromRefNodes(way.ref_node_list)
         if ln is None: continue
         poi.geometry = ln
@@ -126,6 +130,11 @@ def generatePOIs(POI_way_list,relations, network):
 
     POI_list = POI_list1 + POI_list2
 
+    for poi in POI_list:
+        from_latlon_ = partial(from_latlon, central_longitude=poi.geometry.centroid.x)
+        g2 = transform(from_latlon_, poi.geometry)
+        poi.area = round(g2.area,1)
+
     max_poi_id = network.max_poi_id
     for poi in POI_list:
         poi.poi_id = max_poi_id
@@ -154,9 +163,7 @@ def _findNearestNode(network):
 
 def _createConnector(from_node, to_node, link_id):
     link = Link()
-    # link.osm_way_id = way.osm_way_id
     link.link_id = link_id
-    # link.name = way.name
     link.link_type_name = 'connector'
     link.link_type = link_type_no_dict[link.link_type_name]
     link.free_speed = default_speed_dict[link.link_type_name]

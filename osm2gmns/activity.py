@@ -39,6 +39,7 @@ def generateNodeActivityInfo(network):
 
 
     for node_id, node in network.node_dict.items():
+        node.is_boundary = False
         if node.activity_type == 'poi': continue
         if (len(node.incoming_link_list) == 0) or (len(node.outgoing_link_list) == 0):
             node.is_boundary = True

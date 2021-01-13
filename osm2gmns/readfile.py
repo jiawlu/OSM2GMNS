@@ -86,8 +86,8 @@ def readPBFFile(pbf_filename):
 
     bounds = default_bounds.copy()
     nodes, ways, relations = [], [], []
-    pbf_data = File(pbf_filename)
 
+    pbf_data = File(pbf_filename)
     for item in pbf_data:
         if isinstance(item,Node):
             nodes.append(item)

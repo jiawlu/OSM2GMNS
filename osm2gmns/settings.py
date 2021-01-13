@@ -37,12 +37,9 @@ default_oneway_flag_dict = {'motorway': True,'trunk':True,'primary':True,'second
                             'residential':False,'service':False,'cycleway':True, 'footway':True,'track': True,
                             'unclassified':False, 'connector':False, 'railway':True, 'aeroway':True}
 
-negligible_link_type_list = ['path','construction','proposed','raceway','bridleway','rest_area','su','living_street',
-                             'road','abandoned','planned','trailhead','stairs']
-
-network_type_all = ['auto','bike','walk','railway','aeroway']
 
 
-default_int_buffer = 20.0
+
+default_int_buffer = 20.0           # meter
 
 
