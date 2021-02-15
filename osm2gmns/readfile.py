@@ -1,4 +1,4 @@
-import pandas as pd
+import csv
 import os
 import locale
 from .util import *
@@ -101,22 +101,23 @@ def readPBFFile(pbf_filename):
     return {'bounds':bounds, 'nodes':nodes, 'ways':ways, 'relations':relations}
 
 
-def readCSVFile(folder):
-    if folder:
-        node_filepath = os.path.join(folder,'node.csv')
-        link_filepath = os.path.join(folder,'link.csv')
-    else:
-        node_filepath = 'node.csv'
-        link_filepath = 'link.csv'
+def readCSVFile(folder, encoding):
+    node_filepath = os.path.join(folder,'node.csv')
+    link_filepath = os.path.join(folder,'link.csv')
 
-    local_encoding = locale.getdefaultlocale()
-    try:
-        node_data = pd.read_csv(node_filepath,dtype={'osm_node_id':str})
-    except UnicodeDecodeError:
-        node_data = pd.read_csv(node_filepath,dtype={'osm_node_id':str},encoding=local_encoding[1])
-    try:
-        link_data = pd.read_csv(link_filepath,dtype={'osm_way_id':str})
-    except UnicodeDecodeError:
-        link_data = pd.read_csv(link_filepath,dtype={'osm_way_id':str},encoding=local_encoding[1])
+    if encoding is None:
+        nfin = open(node_filepath, 'r')
+        lfin = open(link_filepath, 'r')
+    else:
+        nfin = open(node_filepath, 'r', encoding=encoding)
+        lfin = open(link_filepath, 'r', encoding=encoding)
+
+    reader = csv.DictReader(nfin)
+    node_data = [line for line in reader]
+    nfin.close()
+
+    reader = csv.DictReader(lfin)
+    link_data = [line for line in reader]
+    lfin.close()
 
     return node_data, link_data

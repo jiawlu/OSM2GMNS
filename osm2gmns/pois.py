@@ -1,8 +1,7 @@
 from .classes import *
+from .settings import lonlat_precision, xy_precision
 import numpy as np
-from shapely.ops import transform
-from functools import partial
-from .coordconvertor import from_latlon
+
 
 
 def _parseRelations(relations, network):
@@ -53,9 +52,13 @@ def _POIFromWay(POI_way_list):
         poi.building = way.building
         poi.amenity = way.amenity
         poi.way = way.way_poi
-        ln = getPolygonFromRefNodes(way.ref_node_list)
-        if ln is None: continue
-        poi.geometry = ln
+        poly, poly_xy = getPolygonFromRefNodes(way.ref_node_list)
+        if poly is None: continue
+        poi.geometry, poi.geometry_xy = poly, poly_xy
+        lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
+        poi.centroid = geometry.Point((round(lon,lonlat_precision),round(lat,lonlat_precision)))
+        x, y = poi.geometry_xy.centroid.x, poi.geometry_xy.centroid.y
+        poi.centroid_xy = geometry.Point((round(x,xy_precision),round(y,xy_precision)))
         POI_list1.append(poi)
     return POI_list1
 
@@ -69,6 +72,7 @@ def _POIFromRelation(POI_relation_list):
         poi.building = relation.building
         poi.amenity = relation.amenity
         polygon_list = []
+        polygon_list_xy = []
         number_of_members = len(relation.member_list)
         m_ref_node_list = []
         for m in range(number_of_members):
@@ -89,35 +93,51 @@ def _POIFromRelation(POI_relation_list):
 
                     if combined_ref_node_list:
                         if combined_ref_node_list[0] is combined_ref_node_list[-1]:
-                            poly = getPolygonFromRefNodes(combined_ref_node_list)
-                            if poly is not None: polygon_list.append(poly)
+                            poly, poly_xy = getPolygonFromRefNodes(combined_ref_node_list)
+                            if poly is not None:
+                                polygon_list.append(poly)
+                                polygon_list_xy.append(poly_xy)
                             m_ref_node_list = []
                         else:
                             m_ref_node_list = combined_ref_node_list
                     else:
-                        poly = getPolygonFromRefNodes(m_ref_node_list)
-                        if poly is not None: polygon_list.append(poly)
+                        poly, poly_xy = getPolygonFromRefNodes(m_ref_node_list)
+                        if poly is not None:
+                            polygon_list.append(poly)
+                            polygon_list_xy.append(poly_xy)
                         if member.ref_node_list[0] is member.ref_node_list[-1]:
-                            poly = getPolygonFromRefNodes(m_ref_node_list)
-                            if poly is not None: polygon_list.append(poly)
+                            poly, poly_xy = getPolygonFromRefNodes(m_ref_node_list)
+                            if poly is not None:
+                                polygon_list.append(poly)
+                                polygon_list_xy.append(poly_xy)
                             m_ref_node_list = []
                         else:
                             m_ref_node_list = member.ref_node_list
                 else:
                     if member.ref_node_list[0] is member.ref_node_list[-1]:
-                        poly = getPolygonFromRefNodes(member.ref_node_list)
-                        if poly is not None: polygon_list.append(poly)
+                        poly, poly_xy = getPolygonFromRefNodes(member.ref_node_list)
+                        if poly is not None:
+                            polygon_list.append(poly)
+                            polygon_list_xy.append(poly_xy)
                     else:
                         m_ref_node_list = member.ref_node_list
             else:
                 printlog(f'node member detected at building {relation.osm_relation_id}', 'warning')
 
         if m_ref_node_list:
-            poly = getPolygonFromRefNodes(m_ref_node_list)
-            if poly is not None: polygon_list.append(poly)
+            poly, poly_xy = getPolygonFromRefNodes(m_ref_node_list)
+            if poly is not None:
+                polygon_list.append(poly)
+                polygon_list_xy.append(poly_xy)
 
         if len(polygon_list) == 0: continue
         poi.geometry = geometry.MultiPolygon(polygon_list)
+        poi.geometry_xy = geometry.MultiPolygon(polygon_list_xy)
+        lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
+        poi.centroid = geometry.Point((round(lon,lonlat_precision),round(lat,lonlat_precision)))
+        x, y = poi.geometry_xy.centroid.x, poi.geometry_xy.centroid.y
+        poi.centroid_xy = geometry.Point((round(x,xy_precision),round(y,xy_precision)))
+
         POI_list2.append(poi)
     return POI_list2
 
@@ -129,11 +149,6 @@ def generatePOIs(POI_way_list,relations, network):
     POI_list2 = _POIFromRelation(POI_relation_list)
 
     POI_list = POI_list1 + POI_list2
-
-    for poi in POI_list:
-        from_latlon_ = partial(from_latlon, central_longitude=poi.geometry.centroid.x)
-        g2 = transform(from_latlon_, poi.geometry)
-        poi.area = round(g2.area,1)
 
     max_poi_id = network.max_poi_id
     for poi in POI_list:
@@ -147,12 +162,12 @@ def _findNearestNode(network):
     coord_list = []
     idx_to_node_dict = {}
     for idx, (node_id, node) in enumerate(network.node_dict.items()):
-        coord_list.append((node.geometry.x, node.geometry.y))
+        coord_list.append((node.geometry_xy.x, node.geometry_xy.y))
         idx_to_node_dict[idx] = node
     coord_array = np.array(coord_list)
 
     for poi in network.POI_list:
-        coord = np.array((poi.geometry.centroid.x,poi.geometry.centroid.y))
+        coord = np.array((poi.centroid_xy.x,poi.centroid_xy.y))
         coord_diff = coord_array - coord
         coord_diff_square = np.power(coord_diff,2)
         coord_diff_sum_square = coord_diff_square.sum(axis=1)
@@ -175,7 +190,7 @@ def _createConnector(from_node, to_node, link_id):
     link.to_node = to_node
     link.from_node.outgoing_link_list.append(link)
     link.to_node.incoming_link_list.append(link)
-    link.geometry = getLineFromRefNodes([link.from_node, link.to_node])
+    link.geometry, link.geometry_xy = getLineFromRefNodes([link.from_node, link.to_node])
     link.calculateLength()
     return link
 
@@ -185,6 +200,7 @@ def _addPOIs(network):
         node = Node()
         node.node_id = network.max_node_id
         node.geometry = poi.geometry.centroid
+        node.geometry_xy = poi.geometry_xy.centroid
         node.is_crossing = True
         node.poi_id = poi.poi_id
         network.node_dict[node.node_id] = node

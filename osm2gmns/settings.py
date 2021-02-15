@@ -33,7 +33,7 @@ default_speed_dict = {'motorway': 59, 'trunk': 39, 'primary': 39, 'secondary': 3
                       'cycleway':9, 'footway':4, 'track':29, 'unclassified': 29, 'connector':59}
 
 
-default_oneway_flag_dict = {'motorway': True,'trunk':True,'primary':True,'secondary':False,'tertiary':False,
+default_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,
                             'residential':False,'service':False,'cycleway':True, 'footway':True,'track': True,
                             'unclassified':False, 'connector':False, 'railway':True, 'aeroway':True}
 
@@ -41,5 +41,7 @@ default_oneway_flag_dict = {'motorway': True,'trunk':True,'primary':True,'second
 
 
 default_int_buffer = 20.0           # meter
+lonlat_precision = 7
+xy_precision = 1
 
 

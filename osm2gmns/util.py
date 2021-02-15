@@ -17,17 +17,21 @@ def getDistanceFromCoord(lon1, lat1, lon2, lat2):
 
 
 def getLineFromRefNodes(ref_node_list):
-    if len(ref_node_list) < 2: return None
+    if len(ref_node_list) < 2: return None, None
     point_list = [node.geometry for node in ref_node_list]
     line = geometry.LineString(point_list)
-    return line
+    point_list_xy = [node.geometry_xy for node in ref_node_list]
+    line_xy = geometry.LineString(point_list_xy)
+    return line, line_xy
 
 
 def getPolygonFromRefNodes(ref_node_list):
-    if len(ref_node_list) < 3: return None
+    if len(ref_node_list) < 3: return None, None
     point_list = [node.geometry for node in ref_node_list]
     poly = geometry.Polygon(point_list)
-    return poly
+    point_list_xy = [node.geometry_xy for node in ref_node_list]
+    poly_xy = geometry.Polygon(point_list_xy)
+    return poly, poly_xy
 
 
 def printlog(msg,log_level='info'):

@@ -11,12 +11,31 @@ class Segment:
         self.r_lanes_added = 0
 
 
+class Movement:
+    def __init__(self):
+        self.movement_id = 0
+        self.node = None
+        self.ib_link = None
+        self.ib_lane = ''
+        self.ob_link = None
+        self.ob_lane = ''
+        self.lanes = 0
+        self.type = ''
+        self.penalty = 0.0
+        self.capacity = 0.0
+        self.ctrl_type = ''
+        self.main_node_id = None
+        self.movement_str = ''
+
+
+
 class Node:
     def __init__(self):
         self.name = None
         self.node_id = 0
         self.osm_node_id = None     # str
         self.geometry = None
+        self.geometry_xy = None
         self.main_node_id = None
         self.osm_highway = ''
         self.node_type = ''
@@ -50,6 +69,7 @@ class Link:
         self.allowed_uses = ''
         self.from_bidirectional_way = False
         self.geometry = None
+        self.geometry_xy = None
         self.is_isolated = False
         self.valid = True
         self.ob_comb_link = None
@@ -133,20 +153,23 @@ class POI:
         self.osm_relation_id = None
         self.name = ''
         self.geometry = None
+        self.geometry_xy = None
+        self.centroid = None
+        self.centroid_xy = None
         self.nearest_node = None
         self.building = None
         self.amenity = None
         self.way = None         # highway,railway,aeroway poi
-        self.area = 0.0
-
 
 
 class Network:
     def __init__(self):
         self.bounds = None
+        self.central_lon = 0.0
 
         self.default_lanes = False
         self.default_speed = False
+        self.complete_highway_lanes = True
 
         self.link_combined = False
         self.complex_intersection_identified = False
@@ -169,3 +192,4 @@ class Network:
         self.segment_list = []
         self.complex_intersection_list = []
         self.POI_list = []
+        self.movement_list = []

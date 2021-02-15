@@ -3,11 +3,15 @@ from .combine_links import *
 from .complex_intersection import *
 from .wayfilters import *
 from .pois import *
+from .coordconvertor import from_latlon
 import re
 from shapely import wkt
+import numpy as np
 
 
 # todo: highway type britain-and-ireland
+# todo: node name
+# todo: dir_flag
 
 def _newLinkFromWay(link_id, way, direction, ref_node_list):
     link = Link()
@@ -43,7 +47,7 @@ def _newLinkFromWay(link_id, way, direction, ref_node_list):
     link.to_node = ref_node_list[-1]
     link.from_node.outgoing_link_list.append(link)
     link.to_node.incoming_link_list.append(link)
-    link.geometry = getLineFromRefNodes(ref_node_list)
+    link.geometry, link.geometry_xy = getLineFromRefNodes(ref_node_list)
     link.calculateLength()
     return link
 
@@ -53,7 +57,9 @@ def _createNodeOnBoundary(node_in,node_outside,network):
     node.node_id = network.max_node_id
     line = network.bounds.intersection(geometry.LineString([node_in.geometry,node_outside.geometry]))
     lon, lat = line.coords[1]
-    node.geometry = geometry.Point((round(lon,7),round(lat,7)))
+    node.geometry = geometry.Point((round(lon,lonlat_precision),round(lat,lonlat_precision)))
+    x, y = from_latlon(lon, lat, network.central_lon)
+    node.geometry_xy = geometry.Point((round(x,xy_precision),round(y,xy_precision)))
     node.is_crossing = True
     node.notes = 'boundary node created by osm2gmns'
     network.node_dict[node.node_id] = node
@@ -249,16 +255,21 @@ def _updateDefaultLaneSpeed(default_lanes, default_speed, network):
 
 def _parseNodes(network, nodes, strict_mode):
     osm_node_dict = {}
+    osm_node_id_list = []
+    osm_node_coord_list = []
+
     for osm_node in nodes:
         node = Node()
         node.osm_node_id = str(osm_node.id)
         lon,lat = osm_node.lonlat
-        node.geometry = geometry.Point((round(lon,7),round(lat,7)))
-        # node.geometry = geometry.Point(osm_node.lonlat)
+        node.geometry = geometry.Point((round(lon,lonlat_precision),round(lat,lonlat_precision)))
 
         if strict_mode:
             if not node.geometry.within(network.bounds):
                 node.in_region = False
+
+        osm_node_id_list.append(node.osm_node_id)
+        osm_node_coord_list.append((lon,lat))
 
         tags = osm_node.tags
         if 'highway' in tags.keys():
@@ -266,6 +277,15 @@ def _parseNodes(network, nodes, strict_mode):
         if 'signal' in node.osm_highway: node.ctrl_type = 1         # todo: check signalized tag
 
         osm_node_dict[node.osm_node_id] = node
+
+    coord_array = np.array(osm_node_coord_list)
+    central_lon = coord_array[:,0].mean()
+    network.central_lon = central_lon
+    xs, ys = from_latlon(coord_array[:,0], coord_array[:,1], central_lon)
+    for node_no, node_id in enumerate(osm_node_id_list):
+        node = osm_node_dict[node_id]
+        node.geometry_xy = geometry.Point((round(xs[node_no],xy_precision),round(ys[node_no],xy_precision)))
+
     network.osm_node_dict = osm_node_dict
 
 
@@ -398,6 +418,7 @@ def _parseWays(network, ways, relations, network_type, POIs):
                 if network.default_speed:
                     way.maxspeed = network.default_speed[way.link_type_name]
             link_way_list.append(way)
+            if way.lanes is None: network.complete_highway_lanes = False
 
         elif way.railway:
             if not include_railway: continue
@@ -439,7 +460,7 @@ def _parseWays(network, ways, relations, network_type, POIs):
             pass
 
     _identifyCrossingNodes(link_way_list)
-    _getNetworkNodes(network)
+    _getNetworkNodes(network)               # osm node -> node
 
     _identifyPureCycleWays(link_way_list)
     _createLinks(network, link_way_list)
@@ -454,7 +475,7 @@ def _parseOSM(network, nodes, ways, relations, strict_mode, network_type, POIs):
     _parseWays(network, ways, relations, network_type, POIs)
 
 
-def _buildNet(netdata,network_type_valid, POIs,strict_mode, min_nodes, combine, int_buffer, bbox, default_lanes, default_speed):
+def _buildNet(netdata,network_type_valid, POIs, strict_mode, min_nodes, combine, int_buffer, bbox, default_lanes, default_speed):
     network = Network()
 
     _updateDefaultLaneSpeed(default_lanes, default_speed, network)
@@ -534,50 +555,73 @@ def getNetFromPBFFile(pbf_filename='map.osm.pbf', network_type=('auto',), POIs=F
     return network
 
 
-def getNetFromCSV(folder=''):
-    node_data, link_data = readCSVFile(folder)
+def getNetFromCSV(folder='', enconding=None):
+    node_data, link_data = readCSVFile(folder, enconding)
     network = Network()
     max_node_id = 0
     max_link_id = 0
+    node_id_list = []
+    node_coord_list = []
 
-    for i in range(len(node_data)):
+    for node_info in node_data:
         node = Node()
-        node.node_id = node_data.loc[i, 'node_id']
+        node.name = node_info['name']
+        node.node_id = int(node_info['node_id'])
         if node.node_id > max_node_id: max_node_id = node.node_id
-        osm_node_id = node_data.loc[i, 'osm_node_id']
-        if osm_node_id == osm_node_id: node.osm_node_id = osm_node_id
-        osm_highway = node_data.loc[i, 'osm_highway']
-        if osm_highway == osm_highway: node.osm_highway = osm_highway
-        x_coord, y_coord = node_data.loc[i, 'x_coord'], node_data.loc[i, 'y_coord']
-        node.geometry = geometry.Point(x_coord,y_coord)
-        main_node_id = node_data.loc[i, 'main_node_id']
-        if main_node_id == main_node_id: node.main_node_id = int(main_node_id)
-        node.ctrl_type = node_data.loc[i, 'ctrl_type']
-        poi_id = node_data.loc[i, 'poi_id']
-        if poi_id == poi_id: node.poi_id = int(poi_id)
+        node.osm_node_id = node_info['osm_node_id']
+        node.osm_highway = node_info['osm_highway']
+        x_coord, y_coord = float(node_info['x_coord']), float(node_info['y_coord'])
+        node.geometry = geometry.Point(x_coord, y_coord)
+
+        node_id_list.append(node.node_id)
+        node_coord_list.append((x_coord, y_coord))
+
+        main_node_id = node_info['main_node_id']
+        if main_node_id: node.main_node_id = main_node_id
+        node.ctrl_type = node_info['ctrl_type']
+        poi_id = node_info['poi_id']
+        if poi_id: node.poi_id = poi_id
+
         network.node_dict[node.node_id] = node
     network.max_node_id = max_node_id + 1
 
-    for i in range(len(link_data)):
+    coord_array = np.array(node_coord_list)
+    central_lon = coord_array[:,0].mean()
+    network.central_lon = central_lon
+    xs, ys = from_latlon(coord_array[:,0], coord_array[:,1], central_lon)
+    for node_no, node_id in enumerate(node_id_list):
+        node = network.node_dict[node_id]
+        node.geometry_xy = geometry.Point((round(xs[node_no],xy_precision),round(ys[node_no],xy_precision)))
+
+
+    for link_info in link_data:
         link = Link()
-        name = link_data.loc[i, 'name']
-        if name == name: link.name = name
-        link.link_id = link_data.loc[i, 'link_id']
-        if link.link_id > max_link_id: max_link_id = link.link_id
-        link.osm_way_id = link_data.loc[i, 'osm_way_id']
-        link.from_node = network.node_dict[link_data.loc[i, 'from_node_id']]
-        link.to_node = network.node_dict[link_data.loc[i, 'to_node_id']]
-        link.length = link_data.loc[i, 'length']
-        lanes = link_data.loc[i, 'lanes']
-        if lanes == lanes: link.lanes = lanes
-        free_speed = link_data.loc[i, 'free_speed']
-        if free_speed == free_speed: link.free_speed = free_speed
-        link.link_type_name = link_data.loc[i, 'link_type_name']
-        link.link_type = link_data.loc[i, 'link_type']
-        link.geometry = wkt.loads(link_data.loc[i, 'geometry'])
-        from_biway = link_data.loc[i, 'from_biway']
-        if from_biway == from_biway:
-            if int(from_biway) == 1: link.from_bidirectional_way = True
+        link.name = link_info['name']
+        link.link_id = int(link_info['link_id'])
+        link.osm_way_id = link_info['osm_way_id']
+        link.from_node = network.node_dict[int(link_info['from_node_id'])]
+        link.to_node = network.node_dict[int(link_info['to_node_id'])]
+        link.length = float(link_info['length'])
+        lanes = link_info['lanes']
+        if lanes:
+            link.lanes = int(lanes)
+        else:
+            network.complete_highway_lanes = False
+        free_speed = link_info['free_speed']
+        if free_speed: link.free_speed = float(free_speed)
+        link.link_type_name = link_info['link_type_name']
+        link.link_type = int(link_info['link_type'])
+
+        link.geometry = wkt.loads(link_info['geometry'])
+        coord_array = np.array(link.geometry.coords)
+        xs, ys = from_latlon(coord_array[:, 0], coord_array[:, 1], central_lon)
+        xys = np.vstack((xs, ys)).T
+        link.geometry_xy = geometry.LineString(xys)
+
+        link.allowed_uses = link_info['allowed_uses']
+        from_biway = int(link_info['from_biway'])
+        if from_biway == 1:
+            link.from_bidirectional_way = True
 
         network.link_dict[link.link_id] = link
         link.from_node.outgoing_link_list.append(link)
