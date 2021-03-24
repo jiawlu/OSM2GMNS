@@ -5,10 +5,11 @@ from .activity import *
 from .writefile import *
 from .movement import generateMovements
 from .settings import *
+from .visualization import *
 
 
 
-print('osm2gmns, version 0.3.3')
+print('osm2gmns, version 0.4.1')
 
 if print_log:
     logging.basicConfig(level=print_log_level,

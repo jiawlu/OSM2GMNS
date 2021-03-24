@@ -19,6 +19,12 @@ class Movement:
         self.ib_lane = ''
         self.ob_link = None
         self.ob_lane = ''
+
+        self.start_ib_lane = None
+        self.end_ib_lane = None
+        self.start_ob_lane = None
+        self.end_ob_lane = None
+
         self.lanes = 0
         self.type = ''
         self.penalty = 0.0

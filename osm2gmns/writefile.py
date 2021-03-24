@@ -99,9 +99,9 @@ def outputNetToCSV(network, output_folder='', projection=False, enconding=None):
                 print('movement.csv may be locked by other programs. please release it then press Enter to try again')
                 input()
         writer = csv.writer(outfile)
-        writer.writerow(['mvmt_id', 'node_id', 'osm_node_id', 'name', 'ib_link_id','ib_lane','ob_link_id','ob_lane',
-                         'lanes','ib_osm_node_id','ob_osm_node_id','type','penalty','capacity','ctrl_type','movement_str',
-                         'geometry','volume','free_speed'])
+        writer.writerow(['mvmt_id', 'node_id', 'osm_node_id', 'name', 'ib_link_id','start_ib_lane','end_ib_lane',
+                         'ob_link_id','start_ob_lane','end_ob_lane', 'lanes','ib_osm_node_id','ob_osm_node_id','type',
+                         'penalty','capacity','ctrl_type','movement_str', 'geometry','volume','free_speed'])
         for mvmt in network.movement_list:
             node = mvmt.node
             from_node = mvmt.ib_link.from_node
@@ -110,9 +110,9 @@ def outputNetToCSV(network, output_folder='', projection=False, enconding=None):
                 geometry_ = geometry.LineString([from_node.geometry_xy, node.geometry_xy, to_node.geometry_xy])
             else:
                 geometry_ = geometry.LineString([from_node.geometry, node.geometry, to_node.geometry])
-            line = [mvmt.movement_id, node.node_id, node.osm_node_id, '', mvmt.ib_link.link_id, mvmt.ib_lane,
-                    mvmt.ob_link.link_id, mvmt.ob_lane, mvmt.lanes, from_node.osm_node_id, to_node.osm_node_id,
-                    '', '', '', '', mvmt.movement_str,geometry_]
+            line = [mvmt.movement_id, node.node_id, node.osm_node_id, '', mvmt.ib_link.link_id, mvmt.start_ib_lane,
+                    mvmt.end_ib_lane, mvmt.ob_link.link_id, mvmt.start_ob_lane, mvmt.end_ob_lane, mvmt.lanes,
+                    from_node.osm_node_id, to_node.osm_node_id, mvmt.type, '', '', mvmt.ctrl_type, mvmt.movement_str,geometry_]
             writer.writerow(line)
 
     if network.POI_list:

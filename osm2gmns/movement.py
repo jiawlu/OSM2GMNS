@@ -24,15 +24,19 @@ def _getMovementStr(ib_start, ib_end, ob_end):
 
     if -0.25 * math.pi <= angle <= 0.25 * math.pi:
         mvmt = 'T'
+        mvmt_type = 'thru'
     elif angle < -0.25 * math.pi:
         mvmt = 'R'
+        mvmt_type = 'right'
     elif angle <= 0.75 * math.pi:
         mvmt = 'L'
+        mvmt_type = 'left'
     else:
         mvmt = 'U'
+        mvmt_type = 'uturn'
 
     mvmt_str = direction + mvmt
-    return mvmt_str
+    return mvmt_str, mvmt_type
 
 
 def _generateMovementsForOneNode(node):
@@ -70,7 +74,7 @@ def _generateMovementsForOneNode(node):
 
             ib_start, ib_end = ib_link.geometry_xy.coords[0], ib_link.geometry_xy.coords[-1]
             ob_start, ob_end = ob_link.geometry_xy.coords[0], ob_link.geometry_xy.coords[-1]
-            movement_str = _getMovementStr(ib_start, ib_end, ob_end)
+            movement_str, mvmt_type = _getMovementStr(ib_start, ib_end, ob_end)
 
             mvmt = Movement()
             mvmt.node = node
@@ -78,8 +82,15 @@ def _generateMovementsForOneNode(node):
             mvmt.ib_lane = ib_lane
             mvmt.ob_link = ob_link
             mvmt.ob_lane = ob_lane
+            mvmt.start_ib_lane, mvmt.end_ib_lane = ib_lane_index_start, ib_lane_index_end
+            mvmt.start_ob_lane, mvmt.end_ob_lane = ob_lane_index_start, ob_lane_index_end
+            if number_of_lanes == 1:
+                mvmt.end_ib_lane = ''
+                mvmt.end_ob_lane = ''
             mvmt.lanes = number_of_lanes
             mvmt.movement_str = movement_str
+            mvmt.type = mvmt_type
+            if node.ctrl_type == 1: mvmt.ctrl_type = 'signal'
             mvmt_list.append(mvmt)
     else:
         # diverge and intersections
@@ -106,7 +117,7 @@ def _generateMovementsForOneNode(node):
 
                 ib_start, ib_end = ib_link.geometry_xy.coords[0], ib_link.geometry_xy.coords[-1]
                 ob_start, ob_end = ob_link.geometry_xy.coords[0], ob_link.geometry_xy.coords[-1]
-                movement_str = _getMovementStr(ib_start, ib_end, ob_end)
+                movement_str, mvmt_type = _getMovementStr(ib_start, ib_end, ob_end)
 
                 mvmt = Movement()
                 mvmt.node = node
@@ -114,8 +125,15 @@ def _generateMovementsForOneNode(node):
                 mvmt.ib_lane = ib_lane
                 mvmt.ob_link = ob_link
                 mvmt.ob_lane = ob_lane
+                mvmt.start_ib_lane, mvmt.end_ib_lane = ib_lane_index_start, ib_lane_index_end
+                mvmt.start_ob_lane, mvmt.end_ob_lane = ob_lane_index_start, ob_lane_index_end
+                if number_of_lanes == 1:
+                    mvmt.end_ib_lane = ''
+                    mvmt.end_ob_lane = ''
                 mvmt.lanes = number_of_lanes
                 mvmt.movement_str = movement_str
+                mvmt.type = mvmt_type
+                if node.ctrl_type == 1: mvmt.ctrl_type = 'signal'
                 mvmt_list.append(mvmt)
 
     return mvmt_list
