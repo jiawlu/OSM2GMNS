@@ -28,10 +28,10 @@ Create a network from map.osm file and consolidate complex intersections
 >>> og.outputNetToCSV(net, output_folder='consolidated')
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Visualization and User Guide 
+# Visualization and user Guide 
 
 You can visualize generated networks using
-[NeXTA](https://github.com/xzhou99/NeXTA-GMNS) or [QGIS](https://qgis.org/)
+[NeXTA](https://github.com/asu-trans-ai-lab/DTALite/tree/main/release) or [QGIS](https://qgis.org/)
 and check out user guide at https://github.com/asu-trans-ai-lab/QGIS_NeXTA4GMNS
 
 ![](<https://github.com/jiawei92/OSM2GMNS/blob/master/test/asu.PNG>)
