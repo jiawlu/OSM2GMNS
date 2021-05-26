@@ -1,6 +1,7 @@
 from .classes import *
 from .settings import lonlat_precision, xy_precision
 import numpy as np
+import random
 
 
 
@@ -43,17 +44,20 @@ def _parseRelations(relations, network):
     return POI_relation_list
 
 
-def _POIFromWay(POI_way_list):
+def _POIFromWay(POI_way_list, net_bound):
     POI_list1 = []
     for way in POI_way_list:
+        poly, poly_xy = getPolygonFromRefNodes(way.ref_node_list)
+        if poly is None: continue
+        if not poly.within(net_bound): continue
+
         poi = POI()
         poi.osm_way_id = way.osm_way_id
         poi.name = way.name
         poi.building = way.building
         poi.amenity = way.amenity
         poi.way = way.way_poi
-        poly, poly_xy = getPolygonFromRefNodes(way.ref_node_list)
-        if poly is None: continue
+
         poi.geometry, poi.geometry_xy = poly, poly_xy
         lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
         poi.centroid = geometry.Point((round(lon,lonlat_precision),round(lat,lonlat_precision)))
@@ -63,7 +67,7 @@ def _POIFromWay(POI_way_list):
     return POI_list1
 
 
-def _POIFromRelation(POI_relation_list):
+def _POIFromRelation(POI_relation_list, net_bound):
     POI_list2 = []
     for relation in POI_relation_list:
         poi = POI()
@@ -132,6 +136,7 @@ def _POIFromRelation(POI_relation_list):
 
         if len(polygon_list) == 0: continue
         poi.geometry = geometry.MultiPolygon(polygon_list)
+        if poi.geometry.within(net_bound): continue
         poi.geometry_xy = geometry.MultiPolygon(polygon_list_xy)
         lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
         poi.centroid = geometry.Point((round(lon,lonlat_precision),round(lat,lonlat_precision)))
@@ -142,20 +147,19 @@ def _POIFromRelation(POI_relation_list):
     return POI_list2
 
 
-def generatePOIs(POI_way_list,relations, network):
-    POI_list1 = _POIFromWay(POI_way_list)
+def generatePOIs(POI_way_list, network, POI_percentage):
+    POI_list1 = _POIFromWay(POI_way_list, network.bounds)
+    POI_list2 = _POIFromRelation(network.osm_relation_list, network.bounds)
 
-    POI_relation_list = _parseRelations(relations, network)
-    POI_list2 = _POIFromRelation(POI_relation_list)
-
-    POI_list = POI_list1 + POI_list2
+    POI_list_ = POI_list1 + POI_list2
+    POI_list = random.sample(POI_list_,int(len(POI_list_)*POI_percentage))
 
     max_poi_id = network.max_poi_id
     for poi in POI_list:
         poi.poi_id = max_poi_id
         max_poi_id += 1
     network.max_poi_id = max_poi_id
-    return POI_list
+    network.POI_list = POI_list
 
 
 def _findNearestNode(network):

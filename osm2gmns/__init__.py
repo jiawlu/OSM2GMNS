@@ -1,7 +1,6 @@
 from .network import *
 from .complex_intersection import *
-from .consolidate_intersections import *
-from .activity import *
+from .enrich_net_info import *
 from .writefile import *
 from .movement import generateMovements
 from .settings import *
@@ -9,7 +8,7 @@ from .visualization import *
 
 
 
-print('osm2gmns, version 0.4.1')
+print('osm2gmns, version 0.5.2')
 
 if print_log:
     logging.basicConfig(level=print_log_level,

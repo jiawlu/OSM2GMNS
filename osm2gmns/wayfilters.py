@@ -15,7 +15,6 @@ aeroway_poi_set = set()
 
 network_type_all = {'auto','bike','walk','railway','aeroway'}
 
-
 _filter_in = {}
 _filters_ex = {}
 

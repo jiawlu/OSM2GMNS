@@ -1,8 +1,7 @@
 import math
 from .settings import *
+from.coordconvertor import to_latlon
 from shapely import geometry
-
-default_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}
 
 
 def getDistanceFromCoord(lon1, lat1, lon2, lat2):
@@ -51,3 +50,7 @@ def printlog(msg,log_level='info'):
         logger.critical(msg)
 
 
+def linexy2lonlat(line_xy, central_lon, northern):
+    coords = [to_latlon(*coord_xy, central_lon, northern) for coord_xy in list(line_xy.coords)]
+    line = geometry.LineString(coords)
+    return line

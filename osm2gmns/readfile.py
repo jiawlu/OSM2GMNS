@@ -1,104 +1,237 @@
 import csv
 import os
-import locale
-from .util import *
+import osmium
+from .classes import *
+from shapely import geometry
+import numpy as np
+from .coordconvertor import from_latlon
+import re
 
 
-def _getBounds(element):
-    try:
-        minlat = float(element.attrib['minlat'])
-    except KeyError:
-        minlat = -90.0
-    try:
-        minlon = float(element.attrib['minlon'])
-    except KeyError:
-        minlon = -180.0
-    try:
-        maxlat = float(element.attrib['maxlat'])
-    except KeyError:
-        maxlat = 90.0
-    try:
-        maxlon = float(element.attrib['maxlon'])
-    except KeyError:
-        maxlon = 180.0
-    return {'minlat':minlat, 'minlon':minlon, 'maxlat':maxlat, 'maxlon':maxlon}
+class NWRHandler(osmium.SimpleHandler):
+    def __init__(self):
+        osmium.SimpleHandler.__init__(self)
+
+        self.strict_mode = True
+        self.bounds = None
+        self.POIs = False
+
+        self.osm_node_dict = {}
+        self.osm_node_id_list = []
+        self.osm_node_coord_list = []
+
+        self.osm_way_dict = {}
+        self.relation_list = []
+
+    def node(self, n):
+        node = Node()
+        node.osm_node_id = str(n.id)
+        lon, lat = n.location.lon, n.location.lat
+        node.geometry = geometry.Point((round(lon, lonlat_precision), round(lat, lonlat_precision)))
+
+        if self.strict_mode:
+            if not node.geometry.within(self.bounds):
+                node.in_region = False
+
+        self.osm_node_id_list.append(node.osm_node_id)
+        self.osm_node_coord_list.append((lon, lat))
+
+        node.osm_highway = n.tags.get('highway')
+        if node.osm_highway is not None:
+            if 'signal' in node.osm_highway: node.ctrl_type = 'signal'
+        self.osm_node_dict[node.osm_node_id] = node
+        del n
+
+    def way(self, w):
+        way = Way()
+        way.osm_way_id = str(w.id)
+        way.ref_node_id_list = [str(node.ref) for node in w.nodes]
+
+        way.highway = w.tags.get('highway')
+        way.railway = w.tags.get('railway')
+        way.aeroway = w.tags.get('aeroway')
+
+        lane_info = w.tags.get('lanes')
+        if lane_info is not None:
+            lanes = re.findall(r'\d+\.?\d*', lane_info)
+            if len(lanes) > 0:
+                way.lanes = int(float(lanes[0]))  # in case of decimals
+            else:
+                printlog(f'new lanes type detected at way {way.osm_way_id}, {lane_info}', 'warning')
+        lane_info = w.tags.get('lanes:forward')
+        if lane_info is not None:
+            try:
+                way.forward_lanes = int(lane_info)
+            except:
+                pass
+        lane_info = w.tags.get('lanes:backward')
+        if lane_info is not None:
+            try:
+                way.backward_lanes = int(lane_info)
+            except:
+                pass
+
+        way.name = w.tags.get('name')
+
+        maxspeed_info = w.tags.get('maxspeed')
+        if maxspeed_info is not None:
+            try:
+                way.maxspeed = int(float(maxspeed_info))
+            except ValueError:
+                speeds = re.findall(r'\d+\.?\d* mph', maxspeed_info)
+                if len(speeds) > 0:
+                    way.maxspeed = int(float(speeds[0][:-4]) * 1.6)
+                else:
+                    speeds = re.findall(r'\d+\.?\d* km/h', maxspeed_info)
+                    if len(speeds) > 0:
+                        way.maxspeed = int(float(speeds[0][:-5]))
+                    else:
+                        printlog(f'new maxspeed type detected at way {way.osm_way_id}, {maxspeed_info}', 'warning')
+
+        oneway_info = w.tags.get('oneway')
+        if oneway_info is not None:
+            if oneway_info == 'yes' or oneway_info == '1':
+                way.oneway = True
+            elif oneway_info == 'no' or oneway_info == '0':
+                way.oneway = False
+            elif oneway_info == '-1':
+                way.oneway = True
+                way.is_reversed = True
+            elif oneway_info in ['reversible', 'alternating']:
+                # todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
+                way.oneway = False
+            else:
+                printlog(f'new lane type detected at way {way.osm_way_id}, {oneway_info}', 'warning')
+
+        way.area = w.tags.get('area')
+        way.motor_vehicle = w.tags.get('motor_vehicle')
+        way.motorcar = w.tags.get('motorcar')
+        way.service = w.tags.get('service')
+        way.foot = w.tags.get('foot')
+        way.bicycle = w.tags.get('bicycle')
+        way.building = w.tags.get('building')
+        way.amenity = w.tags.get('amenity')
+
+        self.osm_way_dict[way.osm_way_id] = way
+        del w
 
 
-def readXMLFile(osm_filename):
-    import xml.etree.cElementTree as ET
-    from .file import Node, Way, Relation
+    def relation(self, r):
+        if not self.POIs: return
 
-    bounds = default_bounds.copy()
-    nodes, ways, relations = [], [], []
+        relation = Relation()
+        relation.osm_relation_id = str(r.id)
 
-    osmtree = ET.ElementTree(file=osm_filename)
-    osmnet = osmtree.getroot()
-    for element in osmnet:
-        if element.tag == 'bounds':
-            bounds = _getBounds(element)
+        relation.building = r.tags.get('building')
+        relation.amenity = r.tags.get('amenity')
+        if (relation.building is None) and (relation.amenity is None):
+            return
+        relation.name = r.tags.get('name')
 
-        elif element.tag == 'node':
-            node_id = element.attrib['id']
-            lonlat = (float(element.attrib['lon']),float(element.attrib['lat']))
-            tags = {}
-            for info in element:
-                if info.tag == 'tag':
-                    tags[info.attrib['k']] = info.attrib['v']
+        for member in r.members:
+            member_id, member_type, member_role = member.ref, member.type, member.role
+            member_id_str = str(member_id)
+            member_type_lc = member_type.lower()
+            if member_type_lc == 'n':
+                relation.member_id_list.append(member_id_str)
+            elif member_type_lc == 'w':
+                relation.member_id_list.append(member_id_str)
+            elif member_type_lc == 'r':
+                pass
+            else:
+                printlog(f'new member type at relation {relation.osm_relation_id}, {member_type}', 'warning')
+            relation.member_type_list.append(member_type_lc)
+            relation.member_role_list.append(member_role)
 
-            node = Node(node_id, tags, lonlat)
-            nodes.append(node)
-
-        elif element.tag == 'way':
-            way_id = element.attrib['id']
-            refs = []
-            tags = {}
-            for info in element:
-                if info.tag == 'nd':
-                    ref_node_id = info.attrib['ref']
-                    refs.append(ref_node_id)
-                elif info.tag == 'tag':
-                    tags[info.attrib['k']] = info.attrib['v']
-
-            way = Way(way_id,tags, refs)
-            ways.append(way)
-
-        elif element.tag == 'relation':
-            relation_id = element.attrib['id']
-            members = []
-            tags = {}
-            for info in element:
-                if info.tag == 'member':
-                    member_type = info.attrib['type']
-                    ref_id = info.attrib['ref']
-                    member_role = info.attrib['role']
-                    members.append((ref_id,member_type,member_role))
-                elif info.tag == 'tag':
-                    tags[info.attrib['k']] = info.attrib['v']
-
-            relation = Relation(relation_id, tags, members)
-            relations.append(relation)
-
-    return {'bounds':bounds, 'nodes':nodes, 'ways':ways, 'relations':relations}
+        self.relation_list.append(relation)
+        del r
 
 
-def readPBFFile(pbf_filename):
-    from .file import File, Node, Way, Relation
+def _processNodes(net, h):
+    coord_array = np.array(h.osm_node_coord_list)
+    central_lon, central_lat = np.mean(coord_array, axis=0)
+    net.central_lon, net.central_lat = float(central_lon), float(central_lat)
+    net.northern = True if central_lat >= 0 else False
 
-    bounds = default_bounds.copy()
-    nodes, ways, relations = [], [], []
+    xs, ys = from_latlon(coord_array[:, 0], coord_array[:, 1], central_lon)
+    for node_no, node_id in enumerate(h.osm_node_id_list):
+        node = h.osm_node_dict[node_id]
+        node.geometry_xy = geometry.Point((round(xs[node_no], xy_precision), round(ys[node_no], xy_precision)))
 
-    pbf_data = File(pbf_filename)
-    for item in pbf_data:
-        if isinstance(item,Node):
-            nodes.append(item)
-        elif isinstance(item, Way):
-            ways.append(item)
-        elif isinstance(item, Relation):
-            relations.append(item)
-        else:
-            print('unsupported type')
+    net.osm_node_dict = h.osm_node_dict
 
-    return {'bounds':bounds, 'nodes':nodes, 'ways':ways, 'relations':relations}
+
+def _processWays(net, h):
+    for osm_way_id, osm_way in h.osm_way_dict.items():
+        try:
+            osm_way.ref_node_list = [net.osm_node_dict[ref_node_id] for ref_node_id in osm_way.ref_node_id_list]
+            net.osm_way_dict[osm_way_id] = osm_way
+        except KeyError as e:
+            print(f'  warning: ref node {e} in way {osm_way_id} is not defined, way {osm_way_id} will not be imported')
+
+
+def _processRelations(net, h):
+    for relation in h.relation_list:
+        valid = True
+        for member_no, member_id in enumerate(relation.member_id_list):
+            member_type = relation.member_type_list[member_no]
+            if member_type == 'n':
+                try:
+                    relation.member_list.append(net.osm_node_dict[member_id])
+                except KeyError as e:
+                    print(f'  warning: ref node {e} in relation {relation.osm_relation_id} is not defined, relation {relation.osm_relation_id} will not be imported')
+                    valid = False
+                    break
+            elif member_type == 'w':
+                try:
+                    relation.member_list.append(net.osm_way_dict[member_id])
+                except KeyError as e:
+                    print(f'  warning: ref way {e} in relation {relation.osm_relation_id} is not defined, relation {relation.osm_relation_id} will not be imported')
+                    valid = False
+                    break
+            else:
+                pass
+
+        if valid:
+            net.osm_relation_list.append(relation)
+
+
+def _getBounds(filename, bbox):
+    if bbox is None:
+        f = osmium.io.Reader(filename)
+        header = f.header()
+        box = header.box()
+        bottom_left = box.bottom_left
+        top_right = box.top_right
+        try:
+            minlat, minlon = bottom_left.lat, bottom_left.lon
+            maxlat, maxlon = top_right.lat, top_right.lon
+        except:
+            minlat, minlon, maxlat, maxlon = default_bounds['minlat'], default_bounds['minlon'], default_bounds['maxlat'], default_bounds['maxlon']
+    else:
+        minlat, minlon, maxlat, maxlon = bbox
+
+    bounds = geometry.Polygon([(minlon, maxlat), (maxlon, maxlat), (maxlon, minlat), (minlon, minlat)])
+    return bounds
+
+
+def readOSMFile(filename, POIs, strict_mode, bbox):
+    net = Network()
+
+    net.bounds = _getBounds(filename, bbox)
+
+    h = NWRHandler()
+    h.strict_mode = strict_mode
+    h.bounds = net.bounds
+    h.POIs = POIs
+    h.apply_file(filename)
+
+    _processNodes(net,h)
+    _processWays(net,h)
+    _processRelations(net, h)
+
+    return net
+
 
 
 def readCSVFile(folder, encoding):
@@ -121,3 +254,4 @@ def readCSVFile(folder, encoding):
     lfin.close()
 
     return node_data, link_data
+

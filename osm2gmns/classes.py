@@ -32,6 +32,10 @@ class Movement:
         self.ctrl_type = ''
         self.main_node_id = None
         self.movement_str = ''
+        self.allowed_uses = ''
+
+        self.geometry = None
+        self.geometry_xy = None
 
 
 
@@ -43,9 +47,9 @@ class Node:
         self.geometry = None
         self.geometry_xy = None
         self.main_node_id = None
-        self.osm_highway = ''
+        self.osm_highway = None
         self.node_type = ''
-        self.ctrl_type = 0
+        self.ctrl_type = ''
         self.in_region = True
         self.is_crossing = False
         self.is_isolated = False
@@ -64,13 +68,16 @@ class Link:
         self.link_id = 0
         self.osm_way_id = None      # str
         self.name = ''
+        self.link_class = ''        # highway, railway, aeroway
         self.link_type_name = ''
         self.link_type = 0
+        self.is_link = False
         self.from_node = None
         self.to_node = None
         self.lanes = None
         self.lanes_list = []
         self.free_speed = None
+        self.capacity = None
         self.length = 0.0
         self.allowed_uses = ''
         self.from_bidirectional_way = False
@@ -80,6 +87,8 @@ class Link:
         self.valid = True
         self.ob_comb_link = None
         self.lanes_change_point_list = []
+        self.VDF_FFTT1 = None
+        self.VDF_cap1 = None
 
     def calculateLength(self):
         coord_list = self.geometry.coords[:]
@@ -92,11 +101,13 @@ class Link:
 class Way:
     def __init__(self):
         self.osm_way_id = None          # string
-        self.highway = ''
-        self.railway = ''
-        self.aeroway = ''
+        self.highway = None
+        self.railway = None
+        self.aeroway = None
+        self.link_class = ''                    # highway, railway, aeroway
         self.link_type_name = ''
         self.link_type = 0
+        self.is_link = False
         self.name = ''
         self.lanes = None
         self.forward_lanes = None
@@ -120,6 +131,7 @@ class Way:
         self.is_reversed = False
         self.is_cycle = False
         self.is_pure_cycle = False          # cycle without crossing nodes
+        self.ref_node_id_list = []
         self.ref_node_list = []
         self.number_of_segments = 0
         self.segment_node_list = []         # ref node sequence for each segment
@@ -145,6 +157,8 @@ class Way:
 class Relation:
     def __init__(self):
         self.osm_relation_id = None
+        self.member_id_list = []
+        self.member_type_list = []
         self.member_list = []
         self.member_role_list = []
         self.name = ''
@@ -172,9 +186,13 @@ class Network:
     def __init__(self):
         self.bounds = None
         self.central_lon = 0.0
+        self.central_lat = 0.0
+        self.zone_letter = ''
+        self.northern = True
 
         self.default_lanes = False
         self.default_speed = False
+        self.default_capacity = False
         self.complete_highway_lanes = True
 
         self.link_combined = False
@@ -186,6 +204,7 @@ class Network:
 
         self.osm_node_dict = {}
         self.osm_way_dict = {}
+        self.osm_relation_list = []
 
         self.max_node_id = 0
         self.max_link_id = 0

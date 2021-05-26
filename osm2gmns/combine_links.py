@@ -70,8 +70,10 @@ def _newLinkFromLinks(link_id, up_link, down_link):
     link.osm_way_id = f'{up_link.osm_way_id};{down_link.osm_way_id}'
     link.link_id = link_id
     link.name = up_link.name
+    link.link_class = up_link.link_class
     link.link_type_name = up_link.link_type_name
     link.link_type = up_link.link_type
+    link.is_link = up_link.is_link
     link.free_speed = up_link.free_speed
     link.allowed_uses = up_link.allowed_uses
     link.from_bidirectional_way = up_link.from_bidirectional_way

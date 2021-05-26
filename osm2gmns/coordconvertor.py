@@ -47,6 +47,18 @@ P5 = (1097. / 512 * _E4)
 
 R = 6378137
 
+ZONE_LETTERS = "CDEFGHJKLMNPQRSTUVWXX"
+
+
+def in_bounds(x, lower, upper, upper_strict=False):
+    if upper_strict and use_numpy:
+        return lower <= mathlib.min(x) and mathlib.max(x) < upper
+    elif upper_strict and not use_numpy:
+        return lower <= x < upper
+    elif use_numpy:
+        return lower <= mathlib.min(x) and mathlib.max(x) <= upper
+    return lower <= x <= upper
+
 
 def mixed_signs(x):
     return use_numpy and mathlib.min(x) < 0 <= mathlib.max(x)
@@ -56,6 +68,22 @@ def negative(x):
     if use_numpy:
         return mathlib.max(x) < 0
     return x < 0
+
+
+def latitude_to_zone_letter(latitude):
+    # If the input is a numpy array, just use the first element
+    # User responsibility to make sure that all points are in one zone
+    if use_numpy and isinstance(latitude, mathlib.ndarray):
+        latitude = latitude.flat[0]
+
+    if -80 <= latitude <= 84:
+        return ZONE_LETTERS[int(latitude + 80) >> 3]
+    else:
+        return None
+
+
+class OutOfRangeError(ValueError):
+    pass
 
 
 def from_latlon(longitude, latitude, central_longitude):
@@ -91,3 +119,74 @@ def from_latlon(longitude, latitude, central_longitude):
         northing += 10000000
 
     return easting, northing
+
+
+def to_latlon(easting, northing, central_longitude, northern):  # , zone_number, zone_letter=None, northern=None, strict=True
+    # if not zone_letter and northern is None:
+    #     raise ValueError('either zone_letter or northern needs to be set')
+    #
+    # elif zone_letter and northern is not None:
+    #     raise ValueError('set either zone_letter or northern, but not both')
+    #
+    #
+    if not in_bounds(easting, 100000, 1000000, upper_strict=True):
+        raise OutOfRangeError('easting out of range (must be between 100.000 m and 999.999 m)')
+    if not in_bounds(northing, 0, 10000000):
+        raise OutOfRangeError('northing out of range (must be between 0 m and 10.000.000 m)')
+    #
+    # check_valid_zone(zone_number, zone_letter)
+    #
+    # if zone_letter:
+    #     zone_letter = zone_letter.upper()
+    #     northern = (zone_letter >= 'N')
+
+    x = easting - 500000
+    y = northing
+
+    if not northern:
+        y -= 10000000
+
+    m = y / K0
+    mu = m / (R * M1)
+
+    p_rad = (mu +
+             P2 * mathlib.sin(2 * mu) +
+             P3 * mathlib.sin(4 * mu) +
+             P4 * mathlib.sin(6 * mu) +
+             P5 * mathlib.sin(8 * mu))
+
+    p_sin = mathlib.sin(p_rad)
+    p_sin2 = p_sin * p_sin
+
+    p_cos = mathlib.cos(p_rad)
+
+    p_tan = p_sin / p_cos
+    p_tan2 = p_tan * p_tan
+    p_tan4 = p_tan2 * p_tan2
+
+    ep_sin = 1 - E * p_sin2
+    ep_sin_sqrt = mathlib.sqrt(1 - E * p_sin2)
+
+    n = R / ep_sin_sqrt
+    r = (1 - E) / ep_sin
+
+    c = _E * p_cos ** 2
+    c2 = c * c
+
+    d = x / (n * K0)
+    d2 = d * d
+    d3 = d2 * d
+    d4 = d3 * d
+    d5 = d4 * d
+    d6 = d5 * d
+
+    latitude = (p_rad - (p_tan / r) *
+                (d2 / 2 -
+                 d4 / 24 * (5 + 3 * p_tan2 + 10 * c - 4 * c2 - 9 * E_P2)) +
+                d6 / 720 * (61 + 90 * p_tan2 + 298 * c + 45 * p_tan4 - 252 * E_P2 - 3 * c2))
+
+    longitude = (d -
+                 d3 / 6 * (1 + 2 * p_tan2 + c) +
+                 d5 / 120 * (5 - 2 * c + 28 * p_tan2 - 3 * c2 + 8 * E_P2 + 24 * p_tan4)) / p_cos
+
+    return mathlib.degrees(longitude) + central_longitude, mathlib.degrees(latitude)

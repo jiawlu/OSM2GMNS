@@ -1,7 +1,11 @@
 from .autoconintd import *
 from .autoconm import *
 from .classes import Movement
+from .util import linexy2lonlat
+from shapely import geometry
 
+
+_indent = 8.0
 
 def _getMovementStr(ib_start, ib_end, ob_end):
     angle_ib = math.atan2(ib_end[1] - ib_start[1], ib_end[0] - ib_start[0])
@@ -91,6 +95,7 @@ def _generateMovementsForOneNode(node):
             mvmt.movement_str = movement_str
             mvmt.type = mvmt_type
             if node.ctrl_type == 1: mvmt.ctrl_type = 'signal'
+            mvmt.allowed_uses = ib_link.allowed_uses
             mvmt_list.append(mvmt)
     else:
         # diverge and intersections
@@ -134,24 +139,53 @@ def _generateMovementsForOneNode(node):
                 mvmt.movement_str = movement_str
                 mvmt.type = mvmt_type
                 if node.ctrl_type == 1: mvmt.ctrl_type = 'signal'
+                mvmt.allowed_uses = ib_link.allowed_uses
                 mvmt_list.append(mvmt)
 
     return mvmt_list
 
 
+def _movementGeometry(net):
+    central_lon, northern = net.central_lon, net.northern
+
+    for movement in net.movement_list:
+        ib_geometry_xy = movement.ib_link.geometry_xy
+        ib_indent = _indent if ib_geometry_xy.length > _indent else ib_geometry_xy.length / 2
+        ib_point = ib_geometry_xy.interpolate(-1 * ib_indent)
+
+        ob_geometry_xy = movement.ob_link.geometry_xy
+        ob_indent = _indent if ob_geometry_xy.length > _indent else ob_geometry_xy.length / 2
+        ob_point = ob_geometry_xy.interpolate(ob_indent)
+
+        movement.geometry_xy = geometry.LineString([ib_point, ob_point])
+        movement.geometry = linexy2lonlat(movement.geometry_xy, central_lon, northern)
+
+
 def generateMovements(net):
     if not net.complete_highway_lanes:
         print('Movement generation needs complete link lanes information.\n'
-              'Argument "default_lanes" must be set as "True" in the function "getNetFromOSMFile()" or'
-              '"getNetFromPBFFile()" to give a default vaule to links without lanes information.\n'
+              'Argument "default_lanes" must be set as "True" when parsing networks.\n'
               'Function "generateMovements()" will be skipped in this run')
         return
-
 
     movement_list_all = []
     number_of_movements = 0
 
     for node_id, node in net.node_dict.items():
+
+        # only generate movements for highways
+        valid = True
+        for outgoing_link in node.outgoing_link_list:
+            if outgoing_link.link_class != 'highway':
+                valid = False
+                break
+        if not valid: continue
+        for incoming_link in node.incoming_link_list:
+            if incoming_link.link_class != 'highway':
+                valid = False
+                break
+        if not valid: continue
+
         movement_list = _generateMovementsForOneNode(node)
         for movement in movement_list:
             movement.movement_id = number_of_movements
@@ -159,3 +193,5 @@ def generateMovements(net):
             number_of_movements += 1
 
     net.movement_list = movement_list_all
+
+    _movementGeometry(net)

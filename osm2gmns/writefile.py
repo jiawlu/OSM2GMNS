@@ -6,17 +6,12 @@ from shapely import geometry
 def outputNetToCSV(network, output_folder='', projection=False, enconding=None):
     if output_folder:
         if not os.path.exists(output_folder): os.mkdir(output_folder)
-        node_filepath = os.path.join(output_folder,'node.csv')
-        link_filepath = os.path.join(output_folder,'link.csv')
-        segment_filepath = os.path.join(output_folder,'segment.csv')
-        movement_filepath = os.path.join(output_folder, 'movement.csv')
-        structure_filpath = os.path.join(output_folder,'poi.csv')
-    else:
-        node_filepath = 'node.csv'
-        link_filepath = 'link.csv'
-        segment_filepath = 'segment.csv'
-        movement_filepath = 'movement.csv'
-        structure_filpath = 'poi.csv'
+
+    node_filepath = os.path.join(output_folder, 'node.csv')
+    link_filepath = os.path.join(output_folder, 'link.csv')
+    segment_filepath = os.path.join(output_folder, 'segment.csv')
+    movement_filepath = os.path.join(output_folder, 'movement.csv')
+    structure_filpath = os.path.join(output_folder, 'poi.csv')
 
     # we use errors='ignore' to make our program compatible with some characters that cannot be encoded by the local encoding,
     # these characters will be discarded
@@ -58,12 +53,15 @@ def outputNetToCSV(network, output_folder='', projection=False, enconding=None):
             input()
     writer = csv.writer(outfile)
     writer.writerow(['name', 'link_id', 'osm_way_id', 'from_node_id', 'to_node_id', 'dir_flag', 'length', 'lanes',
-                     'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry','allowed_uses','from_biway'])
+                     'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry','allowed_uses','from_biway',
+                     'is_link', 'VDF_FFTT1', 'VDF_cap1'])
     for link_id, link in network.link_dict.items():
         from_biway = 1 if link.from_bidirectional_way else 0
+        is_link = 1 if link.is_link else 0
         geometry_ = link.geometry_xy if projection else link.geometry
         line = [link.name, link.link_id, link.osm_way_id, link.from_node.node_id, link.to_node.node_id, 1, link.length,
-                link.lanes, link.free_speed, '', link.link_type_name, link.link_type, geometry_, link.allowed_uses,from_biway]
+                link.lanes, link.free_speed, '', link.link_type_name, link.link_type, geometry_, link.allowed_uses,
+                from_biway, is_link, link.VDF_FFTT1, link.VDF_cap1]
         writer.writerow(line)
     outfile.close()
 
@@ -101,18 +99,16 @@ def outputNetToCSV(network, output_folder='', projection=False, enconding=None):
         writer = csv.writer(outfile)
         writer.writerow(['mvmt_id', 'node_id', 'osm_node_id', 'name', 'ib_link_id','start_ib_lane','end_ib_lane',
                          'ob_link_id','start_ob_lane','end_ob_lane', 'lanes','ib_osm_node_id','ob_osm_node_id','type',
-                         'penalty','capacity','ctrl_type','movement_str', 'geometry','volume','free_speed'])
+                         'penalty','capacity','ctrl_type','mvmt_txt_id', 'geometry','volume','free_speed','allowed_uses'])
         for mvmt in network.movement_list:
             node = mvmt.node
             from_node = mvmt.ib_link.from_node
             to_node = mvmt.ob_link.to_node
-            if projection:
-                geometry_ = geometry.LineString([from_node.geometry_xy, node.geometry_xy, to_node.geometry_xy])
-            else:
-                geometry_ = geometry.LineString([from_node.geometry, node.geometry, to_node.geometry])
+            geometry_ = mvmt.geometry_xy if projection else mvmt.geometry
             line = [mvmt.movement_id, node.node_id, node.osm_node_id, '', mvmt.ib_link.link_id, mvmt.start_ib_lane,
                     mvmt.end_ib_lane, mvmt.ob_link.link_id, mvmt.start_ob_lane, mvmt.end_ob_lane, mvmt.lanes,
-                    from_node.osm_node_id, to_node.osm_node_id, mvmt.type, '', '', mvmt.ctrl_type, mvmt.movement_str,geometry_]
+                    from_node.osm_node_id, to_node.osm_node_id, mvmt.type, '', '', mvmt.ctrl_type, mvmt.movement_str,geometry_,
+                    '','',mvmt.allowed_uses]
             writer.writerow(line)
 
     if network.POI_list:
