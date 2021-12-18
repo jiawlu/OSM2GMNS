@@ -29,18 +29,30 @@ def _draw(network, figsize):
         plt.plot(xys_array[:,0], xys_array[:,1], linewidth=1, color='deepskyblue', zorder=0)
 
 
-def show(network, figsize=None):
+def show(network, save=False, figsize=None):
+    if network.number_of_nodes == 0:
+        print('WARNING: Cannot show an empty network')
+        return
+
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:
         raise ImportError("Matplotlib is required to show the network") from e
 
     _draw(network, figsize)
+    if save:
+        plt.savefig('network.jpg')
+        print(f'Figure is saved to network.jpg')
+
     plt.show()
     plt.close()
 
 
 def saveFig(network, picpath='network.jpg',figsize=None):
+    if network.number_of_nodes == 0:
+        print('WARNING: Cannot show an empty network')
+        return
+
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:

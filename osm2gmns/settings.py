@@ -1,7 +1,17 @@
 import logging
 
-print_log = False
-print_log_level = logging.WARNING
+
+log = False
+log_level = logging.WARNING
+log_name = 'osm2gmns'
+
+verbose = True
+
+lonlat_coord_precision = 7
+local_coord_precision = 2
+
+
+default_int_buffer = 20.0           # meter
 
 osm_highway_type_dict = {'motorway': ('motorway', False),
                          'motorway_link': ('motorway', True),
@@ -32,7 +42,7 @@ default_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2, '
 default_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60, 'tertiary': 40, 'residential': 30, 'service': 30,
                       'cycleway':5, 'footway':5, 'track':30, 'unclassified': 30, 'connector':120}
 default_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800, 'secondary': 1600, 'tertiary': 1200, 'residential': 1000, 'service': 800,
-                         'cycleway':800, 'footway':800, 'track':800, 'unclassified': 800, 'connector':2300}
+                         'cycleway':800, 'footway':800, 'track':800, 'unclassified': 800, 'connector':9999}
 
 
 default_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,
@@ -41,9 +51,4 @@ default_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'sec
 
 
 default_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}
-
-default_int_buffer = 20.0           # meter
-lonlat_precision = 7
-xy_precision = 1
-
 

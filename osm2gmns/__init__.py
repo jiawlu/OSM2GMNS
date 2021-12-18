@@ -1,18 +1,22 @@
-from .network import *
-from .complex_intersection import *
-from .enrich_net_info import *
-from .writefile import *
-from .movement import generateMovements
-from .settings import *
-from .visualization import *
+from osm2gmns.osmnet.build_net import getNetFromOSMFile, getNetFromPBFFile, getNetFromFile
+from osm2gmns.osmnet.complex_intersection import consolidateComplexIntersections
+from osm2gmns.osmnet.enrich_net_info import generateNodeActivityInfo, generateLinkVDFInfo
+from osm2gmns.osmnet.visualization import show, saveFig
+from osm2gmns.movement.generate_movements_old import generateMovements
+# from osm2gmns.movement.generate_movements import generateMovements
+from osm2gmns.multiresolutionnet.build_mrnet import buildMultiResolutionNets
+from osm2gmns.io.load_from_csv import getNetFromCSV, loadNetFromCSV
+from osm2gmns.io.downloader import downloadOSMData
+from osm2gmns.io.writefile import outputNetToCSV
+from osm2gmns.utils.util import config
+import osm2gmns.settings as og_settings
+
+
+__version__ = '0.6.2'
+print(f'osm2gmns, {__version__}')
 
 
 
-print('osm2gmns, version 0.5.2')
-
-if print_log:
-    logging.basicConfig(level=print_log_level,
-                        format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S',
-                        filename='osm2gmns.log',
-                        filemode='w')
+# todo: turns
+# todo: parse speed
+# todo: add attribute dicts for user defined fields

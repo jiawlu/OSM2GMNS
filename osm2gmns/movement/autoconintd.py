@@ -10,7 +10,6 @@ class CAutoConnectorIntD:
     ob_link_list_sorted = []
     connection_list = []
 
-
     @classmethod
     def getSequence(cls):       # order outbound links from left to right
         angle_list = []
@@ -35,7 +34,7 @@ class CAutoConnectorIntD:
     @classmethod
     def getLaneConnection(cls):
         cls.connection_list = [[] for _ in range(len(cls.ob_link_list_sorted))]
-        ib_lanes = cls.ib_link.lanes
+        ib_lanes = cls.ib_link.outgoing_lanes
 
         if ib_lanes == 1:
             left_ob_link = cls.ob_link_list_sorted[0]

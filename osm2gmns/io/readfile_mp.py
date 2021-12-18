@@ -1,6 +1,6 @@
 import csv
 import os
-from .util import *
+from osm2gmns.utils.util import *
 import osmium
 from collections import namedtuple
 import multiprocessing as mp

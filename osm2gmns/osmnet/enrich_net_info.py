@@ -1,6 +1,11 @@
-from .settings import default_lanes_dict, default_speed_dict, default_capacity_dict
+import osm2gmns.settings as og_settings
+
 
 def generateNodeActivityInfo(network):
+    if og_settings.verbose:
+        print('Generating Node Activity Information')
+
+    # node activity
     node_adjacent_link_type_count_dict = {}
 
     for link_id, link in network.link_dict.items():
@@ -39,34 +44,35 @@ def generateNodeActivityInfo(network):
                     max_count_type = link_type_name
             node.activity_type = max_count_type
 
+    # boundary
     for node_id, node in network.node_dict.items():
-        node.is_boundary = False
+        node.is_boundary = 0
         if node.activity_type == 'poi': continue
-        if (len(node.incoming_link_list) == 0) or (len(node.outgoing_link_list) == 0):
-            node.is_boundary = True
-            continue
 
-        if (len(node.incoming_link_list) == 1) and (len(node.outgoing_link_list) == 1):
+        if len(node.outgoing_link_list) == 0:
+            node.is_boundary = -1
+        elif len(node.incoming_link_list) == 0:
+            node.is_boundary = 1
+        elif (len(node.incoming_link_list) == 1) and (len(node.outgoing_link_list) == 1):
             ib_link = node.incoming_link_list[0]
             ob_link = node.outgoing_link_list[0]
             if ib_link.from_node is ob_link.to_node:
-                node.is_boundary = True
+                node.is_boundary = 2
 
 
 def generateLinkVDFInfo(network):
+    if og_settings.verbose:
+        print('Generating Link VDF Information')
+
     for link_id, link in network.link_dict.items():
         if link.capacity is None:
-            lanes = default_lanes_dict[link.link_type_name] if link.lanes is None else link.lanes
-            link.VDF_cap1 = lanes * default_capacity_dict[link.link_type_name]
+            lanes = og_settings.default_lanes_dict[link.link_type_name] if link.lanes is None else link.lanes
+            link.VDF_cap1 = lanes * og_settings.default_capacity_dict[link.link_type_name]
         else:
             link.VDF_cap1 = link.capacity
 
         if link.free_speed is None:
-            free_speed = default_speed_dict[link.link_type_name]
+            free_speed = og_settings.default_speed_dict[link.link_type_name]
         else:
             free_speed = link.free_speed
         link.VDF_FFTT1 = link.length / free_speed * 0.06
-
-
-
-

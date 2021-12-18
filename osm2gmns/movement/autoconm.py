@@ -37,12 +37,12 @@ class CAutoConnectorM:
 
 
         left_ib_link = cls.ib_link_list_sorted[0]
-        connection_lanes = min(ob_lanes, left_ib_link.lanes)
-        cls.connection_list[cls.ib_link_list.index(left_ib_link)] = [(left_ib_link.lanes-connection_lanes, left_ib_link.lanes-1),
+        connection_lanes = min(ob_lanes, left_ib_link.outgoing_lanes)
+        cls.connection_list[cls.ib_link_list.index(left_ib_link)] = [(left_ib_link.outgoing_lanes-connection_lanes, left_ib_link.outgoing_lanes-1),
                                                                      (0, connection_lanes-1)]        # in, out
 
         for ib_link in cls.ib_link_list_sorted[1:]:
-            connection_lanes = min(ob_lanes, ib_link.lanes)
+            connection_lanes = min(ob_lanes, ib_link.outgoing_lanes)
             cls.connection_list[cls.ib_link_list.index(ib_link)] = [(0, connection_lanes - 1), (ob_lanes-connection_lanes, ob_lanes-1)]  # in, out
 
 
