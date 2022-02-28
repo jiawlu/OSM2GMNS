@@ -11,11 +11,11 @@ from shapely import wkt, geometry
 
 
 _node_required_fields = {'node_id', 'x_coord', 'y_coord'}
-_node_optional_fields = {'name', 'osm_node_id', 'osm_highway', 'zone_id', 'ctrl_type', 'node_type', 'activity_type', 'is_boundary', 'main_node_id', 'poi_id', 'notes'}
+_node_optional_fields = {'name', 'osm_node_id', 'osm_highway', 'zone_id', 'ctrl_type', 'node_type', 'activity_type', 'is_boundary', 'intersection_id', 'poi_id', 'notes'}
 _link_required_fields = {'link_id', 'from_node_id', 'to_node_id', 'lanes'}
 _link_optional_fields = {'name', 'osm_way_id', 'dir_flag', 'length', 'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry', 'allowed_uses', 'from_biway', 'is_link', 'VDF_fftt1', 'VDF_cap1'}
 _mvmt_required_fields = {'mvmt_id', 'node_id', 'ib_link_id', 'start_ib_lane', 'end_ib_lane', 'ob_link_id', 'start_ob_lane', 'end_ob_lane'}
-_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses'}
+_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}
 _segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}
 _segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}
 
@@ -33,7 +33,7 @@ def _loadNodes(network, node_filepath, coordinate_type, encoding):
     other_fields = list(set(reader.fieldnames).difference(_node_required_fields.union(_node_optional_fields)))
 
     max_node_id = network.max_node_id
-    max_main_node_id = network.max_main_node_id
+    max_intersection_id = network.max_intersection_id
     node_id_list = []
     node_coord_list = []
     node_dict = {}
@@ -71,11 +71,11 @@ def _loadNodes(network, node_filepath, coordinate_type, encoding):
         is_boundary = node_info['is_boundary'] if 'is_boundary' in reader.fieldnames else None
         if is_boundary: node.is_boundary = int(is_boundary)
 
-        main_node_id = node_info['main_node_id'] if 'main_node_id' in reader.fieldnames else None
-        if main_node_id:
-            node.main_node_id = int(main_node_id)
-            if node.main_node_id > max_main_node_id:
-                max_main_node_id = node.main_node_id
+        intersection_id = node_info['intersection_id'] if 'intersection_id' in reader.fieldnames else None
+        if intersection_id:
+            node.intersection_id = int(intersection_id)
+            if node.intersection_id > max_intersection_id:
+                max_intersection_id = node.intersection_id
 
         poi_id = node_info['poi_id'] if 'poi_id' in reader.fieldnames else None
         if poi_id: node.poi_id = poi_id
@@ -90,7 +90,7 @@ def _loadNodes(network, node_filepath, coordinate_type, encoding):
     fin.close()
 
     max_node_id += 1
-    max_main_node_id += 1
+    max_intersection_id += 1
 
     if coordinate_type == 'lonlat':
         coord_array = np.array(node_coord_list)
@@ -109,7 +109,7 @@ def _loadNodes(network, node_filepath, coordinate_type, encoding):
 
     network.node_dict = node_dict
     network.max_node_id = max_node_id
-    network.max_main_node_id = max_main_node_id
+    network.max_intersection_id = max_intersection_id
     network.node_other_attrs = other_fields
 
 
@@ -183,7 +183,7 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
                 pass
 
         allowed_uses = link_info['allowed_uses'] if 'allowed_uses' in reader.fieldnames else None
-        if allowed_uses: link.allowed_uses = allowed_uses
+        if allowed_uses: link.allowed_uses = allowed_uses.split(';')
 
         from_biway = link_info['from_biway'] if 'from_biway' in reader.fieldnames else None
         if from_biway:
@@ -312,7 +312,13 @@ def _loadMovements(network, movement_filepath, coordinate_type, encoding):
         free_speed = movement_info['free_speed'] if 'free_speed' in reader.fieldnames else None
         if free_speed: movement.free_speed = float(free_speed)
         allowed_uses = movement_info['allowed_uses'] if 'allowed_uses' in reader.fieldnames else None
-        if allowed_uses: movement.allowed_uses = allowed_uses
+        if allowed_uses: movement.allowed_uses = allowed_uses.split(';')
+        generated_by_osm2gmns = movement_info['generated_by_osm2gmns'] if 'generated_by_osm2gmns' in reader.fieldnames else None
+        if generated_by_osm2gmns:
+            if generated_by_osm2gmns == '1':
+                movement.generated_by_osm2gmns = True
+            elif generated_by_osm2gmns == '0':
+                movement.generated_by_osm2gmns = False
 
         geometry_str = movement_info['geometry'] if 'geometry' in reader.fieldnames else None
         if geometry_str:

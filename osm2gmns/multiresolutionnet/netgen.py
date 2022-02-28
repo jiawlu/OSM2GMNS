@@ -1,5 +1,6 @@
 from osm2gmns.networkclass.mesonet import MesoNode, MesoLink, MesoNetwork
 from osm2gmns.networkclass.micronet import MicroNode, MicroLink, MicroNetwork
+from osm2gmns.utils.util_geo import offsetLine
 import osm2gmns.settings as og_settings
 from shapely import geometry
 import sys
@@ -7,38 +8,62 @@ import sys
 
 
 class NetGenerator:
-    def __init__(self, macronet, length_of_cell, width_of_lane):
+    def __init__(self, macronet, exclusive_bike_walk_lanes, length_of_cell, width_of_lane):
         self.macronet = macronet
+        # self.exclusive_bike_walk_lanes = exclusive_bike_walk_lanes
+        self.exclusive_bike_walk_lanes = False          # todo: update in the next release
         self.length_of_cell = length_of_cell
         self.width_of_lane = width_of_lane
+
+        self.bike_lane_width = 0.5
+        self.walk_lane_width = 0.5
 
         self.mesonet = MesoNetwork()
         self.micronet = MicroNetwork()
 
-        # self.number_of_micro_nodes = 0
-        # self.number_of_micro_links = 0
-        # self.number_of_meso_nodes = 0
-        # self.number_of_meso_links = 0
-        #
-        # self.micro_node_list = []
-        # self.micro_link_list = []
-        # self.meso_node_list = []
-        # self.meso_link_list = []
-        #
-        # self.meso_node_id_to_seq_no_dict = {}
-        # self.micro_node_id_to_seq_no_dict = {}
-        # self.meso_link_id_to_seq_no_dict = {}
-        # self.micro_link_id_to_seq_no_dict = {}
-        #
-        # self.meso_link_key_to_seq_no_dict = {}
-        # self.processed_node_id_set = set()
-
         self.number_of_expanded_mesonode = {}       # macronode: number_of_expanded_mesonode
+
+
+    def getMultimoalUse(self, allowed_uses):
+        if self.exclusive_bike_walk_lanes:
+            if len(allowed_uses) <= 1:
+                return {'mainlane_allowed_uses': allowed_uses, 'extra_bike': False, 'extra_walk': False}
+            else:
+                allowed_uses_set = set(allowed_uses).union({'auto','bike','walk'})
+                if allowed_uses_set == {'auto','bike'}:
+                    return {'mainlane_allowed_uses':['auto'], 'extra_bike':True, 'extra_walk':False}
+                elif allowed_uses_set == {'auto','walk'}:
+                    return {'mainlane_allowed_uses':['auto'], 'extra_bike':False, 'extra_walk':True}
+                elif allowed_uses_set == {'bike','walk'}:
+                    return {'mainlane_allowed_uses':['bike'], 'extra_bike':False, 'extra_walk':True}
+                elif allowed_uses_set == {'auto','bike','walk'}:
+                    return {'mainlane_allowed_uses':['auto'], 'extra_bike':True, 'extra_walk':True}
+        else:
+            return {'mainlane_allowed_uses':allowed_uses, 'extra_bike':False, 'extra_walk':False}
+
+
+    def getLaneGeometry(self, original_geometry, lane_offset):
+        if lane_offset < -1e-3 or lane_offset > 1e-3:
+            lane_geometry_xy_ = original_geometry.parallel_offset(distance=lane_offset, side='right', join_style=2)
+            if isinstance(lane_geometry_xy_, geometry.MultiLineString):
+                lane_geometry_xy = offsetLine(original_geometry, lane_offset)
+            else:
+                if lane_offset > 1e-3:
+                    lane_geometry_xy = geometry.LineString(list(lane_geometry_xy_.coords)[::-1])
+                else:
+                    lane_geometry_xy = lane_geometry_xy_
+        else:
+            lane_geometry_xy = original_geometry
+
+        return lane_geometry_xy
 
 
     def createMicroNetForNormalLink(self, link):
         max_micronode_id = self.micronet.max_node_id
         max_microlink_id = self.micronet.max_link_id
+
+        MultimoalUse = self.getMultimoalUse(link.allowed_uses)
+        mainlane_allowed_uses, extra_bike, extra_walk = MultimoalUse['mainlane_allowed_uses'], MultimoalUse['extra_bike'], MultimoalUse['extra_walk']
 
         # create micronodes on each mesolink
         for mesolink in link.mesolink_list:
@@ -47,24 +72,27 @@ class NetGenerator:
             num_of_lane_offset_between_left_most_and_central = -1 * (original_number_of_lanes / 2 - 0.5 + lane_changes_left)
 
             lane_geometry_xy_list = []
+            extra_bike_geometry_xy, extra_walk_geometry_xy = None, None
+            lane_offset = 0
             for i in range(mesolink.lanes):
                 lane_offset = (num_of_lane_offset_between_left_most_and_central + i) * self.width_of_lane
-                if lane_offset < -1e-3 or lane_offset > 1e-3:
-                    lane_geometry_xy = mesolink.geometry_xy.parallel_offset(distance=lane_offset, side='right', join_style=2)
-
-                    if isinstance(lane_geometry_xy, geometry.MultiLineString):
-                        coords = []
-                        for line in lane_geometry_xy: coords += line.coords
-                        lane_geometry_xy = geometry.LineString(coords)
-
-                    if lane_offset > 1e-3:
-                        lane_geometry_xy = geometry.LineString(list(lane_geometry_xy.coords)[::-1])
-                else:
-                    lane_geometry_xy = mesolink.geometry_xy
-                lane_geometry_xy_list.append(lane_geometry_xy)
+                lane_geometry_xy_list.append(self.getLaneGeometry(mesolink.geometry_xy, lane_offset))
+            if extra_bike and not extra_walk:
+                bike_lane_offset = lane_offset + self.bike_lane_width
+                extra_bike_geometry_xy = self.getLaneGeometry(mesolink.geometry_xy, bike_lane_offset)
+            if not extra_bike and extra_walk:
+                walk_lane_offset = lane_offset + self.walk_lane_width
+                extra_walk_geometry_xy = self.getLaneGeometry(mesolink.geometry_xy, walk_lane_offset)
+            if extra_bike and extra_walk:
+                bike_lane_offset = lane_offset + self.bike_lane_width
+                walk_lane_offset = bike_lane_offset + self.walk_lane_width
+                extra_bike_geometry_xy = self.getLaneGeometry(mesolink.geometry_xy, bike_lane_offset)
+                extra_walk_geometry_xy = self.getLaneGeometry(mesolink.geometry_xy, walk_lane_offset)
 
             number_of_cells = max(1, round(mesolink.length / self.length_of_cell))
             micronode_geometry_xy_list = [[lane_geometry_xy.interpolate(i/number_of_cells, normalized=True) for i in range(number_of_cells+1)] for lane_geometry_xy in lane_geometry_xy_list]
+            micronode_geometry_xy_bike = [extra_bike_geometry_xy.interpolate(i / number_of_cells, normalized=True) for i in range(number_of_cells + 1)] if extra_bike_geometry_xy is not None else None
+            micronode_geometry_xy_walk = [extra_walk_geometry_xy.interpolate(i / number_of_cells, normalized=True) for i in range(number_of_cells + 1)] if extra_walk_geometry_xy is not None else None
 
             for i in range(mesolink.lanes):
                 micronode_list_lane = []
@@ -79,13 +107,39 @@ class NetGenerator:
                     max_micronode_id += 1
                 mesolink.micronode_list.append(micronode_list_lane)
 
+            if extra_bike:
+                for micronode_geometry_xy in micronode_geometry_xy_bike:
+                    micronode = MicroNode(max_micronode_id)
+                    micronode.geometry_xy = micronode_geometry_xy
+                    micronode.geometry = self.macronet.GT.geo_to_latlon(micronode_geometry_xy)
+                    micronode.mesolink = mesolink
+                    # micronode.lane_no = i + 1
+                    mesolink.micronode_bike.append(micronode)
+                    self.micronet.node_dict[micronode.node_id] = micronode
+                    max_micronode_id += 1
+
+            if extra_walk:
+                for micronode_geometry_xy in micronode_geometry_xy_walk:
+                    micronode = MicroNode(max_micronode_id)
+                    micronode.geometry_xy = micronode_geometry_xy
+                    micronode.geometry = self.macronet.GT.geo_to_latlon(micronode_geometry_xy)
+                    micronode.mesolink = mesolink
+                    # micronode.lane_no = i + 1
+                    mesolink.micronode_walk.append(micronode)
+                    self.micronet.node_dict[micronode.node_id] = micronode
+                    max_micronode_id += 1
+
         # micronodes on two ends
         first_mesolink = link.mesolink_list[0]
         for micronode_list_lane in first_mesolink.micronode_list:
             micronode_list_lane[0].is_link_upstream_end_node = True
+        if extra_bike: first_mesolink.micronode_bike[0].is_link_upstream_end_node = True
+        if extra_walk: first_mesolink.micronode_walk[0].is_link_upstream_end_node = True
         last_mesolink = link.mesolink_list[-1]
         for micronode_list_lane in last_mesolink.micronode_list:
             micronode_list_lane[-1].is_link_downstream_end_node = True
+        if extra_bike: last_mesolink.micronode_bike[-1].is_link_downstream_end_node = True
+        if extra_walk: last_mesolink.micronode_walk[-1].is_link_downstream_end_node = True
 
         # micronodes between two adjacent mesolinks
         for i in range(len(link.mesolink_list)-1):
@@ -109,9 +163,20 @@ class NetGenerator:
                 upstream_mesolink.micronode_list[up_lane_index][-1] = down_micronode
                 del self.micronet.node_dict[up_micronode.node_id]
 
+            if extra_bike:
+                up_micronode = upstream_mesolink.micronode_bike[-1]
+                down_micronode = downstream_mesolink.micronode_bike[0]
+                upstream_mesolink.micronode_bike[-1] = down_micronode
+                del self.micronet.node_dict[up_micronode.node_id]
+            if extra_walk:
+                up_micronode = upstream_mesolink.micronode_walk[-1]
+                down_micronode = downstream_mesolink.micronode_walk[0]
+                upstream_mesolink.micronode_walk = down_micronode
+                del self.micronet.node_dict[up_micronode.node_id]
 
         # create cell
         for mesolink in link.mesolink_list:
+            # mainline
             for i in range(mesolink.lanes):
                 # travelling
                 for j in range(len(mesolink.micronode_list[i])-1):
@@ -122,6 +187,7 @@ class NetGenerator:
                     microlink.geometry_xy = geometry.LineString([microlink.from_node.geometry_xy, microlink.to_node.geometry_xy])
                     microlink.mesolink = mesolink
                     microlink.cell_type = 1	            # //1:traveling; 2:changing
+                    microlink.allowed_uses = mainlane_allowed_uses
                     self.micronet.link_dict[microlink.link_id] = microlink
                     max_microlink_id += 1
                     microlink.from_node.outgoing_link_list.append(microlink)
@@ -138,6 +204,7 @@ class NetGenerator:
                         microlink.geometry_xy = geometry.LineString([microlink.from_node.geometry_xy, microlink.to_node.geometry_xy])
                         microlink.mesolink = mesolink
                         microlink.cell_type = 2	            # //1:traveling; 2:changing
+                        microlink.allowed_uses = mainlane_allowed_uses
                         self.micronet.link_dict[microlink.link_id] = microlink
                         max_microlink_id += 1
                         microlink.from_node.outgoing_link_list.append(microlink)
@@ -153,10 +220,43 @@ class NetGenerator:
                         microlink.geometry_xy = geometry.LineString([microlink.from_node.geometry_xy, microlink.to_node.geometry_xy])
                         microlink.mesolink = mesolink
                         microlink.cell_type = 2	            # //1:traveling; 2:changing
+                        microlink.allowed_uses = mainlane_allowed_uses
                         self.micronet.link_dict[microlink.link_id] = microlink
                         max_microlink_id += 1
                         microlink.from_node.outgoing_link_list.append(microlink)
                         microlink.to_node.incoming_link_list.append(microlink)
+
+            # bike
+            if extra_bike:
+                for j in range(len(mesolink.micronode_bike) - 1):
+                    microlink = MicroLink(max_microlink_id)
+                    microlink.from_node = mesolink.micronode_bike[j]
+                    microlink.to_node = mesolink.micronode_bike[j + 1]
+                    microlink.geometry = geometry.LineString([microlink.from_node.geometry, microlink.to_node.geometry])
+                    microlink.geometry_xy = geometry.LineString([microlink.from_node.geometry_xy, microlink.to_node.geometry_xy])
+                    microlink.mesolink = mesolink
+                    microlink.cell_type = 1  # //1:traveling; 2:changing
+                    microlink.allowed_uses = ['bike']
+                    self.micronet.link_dict[microlink.link_id] = microlink
+                    max_microlink_id += 1
+                    microlink.from_node.outgoing_link_list.append(microlink)
+                    microlink.to_node.incoming_link_list.append(microlink)
+
+            # walk
+            if extra_walk:
+                for j in range(len(mesolink.micronode_walk) - 1):
+                    microlink = MicroLink(max_microlink_id)
+                    microlink.from_node = mesolink.micronode_walk[j]
+                    microlink.to_node = mesolink.micronode_walk[j + 1]
+                    microlink.geometry = geometry.LineString([microlink.from_node.geometry, microlink.to_node.geometry])
+                    microlink.geometry_xy = geometry.LineString([microlink.from_node.geometry_xy, microlink.to_node.geometry_xy])
+                    microlink.mesolink = mesolink
+                    microlink.cell_type = 1  # //1:traveling; 2:changing
+                    microlink.allowed_uses = ['walk']
+                    self.micronet.link_dict[microlink.link_id] = microlink
+                    max_microlink_id += 1
+                    microlink.from_node.outgoing_link_list.append(microlink)
+                    microlink.to_node.incoming_link_list.append(microlink)
 
         self.micronet.max_node_id = max_micronode_id
         self.micronet.max_link_id = max_microlink_id

@@ -38,14 +38,17 @@ class MicroLink(BaseLink):
     def __init__(self, link_id):
         super().__init__(link_id)
         self.mesolink = None
-        self.lane_no = 0
         self.cell_type = 1	            # //1:traveling; 2:changing
+        self.allowed_uses = []
         self.is_first_movement_cell = False
 
     @property
     def mvmt_txt_id(self):
         if self.is_first_movement_cell and self.mesolink.mvmt_txt_id is not None:
             return self.mesolink.mvmt_txt_id
+    @property
+    def lane_no(self):
+        return self.from_node.lane_no
 
 
 

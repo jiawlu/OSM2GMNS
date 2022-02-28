@@ -6,6 +6,7 @@
 from osm2gmns.networkclass.macronet import Network
 from osm2gmns.multiresolutionnet.netgen import NetGenerator
 from osm2gmns.movement.generate_movements_old import generateMovementsForOneNode
+from osm2gmns.utils.util_geo import offsetLine
 import osm2gmns.settings as og_settings
 from shapely import geometry
 from shapely.ops import substring
@@ -64,9 +65,9 @@ def _checkMovementLinkNecessity(node_dict):
 
 def _checkLinkLanes(link_dict):
     for link_id, link in link_dict.items():
-        if len(link.lanes_list) == 0 is None:
+        if link.lanes is None:
             print(f'WARNING: lanes information is missing on link {link_id}, default value 1 is used')
-            link.lanes = 1
+            link.lanes_list = [1]
 
 
 def _linkLaneListFromSegment(link_dict):
@@ -131,13 +132,12 @@ def _offsetLinkGeometry(link_dict, width_of_lane, GT):
     for link, need_offset in link_offset_dict.items():
         if need_offset:
             offset_distance = (link.max_lanes / 2 + 0.5) * width_of_lane
-            geometry_xy_offset = link.geometry_xy.parallel_offset(distance=offset_distance, side='right', join_style=2)
-            if isinstance(geometry_xy_offset, geometry.MultiLineString):
-                coords = []
-                for line in geometry_xy_offset: coords += line.coords
-                geometry_xy_offset = geometry.LineString(coords)
-            link.geometry_xy_offset = geometry.LineString(list(geometry_xy_offset.coords)[::-1])
-            link.geometry = GT.geo_to_latlon(link.geometry_xy_offset)
+            geometry_xy_offset_ = link.geometry_xy.parallel_offset(distance=offset_distance, side='right', join_style=2)
+            if isinstance(geometry_xy_offset_, geometry.MultiLineString):
+                link.geometry_xy_offset = offsetLine(link.geometry_xy, offset_distance)
+            else:
+                link.geometry_xy_offset = geometry.LineString(list(geometry_xy_offset_.coords)[::-1])
+            link.geometry_offset = GT.geo_to_latlon(link.geometry_xy_offset)
         else:
             link.geometry_offset = link.geometry
             link.geometry_xy_offset = link.geometry_xy
@@ -251,7 +251,6 @@ def _cutMacroLinks(link_dict, GT):
 
 
 def _autoGenerateMovements(macronet):
-    macronet.movement_generated = True
 
     max_movement_id = macronet.max_movement_id
     for macronode_id, macronode in macronet.node_dict.items():
@@ -263,7 +262,7 @@ def _autoGenerateMovements(macronet):
     macronet.max_movement_id = max_movement_id
 
 
-def buildMultiResolutionNets(macronet, auto_movement_generation=True, connector_type=None,
+def buildMultiResolutionNets(macronet, auto_movement_generation=True, exclusive_bike_walk_lanes=True, connector_type=None,
                              width_of_lane=3.5, length_of_cell=7.0):
     """
     Build multi-resolution networks from the source network
@@ -275,6 +274,8 @@ def buildMultiResolutionNets(macronet, auto_movement_generation=True, connector_
     auto_movement_generation: bool
         automatically generate movements for intersections without movement information. If auto_movement_generation is
         set as False, movements at intersections without movement information will not be generated
+    exclusive_bike_walk_lanes: bool
+        build exclusive lanes for bike and walk
     connector_type: int
         link_type of connectors
     width_of_lane: float
@@ -299,7 +300,7 @@ def buildMultiResolutionNets(macronet, auto_movement_generation=True, connector_
     if auto_movement_generation:
         _autoGenerateMovements(macronet)
 
-    net_generator = NetGenerator(macronet, length_of_cell, width_of_lane)
+    net_generator = NetGenerator(macronet, exclusive_bike_walk_lanes, length_of_cell, width_of_lane)
     net_generator.generateNet()
     macronet.mesonet = net_generator.mesonet
     macronet.micronet = net_generator.micronet

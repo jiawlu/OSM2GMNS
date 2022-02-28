@@ -14,7 +14,7 @@ class Node(BaseNode):
         super().__init__(node_id)
         self.zone_id = None
         self.osm_node_id = None     # str
-        self.main_node_id = None
+        self.intersection_id = None
         self.osm_highway = None
         self.node_type = ''
         self.ctrl_type = ''
@@ -199,9 +199,9 @@ class Movement:
         self.ctrl_type = ''
         self.volume = None
         self.free_speed = None
-        # self.main_node_id = None
+        # self.intersection_id = None
         self.mvmt_txt_id = ''
-        self.allowed_uses = ''
+        self.allowed_uses = []
 
         self.geometry = None
         self.geometry_xy = None
@@ -235,12 +235,10 @@ class Network(BaseNetwork):
         self.default_speed = False
         self.default_capacity = False
 
-        self.max_main_node_id = 0
+        self.max_intersection_id = 0
         self.max_segment_id = 0
         self.max_poi_id = 0
         self.max_movement_id = 0
-
-        self.movement_generated = False
 
         self.POI_list = []
 

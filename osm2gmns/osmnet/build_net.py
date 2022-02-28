@@ -263,7 +263,7 @@ def _preprocessWays(osmnetwork, link_types, network_types):
             way.allowable_agent_type_list = list(set(allowable_agent_type_list).intersection(network_types_set))
             if len(way.allowable_agent_type_list) == 0:
                 continue
-            way.allowed_uses = ';'.join(way.allowable_agent_type_list)
+            way.allowed_uses = way.allowable_agent_type_list
 
             way.ref_node_list[0].is_crossing = True
             way.ref_node_list[-1].is_crossing = True

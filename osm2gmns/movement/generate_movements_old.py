@@ -92,7 +92,6 @@ def generateMovementsForOneNode(node, max_movement_id, GT):
 
 
 def generateMovements(network):
-    network.movement_generated = True
 
     if og_settings.verbose:
         print('Generating Movements')

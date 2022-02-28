@@ -6,7 +6,7 @@ from shapely import geometry
 def _identifyComplexIntersections(network, int_buffer):
     """
     Identify nodes that belongs to one intersection in real life. Nodes that
-    belong to one intersection will be assigned with the same main_node_id.
+    belong to one intersection will be assigned with the same intersection_id.
     Only signalized nodes will be checked.
 
     The reason why only signalized nodes will be checked is that we use a
@@ -32,7 +32,7 @@ def _identifyComplexIntersections(network, int_buffer):
     group_status = []
     for link_id,link in network.link_dict.items():
         if link.length > int_buffer: continue
-        if not (link.from_node.main_node_id is None and link.to_node.main_node_id is None): continue
+        if not (link.from_node.intersection_id is None and link.to_node.intersection_id is None): continue
         if not (link.from_node.ctrl_type == 'signal' and link.to_node.ctrl_type == 'signal'): continue
         group_list.append({link.from_node, link.to_node})
         group_status.append(1)
@@ -54,12 +54,12 @@ def _identifyComplexIntersections(network, int_buffer):
         else:
             number_of_valid_groups = new_number_of_valid_groups
 
-    max_main_node_id = network.max_main_node_id
+    max_intersection_id = network.max_intersection_id
     for group_no, group in enumerate(group_list):
         if group_status[group_no] == 0: continue
-        for node in group: node.main_node_id = max_main_node_id
-        max_main_node_id += 1
-    network.max_main_node_id = max_main_node_id
+        for node in group: node.intersection_id = max_intersection_id
+        max_intersection_id += 1
+    network.max_intersection_id = max_intersection_id
 
 
 def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_settings.default_int_buffer):
@@ -89,25 +89,25 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
     node_group_dict = {}
     node_group_ctrl_type_dict = {}
     for node_id, node in network.node_dict.items():
-        if node.main_node_id is not None:
-            if node.main_node_id in node_group_dict.keys():
-                node_group_dict[node.main_node_id].append(node)
+        if node.intersection_id is not None:
+            if node.intersection_id in node_group_dict.keys():
+                node_group_dict[node.intersection_id].append(node)
             else:
-                node_group_dict[node.main_node_id] = [node]
-                node_group_ctrl_type_dict[node.main_node_id] = False
+                node_group_dict[node.intersection_id] = [node]
+                node_group_ctrl_type_dict[node.intersection_id] = False
             if node.ctrl_type == 'signal':
-                node_group_ctrl_type_dict[node.main_node_id] = True
+                node_group_ctrl_type_dict[node.intersection_id] = True
 
     removal_node_set = set()
     removal_link_set = set()
 
-    for main_node_id, node_group in node_group_dict.items():
+    for intersection_id, node_group in node_group_dict.items():
         if len(node_group) < 2:
             continue
 
         new_node = Node(network.max_node_id)
-        new_node.main_node_id = main_node_id
-        if node_group_ctrl_type_dict[main_node_id]:
+        new_node.intersection_id = intersection_id
+        if node_group_ctrl_type_dict[intersection_id]:
             new_node.ctrl_type = 'signal'
         osm_node_id_list = []
         x_coord_sum, y_coord_sum = 0.0, 0.0

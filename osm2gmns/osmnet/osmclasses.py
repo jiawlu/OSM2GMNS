@@ -66,7 +66,7 @@ class Way:
         self.amenity = None
         self.way_poi = None     # used for poi
         self.allowable_agent_type_list = []
-        self.allowed_uses = ''
+        self.allowed_uses = []
 
         self.is_reversed = False
         self.is_cycle = False

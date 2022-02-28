@@ -8,7 +8,7 @@ def _checkLinkAttr(ib_link, ob_link):
     if ib_link.link_type != ob_link.link_type: return False
     if ib_link.is_link != ob_link.is_link: return False
     if ib_link.free_speed != ob_link.free_speed: return False
-    if ib_link.allowed_uses != ob_link.allowed_uses: return False
+    if set(ib_link.allowed_uses) != set(ob_link.allowed_uses): return False
 
     if len(ib_link.lanes_list) > 1 or len(ob_link.lanes_list) > 1: return False
     if ib_link.lanes != ob_link.lanes: return False

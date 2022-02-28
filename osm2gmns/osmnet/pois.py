@@ -96,11 +96,11 @@ def _POIFromRelation(POI_relation_list, net_bound):
                     if m_ref_node_list[-1] is member.ref_node_list[0]:
                         combined_ref_node_list = m_ref_node_list + member.ref_node_list[1:]
                     elif m_ref_node_list[-1] is member.ref_node_list[-1]:
-                        combined_ref_node_list = m_ref_node_list + list(reversed(member.ref_node_list[1:]))
+                        combined_ref_node_list = m_ref_node_list + list(reversed(member.ref_node_list[:-1]))
                     elif m_ref_node_list[0] is member.ref_node_list[0]:
                         combined_ref_node_list = list(reversed(m_ref_node_list)) + member.ref_node_list[1:]
                     elif m_ref_node_list[0] is member.ref_node_list[-1]:
-                        combined_ref_node_list = list(reversed(m_ref_node_list)) + list(reversed(member.ref_node_list[1:]))
+                        combined_ref_node_list = list(reversed(m_ref_node_list)) + list(reversed(member.ref_node_list[:-1]))
 
                     if combined_ref_node_list:
                         if combined_ref_node_list[0] is combined_ref_node_list[-1]:
@@ -200,10 +200,10 @@ def _createConnector(from_node, to_node, link_id):
     link.link_type_name = 'connector'
     link.link_type = og_settings.link_type_no_dict[link.link_type_name]
     link.free_speed = og_settings.default_speed_dict[link.link_type_name]
-    link.allowed_uses = 'all'
+    link.allowed_uses = ['auto','bike','walk']
     link.from_bidirectional_way = True
     link.lanes_list = [og_settings.default_lanes_dict[link.link_type_name]]
-    link.lanes = link.lanes_list[0]
+    # link.lanes = link.lanes_list[0]
     link.from_node = from_node
     link.to_node = to_node
     link.from_node.outgoing_link_list.append(link)

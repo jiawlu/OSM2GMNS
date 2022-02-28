@@ -30,7 +30,8 @@ def _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding):
     writer = csv.writer(outfile)
 
     writer.writerow(['link_id', 'from_node_id', 'to_node_id', 'facility_type', 'dir_flag', 'length', 'lanes', 'capacity',
-                     'free_speed', 'link_type_name', 'link_type', 'cost', 'geometry', 'macro_node_id', 'macro_link_id', 'mvmt_txt_id'])
+                     'free_speed', 'link_type_name', 'link_type', 'cost', 'geometry', 'macro_node_id', 'macro_link_id',
+                     'mvmt_txt_id', 'allowed_uses'])
     for mesolink_id, mesolink in mesonet.link_dict.items():
         if projection:
             geometry_ = wkt.dumps(mesolink.geometry_xy, rounding_precision=og_settings.local_coord_precision)
@@ -38,8 +39,8 @@ def _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding):
             geometry_ = wkt.dumps(mesolink.geometry, rounding_precision=og_settings.lonlat_coord_precision)
 
         line = [mesolink.link_id, mesolink.from_node.node_id, mesolink.to_node.node_id, '', mesolink.dir_flag, mesolink.length,
-                mesolink.lanes, mesolink.capacity, mesolink.free_speed, mesolink.link_type_name,
-                mesolink.link_type, '', geometry_, mesolink.macro_node_id, mesolink.macro_link_id, mesolink.mvmt_txt_id]
+                mesolink.lanes, mesolink.capacity, mesolink.free_speed, mesolink.link_type_name,mesolink.link_type, '',
+                geometry_, mesolink.macro_node_id, mesolink.macro_link_id, mesolink.mvmt_txt_id, ';'.join(mesolink.allowed_uses)]
         writer.writerow(line)
 
     outfile.close()
@@ -70,7 +71,7 @@ def _outputMicroLinks(micronet, microlink_filepath, projection, encoding):
 
     writer.writerow(['link_id', 'from_node_id', 'to_node_id', 'facility_type', 'dir_flag', 'length', 'lanes', 'capacity',
                      'free_speed', 'link_type_name', 'link_type', 'cost', 'geometry', 'macro_node_id', 'macro_link_id',
-                     'meso_link_id', 'cell_type', 'additional_cost', 'mvmt_txt_id'])
+                     'meso_link_id', 'cell_type', 'additional_cost', 'lane_no', 'mvmt_txt_id', 'allowed_uses'])
     for microlink_id, microlink in micronet.link_dict.items():
         if projection:
             geometry_ = wkt.dumps(microlink.geometry_xy, rounding_precision=og_settings.local_coord_precision)
@@ -81,7 +82,7 @@ def _outputMicroLinks(micronet, microlink_filepath, projection, encoding):
                 microlink.length, 1, microlink.mesolink.capacity, microlink.mesolink.free_speed,
                 microlink.mesolink.link_type_name, microlink.mesolink.link_type, '', geometry_,
                 microlink.mesolink.macro_node_id, microlink.mesolink.macro_link_id, microlink.mesolink.link_id,
-                microlink.cell_type, 0, microlink.mvmt_txt_id]
+                microlink.cell_type, 0, microlink.lane_no, microlink.mvmt_txt_id, ';'.join(microlink.allowed_uses)]
         writer.writerow(line)
 
     outfile.close()

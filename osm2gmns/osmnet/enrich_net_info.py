@@ -59,6 +59,12 @@ def generateNodeActivityInfo(network):
             if ib_link.from_node is ob_link.to_node:
                 node.is_boundary = 2
 
+    # zone
+    for node_id, node in network.node_dict.items():
+        if node.is_boundary == 0: continue
+        node.zone_id = node.node_id
+
+
 
 def generateLinkVDFInfo(network):
     if og_settings.verbose:

@@ -51,6 +51,11 @@ class MesoLink(BaseLink):
         self.micronode_list = []  # micronode, lane by lane;
         self.microlink_list = []  # microlink
 
+        self.micronode_bike = []
+        self.microlink_bike = []
+        self.micronode_walk = []
+        self.microlink_walk = []
+
     @property
     def upstream_normal_link_of_movement_link(self):
         return self.from_node.incoming_link_list[0]
@@ -87,6 +92,12 @@ class MesoLink(BaseLink):
             return self.macrolink.capacity
         else:
             return self.upstream_normal_link_of_movement_link.capacity
+    @property
+    def allowed_uses(self):
+        if self.macrolink is not None:
+            return self.macrolink.allowed_uses
+        else:
+            return self.upstream_normal_link_of_movement_link.allowed_uses
 
 
 

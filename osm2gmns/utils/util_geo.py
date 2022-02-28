@@ -24,6 +24,50 @@ def getPolygonFromNodes(node_list):
     return poly, poly_xy
 
 
+def offsetLine(line, distance):
+    coords = list(line.coords)
+    offset_coord_list_temp = []
+    for i in range(len(coords) - 1):
+        start_x, start_y = coords[i]
+        end_x, end_y = coords[i+1]
+
+        delta_x = end_x - start_x
+        delta_y = end_y - start_y
+        length = (delta_x ** 2 + delta_y ** 2) ** 0.5
+        offset_x = delta_y / length * distance
+        offset_y = -1 * delta_x / length * distance
+
+        offset_coord_list_temp.append(((start_x + offset_x, start_y + offset_y), (end_x + offset_x, end_y + offset_y)))
+
+    coords_offset = [offset_coord_list_temp[0][0]]
+    for i in range(len(offset_coord_list_temp) - 1):
+        uf = offset_coord_list_temp[i][0]
+        ut = offset_coord_list_temp[i][1]
+        df = offset_coord_list_temp[i + 1][0]
+        dt = offset_coord_list_temp[i + 1][1]
+
+        d_utdf = ((ut[0] - df[0]) ** 2 + ((ut[1] - df[1]) ** 2)) ** 0.5
+        if d_utdf < 0.1:
+            x, y = (ut[0] + df[0]) * 0.5, (ut[1] + df[1]) * 0.5
+            coords_offset.append((x, y))
+        else:
+            A = [[ut[1] - uf[1], uf[0] - ut[0]], [dt[1] - df[1], df[0] - dt[0]]]
+            b = [(ut[1] - uf[1]) * uf[0] - (ut[0] - uf[0]) * uf[1],
+                 (dt[1] - df[1]) * df[0] - (dt[0] - df[0]) * df[1]]
+            A_mat = np.mat(A)
+            b_mat = np.mat(b).T
+            solution = np.linalg.inv(A_mat) * b_mat
+            x, y = solution[0, 0], solution[1, 0]
+
+            d_mut = ((ut[0] - x) ** 2 + ((ut[1] - y) ** 2)) ** 0.5
+            if d_mut > 200:
+                x, y = (ut[0] + df[0]) * 0.5, (ut[1] + df[1]) * 0.5
+            coords_offset.append((x, y))
+
+    coords_offset.append(offset_coord_list_temp[-1][1])
+    return geometry.LineString(coords_offset)
+
+
 class GeoTransformer:
     def __init__(self, central_lon, central_lat, northern):
         self.central_lon = central_lon

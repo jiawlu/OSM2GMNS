@@ -1,6 +1,7 @@
 from osm2gmns.osmnet.build_net import getNetFromOSMFile, getNetFromPBFFile, getNetFromFile
 from osm2gmns.osmnet.complex_intersection import consolidateComplexIntersections
 from osm2gmns.osmnet.enrich_net_info import generateNodeActivityInfo, generateLinkVDFInfo
+from osm2gmns.osmnet.pois import connectPOIWithNet
 from osm2gmns.osmnet.visualization import show, saveFig
 from osm2gmns.movement.generate_movements_old import generateMovements
 # from osm2gmns.movement.generate_movements import generateMovements
@@ -12,11 +13,15 @@ from osm2gmns.utils.util import config
 import osm2gmns.settings as og_settings
 
 
-__version__ = '0.6.2'
+__version__ = '0.6.4'
 print(f'osm2gmns, {__version__}')
 
 
 
 # todo: turns
 # todo: parse speed
-# todo: add attribute dicts for user defined fields
+
+
+# todo: link_id: int, str
+# todo: compatible with networkx
+# todo: mrnet bike walk

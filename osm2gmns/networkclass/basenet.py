@@ -26,7 +26,6 @@ class BaseLink:
         self.from_node = None
         self.to_node = None
         self.dir_flag = 1
-        self.allowed_uses = ''
         self.geometry = None
         self.geometry_xy = None
 
