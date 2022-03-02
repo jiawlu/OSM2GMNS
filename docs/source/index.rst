@@ -9,6 +9,10 @@ downloads. osm2gmns, as a data conversion tool, can directly convert the OSM map
 to node and link network files in the `GMNS`_ format. Users can convert and model drivable,
 walkable, railway, or aeroway networks with a single line of Python code.
 
+Besides, this package can novelty generate multi-resolution networks for transportation 
+analysis with different intentions.
+
+
 Contents
 ====================================
 
@@ -17,8 +21,9 @@ Contents
 
    installation
    gmns
+   mrm
    quick-start
-   modules
+   functions
    sample-net
    acknowledgement
 

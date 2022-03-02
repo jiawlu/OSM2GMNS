@@ -1,6 +1,0 @@
-===========
-GMNS
-===========
-
-For a demonstration of how how pydriosm works with (OSM) data, this part of the documentation 
-provides a quick guide with some practical examples of using the package to download, parse and store the OSM data.

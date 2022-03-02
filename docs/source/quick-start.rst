@@ -2,7 +2,7 @@
 Quick Start
 ===========
 
-In this section, some examples are provided to demonstrate how to use osm2gmns to generate, manipulate
+In this section, some examples are provided to quickly show how to use osm2gmns to generate, manipulate
 and output networks.
 
 Download OSM Data
@@ -68,7 +68,9 @@ to output and store network data. Users can select a proper one according to the
 
     Download osm data from BBBike
 
+.. note::
 
+    - The file formats of map data supported in osm2gmns include ``.osm``, ``.xml``, and ``.pbf``.
 
 Parse OSM Data
 =========================
@@ -82,13 +84,8 @@ Obtain a transportation network from an osm file.
 
     >>> import osm2gmns as og
 
-    >>> net = og.getNetFromOSMFile('asu.osm')
-    >>> # we recommend using getNetFromPBFFile() for large networks
-    >>> # net = og.getNetFromPBFFile('***.osm.pbf')
+    >>> net = og.getNetFromFile('asu.osm')
 
-.. note::
-
-    - ``getNetFromPBFFile()`` is supported in release (0.2.0) or later.
 
 A link will be included in the network file from osm database if part of the link lies in the region
 that users selected. If argument ``strict_mode`` (default: ``True``) is set as ``True``, link segments that
@@ -129,14 +126,17 @@ default dictionary in osm2gmns:
     default_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2, 'tertiary': 2,
                           'residential': 1, 'service': 1, 'cycleway':1, 'footway':1, 'track':1,
                           'unclassified': 1, 'connector': 2}
-    default_speed_dict = {'motorway': 59, 'trunk': 39, 'primary': 39, 'secondary': 39, 'tertiary': 29,
-                          'residential': 29, 'service': 29, 'cycleway':9, 'footway':4, 'track':29,
-                          'unclassified': 29, 'connector':59}
+    default_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60, 'tertiary': 40,
+                          'residential': 30, 'service': 30, 'cycleway':5, 'footway':5, 'track':30,
+                          'unclassified': 30, 'connector':120}
+    default_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800, 'secondary': 1600, 'tertiary': 1200,
+                          'residential': 1000, 'service': 800, 'cycleway':800, 'footway':800, 'track':800,
+                          'unclassified': 800, 'connector':9999}
 
 ``default_lanes`` also accepts a dictionary. In that case, osm2gmns will use the dictionary provided by users
 to update the default dictionary.
 
-A similar fashion applies for argument ``default_speed``.
+A similar fashion applies for argument ``default_speed`` and ``default_capacity``.
 
 
 Output Networks to CSV
@@ -161,22 +161,16 @@ Consolidate Intersections
 =========================
 
 In OpenStreetMap, one large intersection is often represented by multiple nodes. This structure brings some
-difficulties when conducting traffic simulations (hard to model traffic signals in these intersections).
-osm2gmns enables users to consolidate intersections while parsing networks, i.e., generate a new node to replace
-existing nodes for each large intersection.
+difficulties when performing traffic-oriented modelings. osm2gmns enables users to consolidate intersections 
+that are original represented by multiple nodes into a single node.
 
 .. code-block:: python
 
-    >>> net = og.getNetFromOSMFile('asu.osm')
-    >>> og.consolidateComplexIntersections(net)
+    >>> net = og.getNetFromFile('asu.osm')
+    >>> og.consolidateComplexIntersections(net, auto_identify=True)
     >>> og.outputNetToCSV(net)
 
-When executing function ``getNetFromOSMFile``, osm2gmns will automatically identify complex intersections based
-on the argument ``int_buffer`` (defalut: ``20.0``). Nodes that belong to one complex intersection will be assigned
-with the same ``main_node_id``, but these nodes will not be consolidated into one node unless function
-``consolidateComplexIntersections`` is called.
-
-.. figure:: _images/consolidate.png
+.. figure:: _images/consolidation.png
     :name: consolidate_pic
     :align: center
     :width: 100%
@@ -188,11 +182,12 @@ operation to obtain more reasonable outcomes.
 
 .. code-block:: python
 
-    >>> net = og.getNetFromOSMFile('asu.osm')
+    >>> net = og.getNetFromFile('asu.osm')
+    >>> og.consolidateComplexIntersections(net, auto_identify=True)
     >>> og.outputNetToCSV(net)
-    >>> # check the main_node_id column in node.csv
-    >>> net = og.getNetFromCSV()
-    >>> og.consolidateComplexIntersections(net)
+    >>> # check the consolidated network, and revise the column "intersection_id" in node.csv if necessary
+    >>> net = og.loadNetFromCSV(node_file='node.csv', link_file='link.csv')
+    >>> og.consolidateComplexIntersections(net, auto_identify=False)
     >>> og.outputNetToCSV(net, output_folder='consolidated')
 
 
@@ -200,20 +195,24 @@ Network Types and POI
 =========================
 
 osm2gmns supports five different network types, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
-Extract the auto and railway network from an osm file by setting ``network_type`` (default: ``(auto,)``) as
-``(auto,railway)``:
+Users can get different types of networks by specifying the argument ``network_types``  (default: ``(auto,)``).
 
 .. code-block:: python
 
-    >>> net = og.getNetFromOSMFile('asu.osm', network_type=('auto','railway','aeroway'))
+    >>> # obtain the network for bike
+    >>> net = og.getNetFromFile('asu.osm', network_types='bike')
+    >>> # obtain the network for walk and bike
+    >>> net = og.getNetFromFile('asu.osm', network_types=('walk','bike'))
+    >>> # obtain the network for auto, railway and aeroway
+    >>> net = og.getNetFromFile('asu.osm', network_types=('auto','railway','aeroway'))
 
 Obtain POIs (Point of Interest) from osm map data.
 
 .. code-block:: python
 
-    >>> net = og.getNetFromOSMFile('asu.osm', POIs=True)
+    >>> net = og.getNetFromOSMFile('asu.osm', POI=True)
 
-If ``POIs`` (default: ``False``) is set as ``True``, a file named ``poi.csv`` will be generated when outputting
+If ``POI`` (default: ``False``) is set as ``True``, a file named ``poi.csv`` will be generated when outputting
 a network using function ``outputNetToCSV``.
 
 .. figure:: _images/poi1.png
@@ -241,6 +240,29 @@ transportation network.
 
     Connect POIs with network
 
+
+Generate Multi-Resolution Networks
+==================================
+
+osm2gmns can generate the corresponding mesoscopic and microscopic network for any macroscopic networks in GMNS format.
+
+Generate multi-resolution networks from an osm file.
+
+.. code-block:: python
+
+    >>> net = og.getNetFromFile('asu.osm', default_lanes=True)
+    >>> og.consolidateComplexIntersections(net, auto_identify=True)
+    >>> og.buildMultiResolutionNets(net)
+    >>> og.outputNetToCSV(net)
+
+Generate multi-resolution networks from an user's network.
+
+.. code-block:: python
+
+    >>> net = og.loadNetFromCSV(node_file='node.csv', link_file='link.csv')
+    >>> og.consolidateComplexIntersections(net, auto_identify=True)
+    >>> og.buildMultiResolutionNets(net)
+    >>> og.outputNetToCSV(net)
 
 .. _`homepage`: https://www.openstreetmap.org
 .. _`Geofabrik`: https://download.geofabrik.de/

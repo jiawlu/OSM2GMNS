@@ -2,129 +2,31 @@
 GMNS
 ===========
 
-`GMNS`_ (General Modeling Network Specification), proposed by the Zephyr Foundation, 
-which aims to advance the field through flexible and efficient support, education, 
-guidance, encouragement, and incubation.
-
-The two necessary files used in GMNS to describe a network: ``node.csv`` and ``link.csv``.
-
-- node.csv
-
-The node file is a list of vertices that locate points on a map. Typically, they will
-represent intersections, but may also represent other points, such as a transition between
-divided and undivided highway\ :sup:`[1]`. We add several additional attributes to the node file
-to make it more suitable for transportation modelling. Detailed node data dictionary is
-listed below.
-
-.. table::
-    :class: classic
-
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |    Field    |      Type     | Required?|                           Comments                            |
-    +=============+===============+==========+===============================================================+
-    |    name     |     string    |          |                                                               |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |  node_id    |       int     |   yes    | unique key                                                    |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    | osm_node_id | string or int |          | corresponding point id in osm data                            |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    | osm_highway |     string    |          | point type in osm data                                        |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |  zone_id    |       int     |          |                                                               |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |  ctrl_type  |       int     |          | 1: Signalized; 0: not                                         |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |  node_type  |     string    |          |                                                               |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |activity_type|     string    |          | defined by adjacent links                                     |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    | is_boundary |      bool     |          | 1: boundary; 0: not                                           |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |  x_coord    |     double    |   yes    | WGS 84 is used in osm                                         |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |  y_coord    |     double    |   yes    | WGS 84 is used in osm                                         |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    | main_node_id|      int      |          | nodes belonging to one complex intersection have the same id  |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-    |   poi_id    |      int      |          | id of the corresponding poi                                   |
-    +-------------+---------------+----------+---------------------------------------------------------------+
-
-- link.csv
-
-A link is an edge in a network, defined by the nodes it travels from and to. It may have associated geometry
-information\ :sup:`[2]`. Similar to node.csv, We also added several new attributes to the link file. Detailed
-link data dictionary is listed below.
-
-.. table::
-    :class: classic
-
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |      Field     |      Type     | Required?|                           Comments                            |
-    +================+===============+==========+===============================================================+
-    |      name      |     string    |          |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |    link_id     |      int      |   yes    | unique key                                                    |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |   osm_way_id   | string or int |          | corresponding way id in osm data                              |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |  from_node_id  |      int      |   yes    |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |   to_node_id   |      int      |   yes    |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |    dir_flag    |     enum      |          | 1: forward, -1: backward, 0:bidirectionial                    |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |     length     |     float     |          | unit: meter                                                   |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |      lanes     |      int      |          |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |   free_speed   |     float     |          |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |    capacity    |     float     |          | unit: veh/hr/lane                                             |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    | link_type_name |     string    |          |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |    link_type   |       int     |          |                                                               |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |    geometry    |     Geometry  |          | `wkt`_                                                        |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |  allowed_uses  |      enum     |          | auto, bike, walk                                              |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-    |   from_biway   |      bool     |          | 1: link created from a bidirectional way, 0: not              |
-    +----------------+---------------+----------+---------------------------------------------------------------+
-
-Other two optional files including ``movement.csv`` and ``segement.csv`` follow the exact same format as what
-being defined in the GMMS standard. Readers can check the GMNS website for details.
-
-In addition to the above files defined in the GMNS standard, osm2gmns can also produce ``poi.csv`` files
-where point of interest information is stored. Detailed poi data dictionary is listed below.
-
-.. table::
-    :class: classic
-
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |      Field      |      Type     | Required?|                           Comments                            |
-    +=================+===============+==========+===============================================================+
-    |       name      |     string    |          |                                                               |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |      poi_id     |      int      |   yes    | unique key                                                    |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |    osm_way_id   | string or int |          | corresponding way id in osm data                              |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    | osm_relation_id | string or int |          | corresponding relation id in osm data                         |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |     building    |     string    |          | building tag in osm data                                      |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |     amenity     |     string    |          | amenity tag in osm data                                       |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |     geometry    |    Geometry   |   yes    | `wkt`_                                                        |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
-    |     centroid    |    Geometry   |          | `wkt`_                                                        |
-    +-----------------+---------------+----------+---------------------------------------------------------------+
+General Modeling Network Specification (`GMNS`_), proposed by the `Zephyr Foundation`_, 
+defines a common human and machine readable format for sharing routable road network files. 
+It is designed to be used in multi-modal static and dynamic transportation planning and 
+operations models. It will facilitate the sharing of tools and data sources by modelers. 
+For additional information on GMNS goals, history and requirements, please see the `wiki`_
 
 
-\ :sup:`[1]` https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Node.md
+GMNS (version 0.92) includes the following features for use in static models:
 
-\ :sup:`[2]` https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Link.md
+- Configuration information and use definitions.
+- Node and link files, to establish a routable network.
+
+For dynamic models, this version includes the following optional additional features:
+
+- A segment file, with information that overrides the characteristics of a portion of a link.
+- A lane file that allocates portions of the right-of-way. Lanes include travel lanes used by motor vehicles. They may also optionally include bike lanes, parking lanes, and shoulders.
+- A segment_lane file that specifies additional lanes, dropped lanes, or changes to lane properties on a segment of a link.
+- A movement file that specifies how inbound and outbound lanes connect at an intersection
+- Link, segment, lane and movement time-of-day (TOD) files, that allocates usage of network elements by time-of-day and day-of-week.
+- Signal phase and timing files, for basic implementation of traffic signals.
+
+osm2gmns uses GMNS as the standard when processing and manipulating networks, thus any
+network in GMNS format is fully compatible with osm2gmns.
+
 
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
-.. _`wkt`: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+.. _`Zephyr Foundation`: https://zephyrtransport.org
+.. _`wiki`: https://github.com/zephyr-data-specs/GMNS/wiki
