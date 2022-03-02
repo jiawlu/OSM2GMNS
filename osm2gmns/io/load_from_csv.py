@@ -464,6 +464,9 @@ def _loadPOIs(network, poi_filepath, encoding):
 
 
 def getNetFromCSV(folder='', enconding=None):
+    """
+    Deprecated
+    """
     print('Warning: getNetFromCSV() is deprecated and will be removed in a future release. Please use loadNetFromCSV().\n'
           '         For more information, please refer to the document at https://osm2gmns.readthedocs.io')
     network = loadNetFromCSV(folder, enconding)
@@ -473,6 +476,36 @@ def getNetFromCSV(folder='', enconding=None):
 def loadNetFromCSV(folder='', node_file=None, link_file=None, movement_file=None,
                    segment_file=None, geometry_file=None, POI_file=None,
                    coordinate_type='lonlat', enconding=None):
+    """
+    Load a network from csv files in GMNS format
+
+    Parameters
+    ----------
+    folder: str
+        the folder where network files are stored
+    node_file: str
+        filename of the node file. required
+    link_file: str
+        filename of the link file. required
+    movement_file: str, None
+        filename of the movement file. optional
+    segment_file: str, None
+        filename of the segment file. optional
+    geometry_file: str, None
+        filename of the geometry file. optional
+    POI_file: str, None
+        filename of the POI file. optional
+    coordinate_type: str
+        the coordinate system used by the network to be loaded. can be lonlat, meter, feet
+    enconding: str, None
+        the encoding used by the network files. if None, osm2gmns will use the default encoding of the local operating system
+
+    Returns
+    -------
+    network: Network
+        an osm2gmns Network object
+
+    """
 
     if node_file is None:
         sys.exit('ERROR: node_file is not specified')

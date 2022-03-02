@@ -231,6 +231,19 @@ def _addPOIs(network):
 
 
 def connectPOIWithNet(network):
+    """
+    Connect POIs with the traffic network. Specifically, for each POI, osm2gmns will build a bi-directional connector to connect the POI
+    with its nearest node in the traffic network
+
+    Parameters
+    ----------
+    network: Network
+        an osm2gmns Network object
+
+    Returns
+    -------
+    None
+    """
     if len(network.POI_list) == 0:
         print('No POIs found in the network. Please set POIs=True when creating network from osm file')
         return

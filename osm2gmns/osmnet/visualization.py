@@ -30,6 +30,22 @@ def _draw(network, figsize):
 
 
 def show(network, save=False, figsize=None):
+    """
+    Show the network in a pop-up window
+
+    Parameters
+    ----------
+    network: Network
+        an osm2gmns Network object
+    save: bool
+        if True, the plot will also be saved to a local file named network.jpg
+    figsize: tuple of int/float, list of int/float
+        size of the figure
+
+    Returns
+    -------
+    None
+    """
     if network.number_of_nodes == 0:
         print('WARNING: Cannot show an empty network')
         return
@@ -49,6 +65,23 @@ def show(network, save=False, figsize=None):
 
 
 def saveFig(network, picpath='network.jpg',figsize=None):
+    """
+    Save the network plot to a local file
+
+    Parameters
+    ----------
+    network: Network
+        an osm2gmns Network object
+    picpath: str
+        path to store to network plot. can be an absolute or a relative path
+    figsize: tuple of int/float, list of int/float
+        size of the figure
+
+    Returns
+    -------
+    None
+    """
+
     if network.number_of_nodes == 0:
         print('WARNING: Cannot show an empty network')
         return

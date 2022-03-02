@@ -25,3 +25,4 @@ print(f'osm2gmns, {__version__}')
 # todo: link_id: int, str
 # todo: compatible with networkx
 # todo: mrnet bike walk
+# todo: movement generation

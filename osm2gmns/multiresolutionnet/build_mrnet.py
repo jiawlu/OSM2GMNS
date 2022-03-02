@@ -265,15 +265,15 @@ def _autoGenerateMovements(macronet):
 def buildMultiResolutionNets(macronet, auto_movement_generation=True, exclusive_bike_walk_lanes=True, connector_type=None,
                              width_of_lane=3.5, length_of_cell=7.0):
     """
-    Build multi-resolution networks from the source network
+    Build the corresponding mesoscopic and microscopic networks for a source (macroscopic) network
 
     Parameters
     ----------
     macronet: Network
-        soucrce macroscopic network
+        a soucrce osm2gmns Network object
     auto_movement_generation: bool
-        automatically generate movements for intersections without movement information. If auto_movement_generation is
-        set as False, movements at intersections without movement information will not be generated
+        automatically generate movements for intersections without movement information by calling function generateMovements
+        in osm2gmns. if auto_movement_generation is set as False, movements at intersections without movement information will not be generated
     exclusive_bike_walk_lanes: bool
         build exclusive lanes for bike and walk
     connector_type: int
@@ -285,6 +285,7 @@ def buildMultiResolutionNets(macronet, auto_movement_generation=True, exclusive_
 
     Returns
     -------
+    None
 
     """
     if og_settings.verbose:

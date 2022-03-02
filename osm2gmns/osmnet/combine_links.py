@@ -80,6 +80,7 @@ def _combLinks(network):
 
 
 def combineShortLinks(network):
+
     if og_settings.verbose:
         print('    combining links')
 
@@ -90,4 +91,3 @@ def combineShortLinks(network):
 
     if og_settings.verbose:
         print(f'    link combination finished. before: {number_of_nodes_before_combination} nodes {number_of_links_before_combination} links, after {len(network.node_dict)} nodes {len(network.link_dict)} links')
-

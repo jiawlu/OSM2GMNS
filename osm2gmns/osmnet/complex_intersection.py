@@ -64,19 +64,29 @@ def _identifyComplexIntersections(network, int_buffer):
 
 def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_settings.default_int_buffer):
     """
-    Consolidate complex intersections into one node
+    Consolidate each complex intersection that are original represented by multiple nodes in osm into one node. Nodes
+    with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in two ways.
+    1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
+    intersection_id for corresponding nodes; 2) user can assign intersection_id to nodes manually in network csv files (node.csv), and
+    load the network using function loadNetFromCSV provided by osm2gmns. Note that, if the second approach is adopted, one
+    should make sure the argument auto_identify is set as False to avoid intersection_id overwritten by osm2gmns.
+
+    Rules used in osm2gmns to identify if two nodes belong to a complex intersection: 1) ctrl_type of the two nodes must be signal;
+    2) there is a link connecting these two nodes, and the length of the link is shorter than or equal to the argument int_buffer
 
     Parameters
     ----------
     network: Network
-        Network instance
+        osm2gmns Network object
     auto_identify: bool
-        If automatically identify complex intersections by osm2gmns
+        if automatically identify complex intersections using built-in methods in osm2gmns. nodes that belong to a complex
+        intersection will be assigned with the same intersection_id
     int_buffer: float
-        The threshold used to check if two nodes belong to one complex intersection
+        the threshold used to check if two nodes belong to one complex intersection. the unit is meter
 
     Returns
     -------
+    None
 
     """
 

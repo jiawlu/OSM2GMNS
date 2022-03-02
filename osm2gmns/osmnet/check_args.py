@@ -24,7 +24,7 @@ def checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampl
     network_types_ = []
     for net_type in network_types_temp:
         if net_type not in network_types_all:
-            print(f'WARNING: network_type \'{net_type}\' does not belong to {network_type_all}, it will be skipped')
+            print(f'WARNING: network_type \'{net_type}\' does not belong to {network_types_all}, it will be skipped')
         else:
             network_types_.append(net_type)
 

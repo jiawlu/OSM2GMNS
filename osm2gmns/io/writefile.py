@@ -134,6 +134,26 @@ def _outputPOI(network, output_folder, poi_filename, projection, encoding):
 
 
 def outputNetToCSV(network, output_folder='', prefix='', projection=False, encoding=None):
+    """
+    Output an osm2gmns network object to csv files in GMNS format
+
+    Parameters
+    ----------
+    network: Network
+        an osm2gmns network object
+    output_folder: str
+        path of the folder to store network files. can be an absolute or a relative path
+    prefix: str
+        prefix of output csv files
+    projection: bool
+        if True, osm2gmns will project the network to a local coordinate system when ouptting a network
+    encoding: str
+        the file encoding used to output a network
+
+    Returns
+    -------
+    None
+    """
     if og_settings.verbose:
         print('Outputting Network Files')
 

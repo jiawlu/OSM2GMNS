@@ -92,6 +92,18 @@ def generateMovementsForOneNode(node, max_movement_id, GT):
 
 
 def generateMovements(network):
+    """
+    Use osm2gmns built-in methods to generate movements for each node (intersection) in a network
+
+    Parameters
+    ----------
+    network: Network
+        an osm2gmns Network object
+
+    Returns
+    -------
+    None
+    """
 
     if og_settings.verbose:
         print('Generating Movements')

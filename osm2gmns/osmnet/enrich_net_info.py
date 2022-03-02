@@ -2,6 +2,20 @@ import osm2gmns.settings as og_settings
 
 
 def generateNodeActivityInfo(network):
+    """
+    Generate activity information, including activity_type, is_boundary, zone_id for nodes. activity_type includes
+    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links
+
+    Parameters
+    ----------
+    network: Network
+        osm2gmns Network object
+
+    Returns
+    -------
+    None
+    """
+
     if og_settings.verbose:
         print('Generating Node Activity Information')
 
@@ -67,6 +81,20 @@ def generateNodeActivityInfo(network):
 
 
 def generateLinkVDFInfo(network):
+    """
+    Generate VDF information, including VDF_fftt1 and VDF_cap1 for links.
+    The unit of VDF_fftt1 and VDF_cap1 are min and veh/hour/link, respectively
+
+    Parameters
+    ----------
+    network: Network
+        osm2gmns Network object
+
+    Returns
+    -------
+    None
+    """
+
     if og_settings.verbose:
         print('Generating Link VDF Information')
 
