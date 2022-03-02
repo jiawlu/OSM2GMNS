@@ -1,4 +1,4 @@
-from osm2gmns.networkclass.macronet import Node, Network
+#from osm2gmns.networkclass.macronet import Node, Network
 import osm2gmns.settings as og_settings
 #from shapely import geometry
 
