@@ -1,6 +1,6 @@
 from osm2gmns.networkclass.macronet import Node, Network
 import osm2gmns.settings as og_settings
-from shapely import geometry
+#from shapely import geometry
 
 
 def _identifyComplexIntersections(network, int_buffer):
