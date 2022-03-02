@@ -2,28 +2,26 @@
 Multi-Resolution Modeling
 =========================
 
-Transportation networks can have different spatial granularities, each of them are 
-intended to carry out various analysis, optimization, simulation, and management. 
-In this section, we introduce the concept of multi-resolution network (MRM), which 
-is one of the novelties of this package. Three types of networks, namely microscopic 
-network, mesoscopic network, and macroscopic network, are refered to as the MRM.
+Multi-Resolution Modeling (MRM) is a modeling technology that creates a family of models 
+that represent the same phenomenon or a set of questions at more than two different resolutions. 
+The fine-grained spatial scales could cover corridors, roads, and lane representations, 
+and the temporal resolution refers to the time interval (or time stamps) at which the 
+dynamic state of the model is updated, typically ranging from days to seconds. Each 
+type of model (macroscopic, mesoscopic, or microscopic) has its own advantages and 
+disadvantages, and represents a trade-off between scales and resolution levels. The 
+ultimate goal of MRM is how to seamlessly integrate models with different temporal and 
+spatial resolutions, while the focus of the cross-resolution approach is on how to 
+bridge the gaps between macroscopic and microscopic levels, so as to provide strong 
+theoretical support and deeper insights for both levels.
 
-This case study adopted and extended the GMNS-based representation for ABM and macro-, 
-meso-, and microlayers of representation to achieve a hybrid-resolution network 
-construction. The study adopted the GMNS standard for multiresolution transportation 
-network representation, even though the developers mainly designed GMNS for macroscopic 
-networks. As a result, this MRM-oriented study extends the GMNS-based representation 
-for both mesoscopic and microscopic networks. In the long run, the researchers intend 
-the proposed open-data and open-source framework to create a free open-package and 
-open-data ecosystem, which could reduce the cost and complexity of managing computers 
-and simulation models. The base representation of GMNS would allow different communities 
-to build versions of a high-fidelity virtual model from different open and user-contributed 
-data sources.
+The osm2gmns package adopts the `GMNS`_ standard and further extends it to a inherently 
+consistent multi-resolution network modeling standard. With a single line of code,
+osm2gmns can help users generate corresponding mesoscopic and microscopic networks for
+any given macroscopic networks in GMNS format, enabling practitioners and researchers 
+to carry out various researches on transportation planning, designing, optimization, 
+simulation, and computation under different spatial granularities. In this section, 
+we mainly talk about the three levels of transportation network representation.
 
-The osm2gmns package novelty transfer the macroscopic network into a mesoscopic network 
-and a microscopic network, enabling practitioners and researchers to carry out various 
-transportation planning, designing, optimization, simulation, and computation under 
-different spatial granularities.
 
 .. figure:: _images/mrnet.png
     :name: micronet_pic
@@ -336,4 +334,5 @@ link data dictionary is listed below.
 
 \ :sup:`[2]` https://github.com/zephyr-data-specs/GMNS/blob/master/Specification/Link.md
 
+.. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
 .. _`wkt`: https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
