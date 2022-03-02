@@ -20,8 +20,6 @@ except ImportError:
     import math as mathlib
     use_numpy = False
 
-import numpy as np
-
 K0 = 0.9996
 
 E = 0.00669438
@@ -29,7 +27,7 @@ E2 = E * E
 E3 = E2 * E
 E_P2 = E / (1.0 - E)
 
-SQRT_E = np.sqrt(1 - E)
+SQRT_E = (1 - E)**0.5
 _E = (1 - SQRT_E) / (1 + SQRT_E)
 _E2 = _E * _E
 _E3 = _E2 * _E
