@@ -66,25 +66,3 @@ Melbourne, Australia
     :width: 100%
 
     Melbourne, Australia
-    
-
-Nanjing, Jiangsu, China
-========================================
-
-.. figure:: _images/net_nanjing.png
-    :name: net_nanjing
-    :align: center
-    :width: 100%
-
-    Nanjing, Jiangsu, China
-
-
-Yangzhou, Jiangsu, China
-========================================
-
-.. figure:: _images/net_yangzhou.png
-    :name: net_yangzhou
-    :align: center
-    :width: 100%
-
-    Yangzhou, Jiangsu, China

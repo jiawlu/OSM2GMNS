@@ -7,8 +7,11 @@ Grant No. CMMI 1663657 "Collaborative Research: Real-time Management of Large Fl
 Self-Driving Vehicles Using Virtual CyberTracks"
 
 The second author also thanks for the early support from FHWA project titled "The Effective
-Integration of Analysis, Modeling, and Simulation Tools-AMS DATA HUB CONCEPT OF OPERATIONS".
+Integration of Analysis, Modeling, and Simulation Tools - AMS Data hub Concept of Opeartions".
 https://www.fhwa.dot.gov/publications/research/operations/13036/004.cfm
+
+Many thanks for GMNS specification efforts led by Scott Smith and Ian Berg from Volpe Center, 
+USDOT. Their TRB poster can be found at https://github.com/zephyr-data-specs/GMNS/blob/TRB/TRBPoster_22-02127.pdf  
 
 This document is prepared with the help from `Entai Wang`_ and `Chongnan Li`_.
 
