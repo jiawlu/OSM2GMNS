@@ -62,8 +62,8 @@ Generate multi-resolution networks from an osm file
 
     >>> import osm2gmns as og
     >>> net = og.getNetFromFile('asu.osm')
-	>>> og.consolidateComplexIntersections(net, auto_identify=True)
-	>>> og.buildMultiResolutionNets(net)
+    >>> og.consolidateComplexIntersections(net, auto_identify=True)
+    >>> og.buildMultiResolutionNets(net)
     >>> og.outputNetToCSV(net)
 
 
@@ -75,7 +75,7 @@ You can visualize generated networks using `NeXTA`_ or `QGis`_.
 .. figure:: https://github.com/jiawlu/OSM2GMNS/blob/master/sample%20networks/Arizona%20State%20University%2C%20Tempe%20Campus/net_asu.png
     :name: case_asu
     :align: center
-    :width: 100%
+    :width: 80%
 
     Arizona State Unversity, Tempe Campus
 
