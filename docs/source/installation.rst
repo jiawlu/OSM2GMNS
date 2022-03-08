@@ -39,5 +39,5 @@ Affected users can download binary wheels of osmium from `our repository`_ or `o
 .. _`Shapely`: https://github.com/Toblerity/Shapely
 .. _`osmium`: https://github.com/osmcode/pyosmium
 .. _`numpy`: https://github.com/numpy/numpy
-.. _`our repository`: https://github.com/osmcode/pyosmium/actions
-.. _`osmium github homepage`: https://github.com/jiawlu/OSM2GMNS/tree/master/dependencies
+.. _`our repository`: https://github.com/jiawlu/OSM2GMNS/tree/master/dependencies
+.. _`osmium github homepage`: https://github.com/osmcode/pyosmium/actions
