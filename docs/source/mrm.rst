@@ -9,8 +9,8 @@ and the temporal resolution refers to the time interval (or time stamps) at whic
 dynamic state of the model is updated, typically ranging from days to seconds. Each 
 type of model (macroscopic, mesoscopic, or microscopic) has its own advantages and 
 disadvantages, and represents a trade-off between scales and resolution levels. The 
-ultimate goal of MRM is how to seamlessly integrate models with different temporal and 
-spatial resolutions, while the focus of the cross-resolution approach is on how to 
+ultimate goal of MRM is to seamlessly integrate models with different temporal and 
+spatial resolutions, while the focus of the cross-resolution approach is to 
 bridge the gaps between macroscopic and microscopic levels, so as to provide strong 
 theoretical support and deeper insights for both levels.
 
@@ -18,7 +18,7 @@ The osm2gmns package adopts the `GMNS`_ standard and further extends it to a inh
 consistent multi-resolution network modeling standard. With a single line of code,
 osm2gmns can help users generate corresponding mesoscopic and microscopic networks for
 any given macroscopic networks in GMNS format, enabling practitioners and researchers 
-to carry out various researches on transportation planning, designing, optimization, 
+to carry out various studies on transportation planning, designing, optimization, 
 simulation, and computation under different spatial granularities. In this section, 
 we mainly talk about the three levels of transportation network representation.
 
@@ -117,8 +117,8 @@ link data dictionary is listed below.
     |    is_link     |      bool     |          | 1: link connecting two roads, 0: not                          |
     +----------------+---------------+----------+---------------------------------------------------------------+
 
-Other two optional files including ``movement.csv`` and ``segement.csv`` follow the exact same format as what
-being defined in the GMMS standard. Readers can check the GMNS website for details.
+There are two optional files including ``movement.csv`` and ``segement.csv`` that follow the exact same format as
+defined in the GMMS standard. Readers can check the GMNS website for details.
 
 In addition to the above files defined in the GMNS standard, osm2gmns can also produce ``poi.csv`` files
 where point of interest information is stored. Detailed poi data dictionary is listed below.
@@ -157,7 +157,7 @@ Mesoscopic Network
 ===================================
 
 Compared to the original macroscopic network, the mesoscopic network has more detailed 
-information in the intersections. In the mesoscopic network, the research team expanded 
+information of the intersections. In the mesoscopic network, the research team expanded 
 each intersection represented by a node in the macroscopic network. The team built a 
 connector link for each intersection movement to facilitate intersection modeling, 
 especially for signalized intersections.
