@@ -44,7 +44,7 @@ data are available.
 
 Generally, there are three types of file format for users to choose when downloading map data.
 osm2gmns supports ``.pbf`` and ``.osm`` files. In osm2gmns, networks stored in ``.osm`` files
-are parsed quickly than those stored in ``.pbf`` files. However, compared with ``.pbf`` files,
+are parsed more quickly than those stored in ``.pbf`` files. However, compared with ``.pbf`` files,
 ``.osm`` files take much more hard disk space to store networks and much more space in RAM while parsing.
 
 .. figure:: _images/geofabrik.png
@@ -107,16 +107,16 @@ all links in the network file will be imported.
     Parsed network with ``strict_mode=True``
 
 
-One loaded network may contain several sub networks, with some sub networks are not accessible from others.
+One loaded network may contain several sub networks, with some sub networks not accessible from others.
 In most cases, these sub networks include a large sub network and some isolated nodes or links. When the
 number of nodes of a sub network is less than argument ``min_nodes`` (default: ``1``), this sub network
 will be discarded.
 
 Users can use argument ``combine`` (default: ``False``) to control short link combinations. If ``combine``
-is enabled, two-degree nodes (one incoming link and one outgoing link) will be removed, and two adjacent
+is enabled, two-degree nodes (nodes with one incoming link and one outgoing link) will be removed, and two adjacent
 links will be combined to generate a new link.
 
-Noticed that most links do not have "lanes" information in the map data provided by OpenStreetMap. Thus,
+Notice that most links do not have "lanes" information in the map data provided by OpenStreetMap. Thus,
 we use a default lanes dictionary for each link type in osm2gmns. By setting ``default_lanes`` (default:  ``False``)
 as ``True``, the default value will be assigned to a link if it does not come with "lanes" information. The
 default dictionary in osm2gmns:
@@ -177,7 +177,7 @@ that are original represented by multiple nodes into a single node.
 
     Complex intersection consolidation
 
-Users can also check and revise complex intersection identification results first, then conduct the consolidating
+Users can also check and revise complex intersection identification results first, and then conduct the consolidation
 operation to obtain more reasonable outcomes.
 
 .. code-block:: python
@@ -230,7 +230,7 @@ Connect POIs with transportation network.
     >>> og.connectPOIWithNet(net)
 
 By using function ``connectPOIWithNet``, a node located at the centroid of each POI will be generated to
-represent the POI, then connector links will be built to connect the POI node with the nearest node in the
+represent the POI. Then connector links will be built to connect the POI node with the nearest node in the
 transportation network.
 
 .. figure:: _images/poi2.png
