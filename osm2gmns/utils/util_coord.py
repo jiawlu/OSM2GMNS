@@ -20,6 +20,7 @@ except ImportError:
     import math as mathlib
     use_numpy = False
 
+
 K0 = 0.9996
 
 E = 0.00669438

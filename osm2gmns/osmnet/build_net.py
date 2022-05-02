@@ -356,11 +356,15 @@ def _createNLPs(osmnetwork, network, link_types, offset, network_types, POI, POI
 
 
 
-def _buildNet(osmnetwork, network_types, link_types, POI, POI_percentage, offset, min_nodes, combine, default_lanes, default_speed, default_capacity):
+def _buildNet(osmnetwork, network_types, link_types, POI, POI_percentage, offset, min_nodes, combine, default_lanes,
+              default_speed, default_capacity, start_node_id, start_link_id):
     if og_settings.verbose:
         print('  parsing osm network')
 
     network = Network()
+    network.max_node_id = start_node_id
+    network.max_link_id = start_link_id
+
     network.GT, network.bounds = osmnetwork.GT, osmnetwork.bounds
 
     # update default lanes, speed, and capacity
@@ -409,7 +413,7 @@ def getNetFromPBFFile(pbf_filename='map.osm.pbf', network_types=('auto',), link_
 
 def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,
                    strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,
-                   default_lanes=False, default_speed=False, default_capacity=False):
+                   default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):
     """
     Get an osm2gmns Network object from an osm file
 
@@ -449,6 +453,10 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all'
     default_capacity: bool, dict
         if True, assign a default value for links without capacity information based on built-in settings. if a dict,
         assign a default value for links without capacity information based on the dict passed by users.
+    start_node_id: int
+        osm2gmns assigns node_ids to generated nodes starting from start_node_id.
+    start_link_id: int
+        osm2gmns assigns link_ids to generated links starting from start_link_id
 
     Returns
     -------
@@ -470,19 +478,22 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all'
         print(f'  bbox: {bbox}')
         print(f'  default_lanes: {default_lanes}')
         print(f'  default_speed: {default_speed}')
-        print(f'  default_capacity: {default_capacity}\n')
+        print(f'  default_capacity: {default_capacity}')
+        print(f'  start_node_id: {start_node_id}')
+        print(f'  start_link_id: {start_link_id}\n')
 
         print('Building Network from OSM file')
 
     network_types_, link_types_, POI_, POI_sampling_ratio_, strict_mode_, offset_, min_nodes_, combine_, \
-        bbox_, default_lanes_, default_speed_, default_capacity_ = \
+        bbox_, default_lanes_, default_speed_, default_capacity_, start_node_id_, start_link_id_ = \
         checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampling_ratio, strict_mode, offset,
-                                min_nodes, combine, bbox, default_lanes, default_speed, default_capacity)
+                                min_nodes, combine, bbox, default_lanes, default_speed, default_capacity, start_node_id,
+                                 start_link_id)
 
     osmnetwork = readOSMFile(filename, POI_, strict_mode_, bbox_)
 
     network = _buildNet(osmnetwork, network_types_, link_types_, POI_, POI_sampling_ratio_, offset_, min_nodes_, combine_,
-                        default_lanes_, default_speed_, default_capacity_)
+                        default_lanes_, default_speed_, default_capacity_, start_node_id_, start_link_id_)
 
     if og_settings.verbose:
         print(f'  number of nodes: {len(network.node_dict)}, number of links: {len(network.link_dict)}, number of pois: {len(network.POI_list)}')

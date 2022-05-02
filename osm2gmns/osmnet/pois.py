@@ -142,17 +142,30 @@ def _POIFromRelation(POI_relation_list, net_bound):
                 polygon_list.append(poly)
                 polygon_list_xy.append(poly_xy)
 
-        if len(polygon_list) == 0: continue
-        poi.geometry = geometry.MultiPolygon(polygon_list)
-        if poi.geometry.disjoint(net_bound): continue
+        if len(polygon_list) == 0:
+            continue
+        else:
+            if len(polygon_list) == 1:
+                poi.geometry = polygon_list[0]
+                if poi.geometry.disjoint(net_bound): continue
+                poi.geometry_xy = polygon_list_xy[0]
+            else:
+                disjoint = True
+                for poly in polygon_list:
+                    if not poly.disjoint(net_bound):
+                        disjoint = False
+                        break
+                if disjoint: continue
+                poi.geometry = geometry.MultiPolygon(polygon_list)
+                poi.geometry_xy = geometry.MultiPolygon(polygon_list_xy)
 
-        poi.geometry_xy = geometry.MultiPolygon(polygon_list_xy)
-        lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
-        poi.centroid = geometry.Point((round(lon,og_settings.lonlat_coord_precision),round(lat,og_settings.lonlat_coord_precision)))
-        x, y = poi.geometry_xy.centroid.x, poi.geometry_xy.centroid.y
-        poi.centroid_xy = geometry.Point((round(x,og_settings.local_coord_precision),round(y,og_settings.local_coord_precision)))
+            lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
+            poi.centroid = geometry.Point((round(lon, og_settings.lonlat_coord_precision), round(lat, og_settings.lonlat_coord_precision)))
+            x, y = poi.geometry_xy.centroid.x, poi.geometry_xy.centroid.y
+            poi.centroid_xy = geometry.Point((round(x, og_settings.local_coord_precision), round(y, og_settings.local_coord_precision)))
 
-        POI_list2.append(poi)
+            POI_list2.append(poi)
+
     return POI_list2
 
 

@@ -5,7 +5,7 @@ import sys
 
 def checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampling_ratio,
                strict_mode, offset, min_nodes, combine, bbox,
-               default_lanes, default_speed, default_capacity):
+               default_lanes, default_speed, default_capacity, start_node_id, start_link_id):
     # filename
     file_extension = os.path.splitext(filename)[-1]
     if not file_extension:
@@ -124,5 +124,18 @@ def checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampl
         print('WARNING: argument default_capacity should be a bool or a dict. The default value False has been applied')
         default_capacity_ = False
 
+    # start node/link id
+    if isinstance(start_node_id, int):
+        start_node_id_ = start_node_id
+    else:
+        print('WARNING: argument start_node_id should be a int. The default value 0 has been applied')
+        start_node_id_ = 0
+
+    if isinstance(start_link_id, int):
+        start_link_id_ = start_link_id
+    else:
+        print('WARNING: argument start_link_id should be a int. The default value 0 has been applied')
+        start_link_id_ = 0
+
     return network_types_, link_types_, POI_, POI_sampling_ratio_, strict_mode_, offset_, min_nodes_, combine_,\
-        bbox_, default_lanes_, default_speed_, default_capacity_
+        bbox_, default_lanes_, default_speed_, default_capacity_, start_node_id_, start_link_id_
