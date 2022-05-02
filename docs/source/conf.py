@@ -27,7 +27,7 @@ copyright = '2020-2022, Jiawei Lu, Xuesong (Simon) Zhou'
 author = 'Jiawei Lu, Xuesong (Simon) Zhou'
 
 # The full version, including alpha/beta/rc tags
-release = '0.6.4'
+release = '0.6.5'
 
 
 # -- General configuration ---------------------------------------------------
