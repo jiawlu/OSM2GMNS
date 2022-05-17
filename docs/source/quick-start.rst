@@ -210,7 +210,7 @@ Obtain POIs (Point of Interest) from osm map data.
 
 .. code-block:: python
 
-    >>> net = og.getNetFromOSMFile('asu.osm', POI=True)
+    >>> net = og.getNetFromFile('asu.osm', POI=True)
 
 If ``POI`` (default: ``False``) is set as ``True``, a file named ``poi.csv`` will be generated when outputting
 a network using function ``outputNetToCSV``.
@@ -226,7 +226,7 @@ Connect POIs with transportation network.
 
 .. code-block:: python
 
-    >>> net = og.getNetFromOSMFile('asu.osm', POIs=True)
+    >>> net = og.getNetFromFile('asu.osm', POI=True)
     >>> og.connectPOIWithNet(net)
 
 By using function ``connectPOIWithNet``, a node located at the centroid of each POI will be generated to
