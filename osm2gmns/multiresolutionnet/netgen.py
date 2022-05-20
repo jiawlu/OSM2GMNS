@@ -52,6 +52,10 @@ class NetGenerator:
                     lane_geometry_xy = geometry.LineString(list(lane_geometry_xy_.coords)[::-1])
                 else:
                     lane_geometry_xy = lane_geometry_xy_
+
+            if lane_geometry_xy.is_empty:
+                return self.getLaneGeometry(original_geometry, lane_offset*0.6)
+
         else:
             lane_geometry_xy = original_geometry
 
