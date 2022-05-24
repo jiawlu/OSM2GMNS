@@ -120,14 +120,14 @@ def _outputPOI(network, output_folder, poi_filename, projection, encoding):
                 print(f'{poi_filename} may be locked by other programs. please release it then press Enter to try again')
                 input()
         writer = csv.writer(outfile)
-        writer.writerow(['name', 'poi_id', 'osm_way_id', 'osm_relation_id','building','amenity','way','geometry','centroid',
+        writer.writerow(['name', 'poi_id', 'osm_way_id', 'osm_relation_id','building','amenity','leisure','way','geometry','centroid',
                          'area', 'area_ft2'])
         for poi in network.POI_list:
             geometry_ = poi.geometry_xy if projection else poi.geometry
             centroid = poi.centroid_xy if projection else poi.centroid
             area = poi.geometry_xy.area
             area_ft2 = area * 10.7639
-            line = [poi.name, poi.poi_id, poi.osm_way_id, poi.osm_relation_id, poi.building, poi.amenity, poi.way, geometry_,
+            line = [poi.name, poi.poi_id, poi.osm_way_id, poi.osm_relation_id, poi.building, poi.amenity, poi.leisure, poi.way, geometry_,
                     centroid, round(area,1), round(area_ft2,1)]
             writer.writerow(line)
 

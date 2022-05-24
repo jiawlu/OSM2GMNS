@@ -120,7 +120,7 @@ def _offsetLinkGeometry(link_dict, width_of_lane, GT):
         reversed_link_found = False
         for link_id_b in link_ids[link_no_a+1:]:
             link_b = link_dict[link_id_b]
-            if geometry_xy_a_r.almost_equals(link_b.geometry_xy, decimal=1):
+            if geometry_xy_a_r.equals_exact(link_b.geometry_xy, tolerance=0.1):
                 reversed_link_found = True
                 link_offset_dict[link_a] = True
                 link_offset_dict[link_b] = True

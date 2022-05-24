@@ -224,6 +224,7 @@ class POI:
         self.nearest_node = None
         self.building = None
         self.amenity = None
+        self.leisure = None
         self.way = None         # highway,railway,aeroway poi
 
 

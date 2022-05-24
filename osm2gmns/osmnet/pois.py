@@ -63,6 +63,7 @@ def _POIFromWay(POI_way_list, net_bound):
         poi.name = way.name
         poi.building = way.building
         poi.amenity = way.amenity
+        poi.leisure = way.leisure
         poi.way = way.way_poi
 
         poi.geometry, poi.geometry_xy = poly, poly_xy
@@ -82,6 +83,7 @@ def _POIFromRelation(POI_relation_list, net_bound):
         poi.name = relation.name
         poi.building = relation.building
         poi.amenity = relation.amenity
+        poi.leisure = relation.leisure
         polygon_list = []
         polygon_list_xy = []
         number_of_members = len(relation.member_list)

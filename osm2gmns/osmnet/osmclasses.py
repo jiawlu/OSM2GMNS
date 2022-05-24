@@ -64,6 +64,7 @@ class Way:
         self.bicycle = None
         self.building = None
         self.amenity = None
+        self.leisure = None
         self.way_poi = None     # used for poi
         self.allowable_agent_type_list = []
         self.allowed_uses = []
@@ -104,6 +105,7 @@ class Relation:
         self.name = ''
         self.building = None
         self.amenity = None
+        self.leisure = None
 
 
 class OSMNetwork:

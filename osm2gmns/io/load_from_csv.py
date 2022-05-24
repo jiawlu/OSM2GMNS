@@ -443,6 +443,8 @@ def _loadPOIs(network, poi_filepath, encoding):
         if building: poi.building = building
         amenity = poi_info['amenity']
         if amenity: poi.amenity = amenity
+        leisure = poi_info['leisure']
+        if leisure: poi.leisure = leisure
         way = poi_info['way']
         if way: poi.way = way
 

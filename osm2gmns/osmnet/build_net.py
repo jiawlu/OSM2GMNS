@@ -232,7 +232,7 @@ def _preprocessWays(osmnetwork, link_types, network_types):
     include_aeroway = True if 'aeroway' in network_types_set else False
 
     for osm_way_id, way in osmnetwork.osm_way_dict.items():
-        if way.building or way.amenity:
+        if way.building or way.amenity or way.leisure:
             POI_way_list.append(way)
 
         elif way.highway:

@@ -119,6 +119,7 @@ class NWRHandler(osmium.SimpleHandler):
         way.bicycle = w.tags.get('bicycle')
         way.building = w.tags.get('building')
         way.amenity = w.tags.get('amenity')
+        way.leisure = w.tags.get('leisure')
 
         self.osm_way_dict[way.osm_way_id] = way
         del w
@@ -132,6 +133,7 @@ class NWRHandler(osmium.SimpleHandler):
 
         relation.building = r.tags.get('building')
         relation.amenity = r.tags.get('amenity')
+        relation.leisure = r.tags.get('leisure')
         if (relation.building is None) and (relation.amenity is None):
             return
         relation.name = r.tags.get('name')
