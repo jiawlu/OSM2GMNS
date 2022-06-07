@@ -132,7 +132,6 @@ def _outputPOI(network, output_folder, poi_filename, projection, encoding):
             writer.writerow(line)
 
 
-
 def outputNetToCSV(network, output_folder='', prefix='', projection=False, encoding=None):
     """
     Output an osm2gmns network object to csv files in GMNS format

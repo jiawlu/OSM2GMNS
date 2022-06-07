@@ -1,6 +1,6 @@
 # todo: walk, bike
 
-negligible_highway_type_set = {'path','construction','proposed','raceway','bridleway','rest_area','su','living_street',
+negligible_highway_type_set = {'path','construction','proposed','raceway','bridleway','rest_area','su',
                                'road','abandoned','planned','trailhead','stairs','dismantled','disused','razed','access',
                                'corridor','stop'}
 negligible_railway_type_set = {'construction','abandoned','disused','proposed','planned','dismantled','razed','ventilation_shaft'}
@@ -17,7 +17,7 @@ _filter_in = {'auto': {'motor_vehicle':{'yes'},
               'bike': {'bicycle':{'yes'}},
               'walk': {'foot':{'yes'}}}
 
-_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service'},
+_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},
                        'motor_vehicle':{'no'},
                        'motorcar':{'no'},
                        'access':{'private'},

@@ -6,8 +6,8 @@ osm2gmns
 
 osm2gmns is an open-source Python package that enables users to conveniently obtain and 
 manipulate any networks from `OpenStreetMap`_ (OSM). With a single line of Python code, 
-users can obtian and model drivable, bikeable, walkable, railway, and aeroway networks 
-for any regions in the world, and output networks to csv files in `GMNS`_ format for seamless
+users can obtain and model drivable, bikeable, walkable, railway, and aeroway networks 
+for any region in the world and output networks to CSV files in `GMNS`_ format for seamless 
 data sharing and research collaboration. osm2gmns mainly focuses on providing researchers and 
 practitioners with flexible, standard and ready-to-use multi-modal transportation networks, 
 as well as a bunch of customized and practical functions to facilitate various research 
