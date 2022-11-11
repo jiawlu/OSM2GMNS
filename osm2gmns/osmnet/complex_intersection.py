@@ -30,7 +30,7 @@ def _identifyComplexIntersections(network, int_buffer):
 
     group_list = []
     group_status = []
-    for link_id,link in network.link_dict.items():
+    for _,link in network.link_dict.items():
         if link.length > int_buffer: continue
         if not (link.from_node.intersection_id is None and link.to_node.intersection_id is None): continue
         if not (link.from_node.ctrl_type == 'signal' and link.to_node.ctrl_type == 'signal'): continue
@@ -98,7 +98,7 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
 
     node_group_dict = {}
     node_group_ctrl_type_dict = {}
-    for node_id, node in network.node_dict.items():
+    for _, node in network.node_dict.items():
         if node.intersection_id is not None:
             if node.intersection_id in node_group_dict.keys():
                 node_group_dict[node.intersection_id].append(node)
@@ -110,6 +110,7 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
 
     removal_node_set = set()
     removal_link_set = set()
+    number_of_intersections_consolidated = 0
 
     for intersection_id, node_group in node_group_dict.items():
         if len(node_group) < 2:
@@ -159,7 +160,10 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
 
         network.node_dict[new_node.node_id] = new_node
         network.max_node_id += 1
-
+        number_of_intersections_consolidated += 1
 
     for node in removal_node_set: del network.node_dict[node.node_id]
     for link in removal_link_set: del network.link_dict[link.link_id]
+
+    if og_settings.verbose:
+        print(f'    {number_of_intersections_consolidated} intersections have been consolidated')

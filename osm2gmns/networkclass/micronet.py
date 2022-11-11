@@ -47,6 +47,9 @@ class MicroLink(BaseLink):
         if self.is_first_movement_cell and self.mesolink.mvmt_txt_id is not None:
             return self.mesolink.mvmt_txt_id
     @property
+    def ctrl_type(self):
+        return self.mesolink.ctrl_type
+    @property
     def lane_no(self):
         return self.from_node.lane_no
 

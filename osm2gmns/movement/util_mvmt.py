@@ -3,20 +3,6 @@ from shapely import geometry
 
 _indent = 8.0
 
-def getLinkAngle(ib_link, ob_link):
-    angle_ib = math.atan2(ib_link.geometry_xy.coords[-1][1] - ib_link.geometry_xy.coords[0][1],
-                          ib_link.geometry_xy.coords[-1][0] - ib_link.geometry_xy.coords[0][0])
-
-    angle_ob = math.atan2(ob_link.geometry_xy.coords[-1][1] - ob_link.geometry_xy.coords[0][1],
-                          ob_link.geometry_xy.coords[-1][0] - ob_link.geometry_xy.coords[0][0])
-
-    angle = angle_ob - angle_ib
-    if angle < -1 * math.pi:
-        angle += 2 * math.pi
-    if angle > math.pi:
-        angle -= 2 * math.pi
-    return angle
-
 
 def getMovementDescription(ib_link, ob_link):
     ib_start, ib_end = ib_link.geometry_xy.coords[0], ib_link.geometry_xy.coords[-1]

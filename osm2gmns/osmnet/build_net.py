@@ -343,14 +343,12 @@ def _identifyCrossingOSMNodes(osm_node_dict):
             osmnode.is_crossing = True
 
 
-def _createNLPs(osmnetwork, network, link_types, offset, network_types, POI, POI_percentage):
+def _createNLPs(osmnetwork, network, link_types, network_types, POI, POI_percentage):
     _preprocessWays(osmnetwork, link_types, network_types)
     _identifyCrossingOSMNodes(osmnetwork.osm_node_dict)
     _identifyPureCycleWays(osmnetwork.link_way_list)
     _createNodesAndLinks(network, osmnetwork.link_way_list)
     _addSignalFromLink(network)
-
-    if offset != 'no': _offsetLinks(network, offset)
 
     if POI: generatePOIs(osmnetwork.POI_way_list, osmnetwork.osm_relation_list, network, POI_percentage)
 
@@ -371,7 +369,7 @@ def _buildNet(osmnetwork, network_types, link_types, POI, POI_percentage, offset
     _updateDefaultLSC(default_lanes, default_speed, default_capacity, network)
 
     # create node, link, poi
-    _createNLPs(osmnetwork, network, link_types, offset, network_types, POI, POI_percentage)
+    _createNLPs(osmnetwork, network, link_types, network_types, POI, POI_percentage)
 
     # remove isolated nodes and links
     if min_nodes > 1: _removeIsolated(network, min_nodes)
@@ -379,35 +377,9 @@ def _buildNet(osmnetwork, network_types, link_types, POI, POI_percentage, offset
     # combine adjacent links at two-degree nodes
     if combine: combineShortLinks(network)
 
-    return network
+    # offset two-way overlapping links
+    if offset != 'no': _offsetLinks(network, offset)
 
-
-def getNetFromOSMFile(osm_filename='map.osm', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,
-                      strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,
-                      default_lanes=False, default_speed=False, default_capacity=False):
-    """
-    Deprecated
-    """
-
-    print('WARNING: getNetFromOSMFile() and getNetFromPBFFile() are deprecated and will be removed in a future release.\n'
-          '         Please use getNetFromFile().')
-
-    network = getNetFromFile(osm_filename, network_types, link_types, POI, POI_sampling_ratio, strict_mode, offset, min_nodes,
-                             combine, bbox, default_lanes, default_speed, default_capacity)
-    return network
-
-
-def getNetFromPBFFile(pbf_filename='map.osm.pbf', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,
-                      strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,
-                      default_lanes=False, default_speed=False, default_capacity=False):
-    """
-    Deprecated
-    """
-
-    print('WARNING: getNetFromOSMFile() and getNetFromPBFFile() are deprecated and will be removed in a future release.\n'
-          '         Please use getNetFromFile().')
-    network = getNetFromFile(pbf_filename, network_types, link_types, POI, POI_sampling_ratio, strict_mode, offset, min_nodes,
-                             combine, bbox, default_lanes, default_speed, default_capacity)
     return network
 
 

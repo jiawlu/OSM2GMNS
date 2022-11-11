@@ -5,7 +5,7 @@
 
 from osm2gmns.networkclass.macronet import Network
 from osm2gmns.multiresolutionnet.netgen import NetGenerator
-from osm2gmns.movement.generate_movements_old import generateMovementsForOneNode
+from osm2gmns.movement.generate_movements import generateMovementsForOneNode
 from osm2gmns.utils.util_geo import offsetLine
 import osm2gmns.settings as og_settings
 from shapely import geometry
@@ -262,7 +262,8 @@ def _autoGenerateMovements(macronet):
     macronet.max_movement_id = max_movement_id
 
 
-def buildMultiResolutionNets(macronet, auto_movement_generation=True, exclusive_bike_walk_lanes=True, connector_type=None,
+def buildMultiResolutionNets(macronet, generate_micro_net=True,
+                             auto_movement_generation=True, exclusive_bike_walk_lanes=True, connector_type=None,
                              width_of_lane=3.5, length_of_cell=7.0):
     """
     Build the corresponding mesoscopic and microscopic networks for a source (macroscopic) network
@@ -271,6 +272,8 @@ def buildMultiResolutionNets(macronet, auto_movement_generation=True, exclusive_
     ----------
     macronet: Network
         a soucrce osm2gmns Network object
+    generate_micro_net: bool
+        True: generate meso and micro networks; False: only generate meso network
     auto_movement_generation: bool
         automatically generate movements for intersections without movement information by calling function generateMovements
         in osm2gmns. if auto_movement_generation is set as False, movements at intersections without movement information will not be generated
@@ -301,7 +304,6 @@ def buildMultiResolutionNets(macronet, auto_movement_generation=True, exclusive_
     if auto_movement_generation:
         _autoGenerateMovements(macronet)
 
-    net_generator = NetGenerator(macronet, exclusive_bike_walk_lanes, length_of_cell, width_of_lane)
+    net_generator = NetGenerator(macronet, generate_micro_net, exclusive_bike_walk_lanes, length_of_cell, width_of_lane)
     net_generator.generateNet()
-    macronet.mesonet = net_generator.mesonet
-    macronet.micronet = net_generator.micronet
+    macronet.mesonet, macronet.micronet = net_generator.mesonet, net_generator.micronet

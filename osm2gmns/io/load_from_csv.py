@@ -27,10 +27,19 @@ def _loadNodes(network, node_filepath, coordinate_type, encoding):
         fin = open(node_filepath, 'r', encoding=encoding)
     reader = csv.DictReader(fin)
 
+    fieldnames = reader.fieldnames.copy()
+    if '' in fieldnames:
+        print('WARNING: columns with an empty header are detected in the node file. these columns will be skipped')
+        fieldnames = [fieldname for fieldname in fieldnames if fieldname]
+    
+    fieldnames_set = set(fieldnames)
+    if len(fieldnames) > len(fieldnames_set):
+        print('WARNING: columns with duplicate header names are detected in the node file. please check')
+
     for field in _node_required_fields:
-        if field not in reader.fieldnames:
+        if field not in fieldnames_set:
             sys.exit(f'ERROR: required field ({field}) does not exist in the node file')
-    other_fields = list(set(reader.fieldnames).difference(_node_required_fields.union(_node_optional_fields)))
+    other_fields = list(fieldnames_set.difference(_node_required_fields.union(_node_optional_fields)))
 
     max_node_id = network.max_node_id
     max_intersection_id = network.max_intersection_id
@@ -120,10 +129,19 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
         fin = open(link_filepath, 'r', encoding=encoding)
     reader = csv.DictReader(fin)
 
+    fieldnames = reader.fieldnames.copy()
+    if '' in fieldnames:
+        print('WARNING: columns with an empty header are detected in the link file. these columns will be skipped')
+        fieldnames = [fieldname for fieldname in fieldnames if fieldname]
+    
+    fieldnames_set = set(fieldnames)
+    if len(fieldnames) > len(fieldnames_set):
+        print('WARNING: columns with duplicate header names are detected in the link file. please check')
+
     for field in _link_required_fields:
-        if field not in reader.fieldnames:
+        if field not in fieldnames_set:
             sys.exit(f'ERROR: required field ({field}) does not exist in the link file')
-    other_fields = list(set(reader.fieldnames).difference(_link_required_fields.union(_link_optional_fields)))
+    other_fields = list(fieldnames_set.difference(_link_required_fields.union(_link_optional_fields)))
 
     node_dict = network.node_dict
     GT = network.GT
@@ -170,7 +188,10 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
         if link_type_name: link.link_type_name = link_type_name
         link_type = link_info['link_type'] if 'link_type' in reader.fieldnames else None
         if link_type:
-            link.link_type = int(link_type)
+            try:
+                link.link_type = int(link_type)
+            except ValueError:
+                print(f'WARNING: link_type {link_type} of link {link.link_id} is not an integer')
 
         geometry_str = link_info['geometry'] if 'geometry' in reader.fieldnames else None
         if geometry_str:
@@ -464,17 +485,6 @@ def _loadPOIs(network, poi_filepath, encoding):
     network.max_poi_id = max_poi_id
 
 
-
-def getNetFromCSV(folder='', enconding=None):
-    """
-    Deprecated
-    """
-    print('Warning: getNetFromCSV() is deprecated and will be removed in a future release. Please use loadNetFromCSV().\n'
-          '         For more information, please refer to the document at https://osm2gmns.readthedocs.io')
-    network = loadNetFromCSV(folder, enconding)
-    return network
-
-
 def loadNetFromCSV(folder='', node_file=None, link_file=None, movement_file=None,
                    segment_file=None, geometry_file=None, POI_file=None,
                    coordinate_type='lonlat', enconding=None):
@@ -550,6 +560,9 @@ def loadNetFromCSV(folder='', node_file=None, link_file=None, movement_file=None
         POI_filepath = None
 
     network = Network()
+
+    if og_settings.verbose:
+        print('Loading Network From CSV Files')
 
     _loadNodes(network, node_filepath, coordinate_type, enconding)
 

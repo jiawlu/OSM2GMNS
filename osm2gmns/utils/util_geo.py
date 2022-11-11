@@ -3,6 +3,7 @@ import osm2gmns.settings as og_settings
 from shapely import geometry
 import functools
 import numpy as np
+import math
 
 
 
@@ -22,6 +23,29 @@ def getPolygonFromNodes(node_list):
     point_list_xy = [node.geometry_xy for node in node_list]
     poly_xy = geometry.Polygon(point_list_xy)
     return poly, poly_xy
+
+
+def getLineAngle(ib_line, ob_line, complete_line=True):
+    # complete_line - True (False): use the last and first (second last) coords to calculate line direction
+    # ob_line counter clockwise: 0 to 180; ob_line clockwise: 0 to -180
+
+    if complete_line:
+        angle_ib = math.atan2(ib_line.coords[-1][1] - ib_line.coords[0][1],
+                              ib_line.coords[-1][0] - ib_line.coords[0][0])
+        angle_ob = math.atan2(ob_line.coords[-1][1] - ob_line.coords[0][1],
+                              ob_line.coords[-1][0] - ob_line.coords[0][0])
+    else:
+        angle_ib = math.atan2(ib_line.coords[-1][1] - ib_line.coords[-2][1],
+                              ib_line.coords[-1][0] - ib_line.coords[-2][0])
+        angle_ob = math.atan2(ob_line.coords[-1][1] - ob_line.coords[-2][1],
+                              ob_line.coords[-1][0] - ob_line.coords[-2][0])
+
+    angle = angle_ob - angle_ib
+    if angle < -1 * math.pi:
+        angle += 2 * math.pi
+    if angle > math.pi:
+        angle -= 2 * math.pi
+    return angle
 
 
 def offsetLine(line, distance):

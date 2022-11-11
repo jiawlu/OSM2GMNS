@@ -69,6 +69,9 @@ class MesoLink(BaseLink):
     def mvmt_txt_id(self):
         return self.movement.mvmt_txt_id if self.movement is not None else None
     @property
+    def ctrl_type(self):
+        return self.macronode.ctrl_type if self.macronode is not None else None
+    @property
     def link_type_name(self):
         if self.macrolink is not None:
             return self.macrolink.link_type_name

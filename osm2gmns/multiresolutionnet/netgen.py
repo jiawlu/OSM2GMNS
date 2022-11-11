@@ -8,8 +8,9 @@ import sys
 
 
 class NetGenerator:
-    def __init__(self, macronet, exclusive_bike_walk_lanes, length_of_cell, width_of_lane):
+    def __init__(self, macronet, generate_micro_net, exclusive_bike_walk_lanes, length_of_cell, width_of_lane):
         self.macronet = macronet
+        self.generate_micro_net = generate_micro_net
         # self.exclusive_bike_walk_lanes = exclusive_bike_walk_lanes
         self.exclusive_bike_walk_lanes = False          # todo: update in the next release
         self.length_of_cell = length_of_cell
@@ -19,7 +20,7 @@ class NetGenerator:
         self.walk_lane_width = 0.5
 
         self.mesonet = MesoNetwork()
-        self.micronet = MicroNetwork()
+        self.micronet = MicroNetwork() if generate_micro_net else None
 
         self.number_of_expanded_mesonode = {}       # macronode: number_of_expanded_mesonode
 
@@ -359,7 +360,7 @@ class NetGenerator:
 
         max_mesolink_id = self.mesonet.max_link_id
 
-        for link_id, link in self.macronet.link_dict.items():
+        for _, link in self.macronet.link_dict.items():
             macro_from_node = link.from_node
             if macro_from_node.is_centroid:
                 upstream_node = macro_from_node.centroid_meso_node
@@ -414,7 +415,8 @@ class NetGenerator:
                 max_mesolink_id += 1
                 upstream_node = downstream_node
 
-            self.createMicroNetForNormalLink(link)
+            if self.generate_micro_net:
+                self.createMicroNetForNormalLink(link)
 
         self.mesonet.max_link_id = max_mesolink_id
 
@@ -425,7 +427,7 @@ class NetGenerator:
 
         max_mesolink_id = self.mesonet.max_link_id
 
-        for macronode_id, macronode in self.macronet.node_dict.items():
+        for _, macronode in self.macronet.node_dict.items():
             for mvmt in macronode.movement_list:
                 ib_link, ob_link = mvmt.ib_link, mvmt.ob_link
                 ib_lane_list = [lane_no for lane_no in range(int(mvmt.start_ib_lane), int(mvmt.end_ib_lane + 1))]
@@ -471,7 +473,8 @@ class NetGenerator:
                     mesolink.from_node.outgoing_link_list.append(mesolink)
                     mesolink.to_node.incoming_link_list.append(mesolink)
 
-                    self.createMicroNetForConnector(mesolink, ib_mesolink, ib_lane_index_start, ob_mesolink, ob_lane_index_start)
+                    if self.generate_micro_net:
+                        self.createMicroNetForConnector(mesolink, ib_mesolink, ib_lane_index_start, ob_mesolink, ob_lane_index_start)
                 else:
                     if ib_link.downstream_is_target and not ob_link.upstream_is_target:
                         # remove incoming micro nodes and links of ob_mesolink, then connect to ib_mesolink
@@ -482,14 +485,15 @@ class NetGenerator:
                         ob_mesolink.geometry_xy = geometry.LineString([ib_mesolink.geometry_xy.coords[-1]] + ob_mesolink.geometry_xy.coords[1:])
                         del self.mesonet.node_dict[ob_mesolink_from_node.node_id]
 
-                        for i in range(number_of_lanes):
-                            ib_lane_index = ib_lane_index_start + i
-                            ob_lane_index = ob_lane_index_start + i
-                            ib_mesolink_outgoing_micro_node = ib_mesolink.micronode_list[ib_lane_index][-1]
-                            ob_mesolink_incoming_micro_node = ob_mesolink.micronode_list[ob_lane_index][0]
-                            for microlink in ob_mesolink_incoming_micro_node.outgoing_link_list:
-                                microlink.from_node = ib_mesolink_outgoing_micro_node
-                            del self.micronet.node_dict[ob_mesolink_incoming_micro_node.node_id]
+                        if self.generate_micro_net:
+                            for i in range(number_of_lanes):
+                                ib_lane_index = ib_lane_index_start + i
+                                ob_lane_index = ob_lane_index_start + i
+                                ib_mesolink_outgoing_micro_node = ib_mesolink.micronode_list[ib_lane_index][-1]
+                                ob_mesolink_incoming_micro_node = ob_mesolink.micronode_list[ob_lane_index][0]
+                                for microlink in ob_mesolink_incoming_micro_node.outgoing_link_list:
+                                    microlink.from_node = ib_mesolink_outgoing_micro_node
+                                del self.micronet.node_dict[ob_mesolink_incoming_micro_node.node_id]
                     elif not ib_link.downstream_is_target and ob_link.upstream_is_target:
                         # remove outgoing micro nodes and links of ib_mesolink, then connect to ob_mesolink
                         ib_mesolink_to_node = ib_mesolink.to_node
@@ -499,21 +503,19 @@ class NetGenerator:
                         ib_mesolink.geometry_xy = geometry.LineString(ib_mesolink.geometry_xy.coords[:-1] + [ob_mesolink.geometry_xy.coords[0]])
                         del self.mesonet.node_dict[ib_mesolink_to_node.node_id]
 
-                        for i in range(number_of_lanes):
-                            ib_lane_index = ib_lane_index_start + i
-                            ob_lane_index = ob_lane_index_start + i
-                            ib_mesolink_outgoing_micro_node = ib_mesolink.micronode_list[ib_lane_index][-1]
-                            ob_mesolink_incoming_micro_node = ob_mesolink.micronode_list[ob_lane_index][0]
-                            for microlink in ib_mesolink_outgoing_micro_node.incoming_link_list:
-                                microlink.to_node = ob_mesolink_incoming_micro_node
-                            del self.micronet.node_dict[ib_mesolink_outgoing_micro_node.node_id]
+                        if self.generate_micro_net:
+                            for i in range(number_of_lanes):
+                                ib_lane_index = ib_lane_index_start + i
+                                ob_lane_index = ob_lane_index_start + i
+                                ib_mesolink_outgoing_micro_node = ib_mesolink.micronode_list[ib_lane_index][-1]
+                                ob_mesolink_incoming_micro_node = ob_mesolink.micronode_list[ob_lane_index][0]
+                                for microlink in ib_mesolink_outgoing_micro_node.incoming_link_list:
+                                    microlink.to_node = ob_mesolink_incoming_micro_node
+                                del self.micronet.node_dict[ib_mesolink_outgoing_micro_node.node_id]
                     else:
                         sys.exit('Target link defintion error')
 
         self.mesonet.max_link_id = max_mesolink_id
-
-
-
 
 
     def generateNet(self):

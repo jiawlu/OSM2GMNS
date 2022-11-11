@@ -72,6 +72,28 @@ to output and store network data. Users can select a proper one according to the
 
     - The file formats of map data supported in osm2gmns include ``.osm``, ``.xml``, and ``.pbf``.
 
+
+4) Overpass API
+
+osm2gmns also enables users to download OSM data within the region of interest using a built-in function.
+A region can be a state, city, or even university. On OpenStreetMap `homepage`_, search the region name to get
+its unique relation id. The following example shows how to download Tempe city OSM data using function
+``downloadOSMData``.
+
+.. figure:: _images/osm_id.png
+    :name: osm_id
+    :align: center
+    :width: 100%
+
+    Get region id from OpenStreetMap homepage
+
+.. code-block:: python
+
+    >>> import osm2gmns as og
+
+    >>> og.downloadOSMData(110833, 'tempe.osm')
+
+
 Parse OSM Data
 =========================
 

@@ -1,4 +1,4 @@
-import math
+from osm2gmns.utils.util_geo import getLineAngle
 
 class CAutoConnectorM:
     default_right_most_lanes = 1        # do not change
@@ -13,18 +13,9 @@ class CAutoConnectorM:
     @classmethod
     def getSequence(cls):       # order inbound links from left to right
         angle_list = []
-        angle_ob = math.atan2(cls.ob_link.geometry_xy.coords[-1][1] - cls.ob_link.geometry_xy.coords[0][1],
-                              cls.ob_link.geometry_xy.coords[-1][0] - cls.ob_link.geometry_xy.coords[0][0])
-        # angle_ob = math.atan2(cls.ob_link.geometry_list[-1][1] - cls.ob_link.geometry_list[0][1], cls.ob_link.geometry_list[-1][0] - cls.ob_link.geometry_list[0][0])
+
         for ib_link in cls.ib_link_list:
-            angle_ib = math.atan2(ib_link.geometry_xy.coords[-1][1] - ib_link.geometry_xy.coords[0][1],
-                                  ib_link.geometry_xy.coords[-1][0] - ib_link.geometry_xy.coords[0][0])
-            # angle_ib = math.atan2(ib_link.geometry_list[-1][1] - ib_link.geometry_list[0][1], ib_link.geometry_list[-1][0] - ib_link.geometry_list[0][0])
-            angle = angle_ob-angle_ib
-            if angle < -1 * math.pi:
-                angle += 2 * math.pi
-            if angle > math.pi:
-                angle -= 2 * math.pi
+            angle = getLineAngle(ib_link.geometry_xy, cls.ob_link.geometry_xy)
             angle_list.append(angle)
 
         cls.ib_link_list_sorted = sorted(cls.ib_link_list, key=lambda x:angle_list[cls.ib_link_list.index(x)],reverse=True)

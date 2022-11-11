@@ -1,4 +1,5 @@
-from osm2gmns.movement.util_mvmt import getLinkAngle
+# from osm2gmns.movement.util_mvmt import getLinkAngle
+from osm2gmns.utils.util_geo import getLineAngle
 from enum import Enum
 
 Direction = Enum('Direction', ('RIGHTMOST', 'LEFTMOST', 'FORWARD'))
@@ -54,7 +55,7 @@ def _getConnectedSorted(link):
 
     angle_dict = {}
     for connected_link in connected_link_list:
-        angle_dict[connected_link] = getLinkAngle(link,connected_link)
+        angle_dict[connected_link] = getLineAngle(link.geometry_xy,connected_link.geometry_xy)
 
     # direction: clockwise
     connected_link_list_sorted = sorted(connected_link_list, key=lambda x: angle_dict[x], reverse=True)

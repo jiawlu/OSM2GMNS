@@ -52,10 +52,27 @@ def _readCompressed(conn, urlpath, query, filename):
         out = open(filename, "wb")
         out.write(response.read())
         out.close()
-        print(f'map data has been writen to {filename}')
+        print(f'map data has been written to {filename}')
 
 
 def downloadOSMData(area_id, output_filename='map.osm', url=_url):
+    """
+    Download OpenStreetMap data via overpass API
+
+    Parameters
+    ----------
+    area_id: int
+        relation_id of the area of interest
+    output_filename: int
+        full path where the downloaded network will be stored
+    url: int
+        OpenStreetMap API url
+
+    Returns
+    -------
+    None
+    """
+
     file_name, file_extension = os.path.splitext(output_filename)
     if not file_extension:
         print(f'WARNING: no file extension in output_filename {output_filename}, output_filename is changed to {file_name}.osm')

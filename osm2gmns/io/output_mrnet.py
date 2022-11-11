@@ -10,7 +10,7 @@ def _outputMesoNodes(mesonet, mesonode_filepath, projection, encoding):
     writer = csv.writer(outfile)
 
     writer.writerow(['node_id', 'zone_id', 'x_coord', 'y_coord', 'macro_node_id', 'macro_link_id', 'activity_type', 'is_boundary'])
-    for mesonode_id, mesonode in mesonet.node_dict.items():
+    for _, mesonode in mesonet.node_dict.items():
         if projection:
             x_coord = round(mesonode.geometry_xy.x, og_settings.local_coord_precision)
             y_coord = round(mesonode.geometry_xy.y, og_settings.local_coord_precision)
@@ -31,8 +31,8 @@ def _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding):
 
     writer.writerow(['link_id', 'from_node_id', 'to_node_id', 'dir_flag', 'length', 'lanes', 'capacity',
                      'free_speed', 'link_type_name', 'link_type', 'geometry', 'macro_node_id', 'macro_link_id',
-                     'mvmt_txt_id', 'allowed_uses'])
-    for mesolink_id, mesolink in mesonet.link_dict.items():
+                     'mvmt_txt_id', 'ctrl_type', 'allowed_uses'])
+    for _, mesolink in mesonet.link_dict.items():
         if projection:
             geometry_ = wkt.dumps(mesolink.geometry_xy, rounding_precision=og_settings.local_coord_precision)
         else:
@@ -40,7 +40,8 @@ def _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding):
 
         line = [mesolink.link_id, mesolink.from_node.node_id, mesolink.to_node.node_id, mesolink.dir_flag, mesolink.length,
                 mesolink.lanes, mesolink.capacity, mesolink.free_speed, mesolink.link_type_name,mesolink.link_type,
-                geometry_, mesolink.macro_node_id, mesolink.macro_link_id, mesolink.mvmt_txt_id, ';'.join(mesolink.allowed_uses)]
+                geometry_, mesolink.macro_node_id, mesolink.macro_link_id, mesolink.mvmt_txt_id, mesolink.ctrl_type,
+                ';'.join(mesolink.allowed_uses)]
         writer.writerow(line)
 
     outfile.close()
@@ -51,7 +52,7 @@ def _outputMicroNodes(micronet, micronode_filepath, projection, encoding):
     writer = csv.writer(outfile)
 
     writer.writerow(['node_id', 'zone_id', 'x_coord', 'y_coord', 'meso_link_id', 'lane_no', 'is_boundary'])
-    for micronode_id, micronode in micronet.node_dict.items():
+    for _, micronode in micronet.node_dict.items():
         if projection:
             x_coord = round(micronode.geometry_xy.x, og_settings.local_coord_precision)
             y_coord = round(micronode.geometry_xy.y, og_settings.local_coord_precision)
@@ -71,8 +72,8 @@ def _outputMicroLinks(micronet, microlink_filepath, projection, encoding):
 
     writer.writerow(['link_id', 'from_node_id', 'to_node_id', 'dir_flag', 'length', 'lanes', 'capacity',
                      'free_speed', 'link_type_name', 'link_type', 'geometry', 'macro_node_id', 'macro_link_id',
-                     'meso_link_id', 'cell_type', 'additional_cost', 'lane_no', 'mvmt_txt_id', 'allowed_uses'])
-    for microlink_id, microlink in micronet.link_dict.items():
+                     'meso_link_id', 'cell_type', 'additional_cost', 'lane_no', 'mvmt_txt_id', 'ctrl_type', 'allowed_uses'])
+    for _, microlink in micronet.link_dict.items():
         if projection:
             geometry_ = wkt.dumps(microlink.geometry_xy, rounding_precision=og_settings.local_coord_precision)
         else:

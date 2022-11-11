@@ -1,6 +1,8 @@
 from osm2gmns.networkclass.macronet import Link
+from osm2gmns.utils.util_geo import getLineAngle
 import osm2gmns.settings as og_settings
 from shapely import ops
+import math
 
 
 def _checkLinkAttr(ib_link, ob_link):
@@ -16,6 +18,15 @@ def _checkLinkAttr(ib_link, ob_link):
     if ib_link.from_bidirectional_way != ob_link.from_bidirectional_way: return False
     if ib_link.ctrl_type != ob_link.ctrl_type: return False
     return True
+
+
+def _checkAngle(ib_link, ob_link):
+    angle = getLineAngle(ib_link.geometry_xy, ob_link.geometry_xy, False)
+
+    if angle > 0.5 * math.pi or angle < -0.5 * math.pi:
+        return False
+    else:
+        return True
 
 
 def _newLinkFromLinks(link_id, up_link, down_link):
@@ -51,7 +62,8 @@ def _combLinks(network):
     removal_link_set = set()
 
     for node_id, node in network.node_dict.items():
-        if node.osm_highway and 'traffic_signals' in node.osm_highway: continue
+        if node.ctrl_type and 'signal' in node.ctrl_type:
+            continue
 
         if len(node.incoming_link_list) != 1 or len(node.outgoing_link_list) != 1:
             continue
@@ -64,6 +76,9 @@ def _combLinks(network):
             continue
 
         if not _checkLinkAttr(ib_link, ob_link):
+            continue
+        
+        if not _checkAngle(ib_link, ob_link):
             continue
 
         new_link = _newLinkFromLinks(network.max_link_id, ib_link, ob_link)
@@ -80,14 +95,26 @@ def _combLinks(network):
 
 
 def combineShortLinks(network):
+    """
+    Combine links connected by two-degree nodes into a longer link
+
+    Parameters
+    ----------
+    network: Network
+        osm2gmns Network object
+
+    Returns
+    -------
+    None
+    """
 
     if og_settings.verbose:
         print('    combining links')
-
-    number_of_nodes_before_combination = len(network.node_dict)
-    number_of_links_before_combination = len(network.link_dict)
+        print(f'    before: {network.number_of_nodes} nodes, {network.number_of_links} links')
 
     _combLinks(network)
 
     if og_settings.verbose:
-        print(f'    link combination finished. before: {number_of_nodes_before_combination} nodes {number_of_links_before_combination} links, after {len(network.node_dict)} nodes {len(network.link_dict)} links')
+        print(f'    after: {network.number_of_nodes} nodes, {network.number_of_links} links')
+
+
