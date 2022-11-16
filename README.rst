@@ -92,6 +92,6 @@ You can check the `user's guide`_ for a detailed introduction of osm2gmns.
 
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
-.. _`NeXTA`: https://github.com/xzhou99/NeXTA-GMNS
+.. _`NeXTA`: https://github.com/asu-trans-ai-lab/NeXTA4GMNS
 .. _`QGis`: https://qgis.org
 .. _`user's guide`: https://osm2gmns.readthedocs.io
