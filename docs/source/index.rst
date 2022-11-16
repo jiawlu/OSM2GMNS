@@ -13,10 +13,10 @@ practitioners with flexible, standard and ready-to-use multi-modal transportatio
 as well as a bunch of customized and practical functions to facilitate various research 
 and applications on traffic modeling.
 
-*If you use osm2gmns in your research, please cite our paper. Lu, J., Zhou, X.S., 2022. 
+**If you use osm2gmns in your research, please cite our paper. Lu, J., Zhou, X.S., 2022. 
 Modeling partially schedulable connected and automated mobility systems on layered 
 virtual-track networks: modeling framework and open-source tools.
-https://www.researchgate.net/publication/364341612.*
+https://www.researchgate.net/publication/364341612.**
 
 
 Main Features
