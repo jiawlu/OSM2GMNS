@@ -212,12 +212,17 @@ def _offsetLinks(network, offset):
 
     GT = network.GT
 
-    for link_id, link in network.link_dict.items():
+    for _, link in network.link_dict.items():
         if link.from_bidirectional_way:
             # distance = max(link.lanes_list) / 2 * 3.5
             geometry_xy = link.geometry_xy.parallel_offset(distance=2, side=offset, join_style=2)
             if offset == 'right':
-                link.geometry_xy = geometry.LineString(list(geometry_xy.coords)[::-1])
+                if isinstance(geometry_xy, geometry.MultiLineString):
+                    coords = []
+                    for ls in geometry_xy.geoms: coords += list(ls.coords)[::-1]
+                    link.geometry_xy = geometry.LineString(coords)
+                else:
+                    link.geometry_xy = geometry.LineString(list(geometry_xy.coords)[::-1])
             elif offset == 'left':
                 link.geometry_xy = geometry_xy
 
@@ -231,7 +236,7 @@ def _preprocessWays(osmnetwork, link_types, network_types):
     include_railway = True if 'railway' in network_types_set else False
     include_aeroway = True if 'aeroway' in network_types_set else False
 
-    for osm_way_id, way in osmnetwork.osm_way_dict.items():
+    for _, way in osmnetwork.osm_way_dict.items():
         if way.building or way.amenity or way.leisure:
             POI_way_list.append(way)
 
@@ -338,7 +343,7 @@ def _preprocessWays(osmnetwork, link_types, network_types):
 
 
 def _identifyCrossingOSMNodes(osm_node_dict):
-    for osm_node_id, osmnode in osm_node_dict.items():
+    for _, osmnode in osm_node_dict.items():
         if osmnode.usage_count >= 2 or osmnode.ctrl_type == 'signal':
             osmnode.is_crossing = True
 
@@ -411,7 +416,7 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all'
         a network return by the function may contain several sub-networks that are disconnected from each other.
         sub-networks with the number of nodes less than min_nodes will be discarded
     combine: bool
-        if True, adhacent short links with the same attributes will be combined into a long link. the operation will only
+        if True, adjacent short links with the same attributes will be combined into a long link. the operation will only
         be performed on short links connected with a two-degree nodes (one incoming link and one outgoing link)
     bbox: tuple of four float/int values, list of four float/int values, None
         specify the boundary of the network to be extracted, consisting of minimum latitude, minimum longtitude, maximum latitude, and maximum longitud.

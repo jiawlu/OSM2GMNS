@@ -75,7 +75,7 @@ Generate multi-resolution networks from an osm file
 Visualization
 ====================================
 
-You can visualize generated networks using `NeXTA`_ or `QGis`_.
+You can visualize generated networks using `NeXTA`_ or `QGIS`_.
 
 .. figure:: https://github.com/jiawlu/OSM2GMNS/blob/master/sample%20networks/Arizona%20State%20University%2C%20Tempe%20Campus/net_asu.png
     :name: case_asu
@@ -93,5 +93,5 @@ You can check the `user's guide`_ for a detailed introduction of osm2gmns.
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
 .. _`NeXTA`: https://github.com/asu-trans-ai-lab/NeXTA4GMNS
-.. _`QGis`: https://qgis.org
+.. _`QGIS`: https://qgis.org
 .. _`user's guide`: https://osm2gmns.readthedocs.io

@@ -64,7 +64,7 @@ def _identifyComplexIntersections(network, int_buffer):
 
 def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_settings.default_int_buffer):
     """
-    Consolidate each complex intersection that are original represented by multiple nodes in osm into one node. Nodes
+    Consolidate each complex intersection that are originally represented by multiple nodes in osm into one node. Nodes
     with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in two ways.
     1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
     intersection_id for corresponding nodes; 2) user can assign intersection_id to nodes manually in network csv files (node.csv), and

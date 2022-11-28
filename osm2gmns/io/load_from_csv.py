@@ -154,6 +154,10 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
         if link.link_id > max_link_id: max_link_id = link.link_id
 
         from_node_id, to_node_id = int(link_info['from_node_id']), int(link_info['to_node_id'])
+        if from_node_id == to_node_id:
+            print(f'WARNING: from_node and to_node of link {link.link_id} are the same')
+            continue
+
         try:
             link.from_node = node_dict[from_node_id]
         except KeyError:
@@ -197,6 +201,9 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
         if geometry_str:
             if coordinate_type == 'lonlat':
                 link.geometry = wkt.loads(geometry_str)
+                if not link.geometry.is_valid:
+                    print(f'WARNING: link {link.link_id} geometry is not a valid LineString')
+                    continue
                 link.geometry_xy = GT.geo_from_latlon(link.geometry)
             elif coordinate_type == 'meter':        # todo
                 pass
