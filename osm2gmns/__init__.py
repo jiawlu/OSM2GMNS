@@ -14,7 +14,7 @@ from osm2gmns.utils.util import config
 import osm2gmns.settings as og_settings
 
 
-__version__ = '0.7.1'
+__version__ = '0.7.2'
 print(f'osm2gmns, {__version__}')
 
 

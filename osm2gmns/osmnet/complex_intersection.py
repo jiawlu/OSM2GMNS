@@ -1,9 +1,46 @@
 from osm2gmns.networkclass.macronet import Node, Network
 import osm2gmns.settings as og_settings
 from shapely import geometry
+import csv
+import os
+import sys
 
 
-def _identifyComplexIntersections(network, int_buffer):
+def _designateComplexIntersectionsFromIntFile(network, int_file, int_buffer):
+    if not os.path.exists(int_file):
+        sys.exit(f'ERROR: int_file {int_file} does not exist')
+
+    fin = open(int_file, 'r')
+    reader = csv.DictReader(fin)
+
+    for field in ['x_coord', 'y_coord']:
+        if field not in reader.fieldnames:
+            sys.exit(f'ERROR: required field ({field}) does not exist in the int_file')
+
+    max_intersection_id = network.max_intersection_id
+    for int_info in reader:
+        int_center = geometry.Point(float(int_info['x_coord']), float(int_info['y_coord']))
+        int_center_xy = network.GT.geo_from_latlon(int_center)
+        if 'int_buffer' in reader.fieldnames:
+            buffer_ = int_info['int_buffer']
+            buffer_ = float(buffer_) if buffer_ else int_buffer
+        else:
+            buffer_ = int_buffer
+
+        intersection_nodes = [node for _, node in network.node_dict.items() if node.intersection_id is None and int_center_xy.distance(node.geometry_xy) <= buffer_]
+
+        if len(intersection_nodes) < 2:
+            continue
+
+        for node in intersection_nodes:
+            node.intersection_id = max_intersection_id
+        max_intersection_id += 1
+
+    network.max_intersection_id = max_intersection_id
+
+
+
+def _autoidentifyComplexIntersections(network, int_buffer):
     """
     Identify nodes that belongs to one intersection in real life. Nodes that
     belong to one intersection will be assigned with the same intersection_id.
@@ -62,17 +99,22 @@ def _identifyComplexIntersections(network, int_buffer):
     network.max_intersection_id = max_intersection_id
 
 
-def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_settings.default_int_buffer):
+def consolidateComplexIntersections(network, auto_identify=False, intersection_file=None, int_buffer=og_settings.default_int_buffer):
     """
     Consolidate each complex intersection that are originally represented by multiple nodes in osm into one node. Nodes
-    with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in two ways.
-    1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
-    intersection_id for corresponding nodes; 2) user can assign intersection_id to nodes manually in network csv files (node.csv), and
-    load the network using function loadNetFromCSV provided by osm2gmns. Note that, if the second approach is adopted, one
-    should make sure the argument auto_identify is set as False to avoid intersection_id overwritten by osm2gmns.
+    with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in three ways.
 
-    Rules used in osm2gmns to identify if two nodes belong to a complex intersection: 1) ctrl_type of the two nodes must be signal;
-    2) there is a link connecting these two nodes, and the length of the link is shorter than or equal to the argument int_buffer
+    (1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
+    intersection_id for corresponding nodes;
+
+    (2) provide an intersection file that specifies the central position (required) and buffer (optional) of each complex intersection.
+
+    (3) user can assign intersection_id to nodes manually in network csv files (node.csv), and load the network using function
+    loadNetFromCSV provided by osm2gmns.
+
+    The priority of the three approaches is (3) > (2) > (1).
+    Rules used in the approach (1) to identify if two nodes belong to a complex intersection: (a) ctrl_type of the two nodes must be signal;
+    (b) there is a link connecting these two nodes, and the length of the link is shorter than or equal to the argument int_buffer.
 
     Parameters
     ----------
@@ -81,6 +123,11 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
     auto_identify: bool
         if automatically identify complex intersections using built-in methods in osm2gmns. nodes that belong to a complex
         intersection will be assigned with the same intersection_id
+    intersection_file: str
+        path of an intersction csv file that specifies complex intersections. required fields: central position of intersections
+        (in the form of x_coord and y_coord); optional field: int_buffer (if not specified, the global int_buffer will be used,
+        i.e., the forth arugment). For each record in the int_file, osm2gmns consolidates all nodes with a distance to the
+        central position shorter than buffer.
     int_buffer: float
         the threshold used to check if two nodes belong to one complex intersection. the unit is meter
 
@@ -90,8 +137,11 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
 
     """
 
+    if intersection_file is not None:
+        _designateComplexIntersectionsFromIntFile(network, intersection_file, int_buffer)
+
     if auto_identify:
-        _identifyComplexIntersections(network, int_buffer)
+        _autoidentifyComplexIntersections(network, int_buffer)
 
     if og_settings.verbose:
         print('Consolidating Complex Intersections')
@@ -125,9 +175,8 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
         x_coord_xy_sum, y_coord_xy_sum = 0.0, 0.0
 
         for node in node_group:
-            # node.valid = False
             removal_node_set.add(node)
-            osm_node_id_list.append(node.osm_node_id)
+            osm_node_id_list.append(node.osm_node_id if node.osm_node_id is not None else 'None')
             x_coord_sum += node.geometry.x
             y_coord_sum += node.geometry.y
             x_coord_xy_sum += node.geometry_xy.x
@@ -135,14 +184,12 @@ def consolidateComplexIntersections(network, auto_identify=False, int_buffer=og_
 
             for link in node.incoming_link_list:
                 if link.from_node in node_group:
-                    # link.valid = False
                     removal_link_set.add(link)
                 else:
                     link.to_node = new_node
                     new_node.incoming_link_list.append(link)
             for link in node.outgoing_link_list:
                 if link.to_node in node_group:
-                    # link.valid = False
                     removal_link_set.add(link)
                 else:
                     link.from_node = new_node
