@@ -25,6 +25,7 @@ class BaseLink:
         self.link_id = link_id
         self.from_node = None
         self.to_node = None
+        self.lanes = None
         self.dir_flag = 1
         self.geometry = None
         self.geometry_xy = None

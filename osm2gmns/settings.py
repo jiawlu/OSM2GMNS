@@ -12,6 +12,7 @@ local_coord_precision = 2
 
 
 default_int_buffer = 20.0           # meter
+segment_resolution = 5.0            # meter
 
 osm_highway_type_dict = {'motorway': ('motorway', False),
                          'motorway_link': ('motorway', True),

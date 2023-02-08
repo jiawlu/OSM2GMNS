@@ -171,9 +171,7 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
 
         lanes = link_info['lanes']
         if lanes:
-            link.lanes_list = [int(lanes)]
-        else:
-            link.lanes_list = [None]
+            link.lanes = int(float(lanes))
 
         # optional
         name = link_info['name'] if 'name' in reader.fieldnames else None
@@ -248,6 +246,75 @@ def _loadLinks(network, link_filepath, coordinate_type, encoding):
     network.link_other_attrs = other_fields
 
 
+
+def _loadSegments(network, segment_filepath, encoding):
+    if encoding is None:
+        fin = open(segment_filepath, 'r')
+    else:
+        fin = open(segment_filepath, 'r', encoding=encoding)
+    reader = csv.DictReader(fin)
+
+    for field in _segment_required_fields:
+        if field not in reader.fieldnames:
+            sys.exit(f'ERROR: required field ({field}) does not exist in the segment file')
+    other_fields = list(set(reader.fieldnames).difference(_segment_required_fields.union(_segment_optional_fields)))
+
+    node_dict = network.node_dict
+    link_dict = network.link_dict
+
+    max_segment_id = network.max_segment_id
+
+    for segment_info in reader:
+        # required
+        segment = Segment(int(segment_info['segment_id']))
+        if segment.segment_id > max_segment_id: max_segment_id = segment.segment_id
+
+        link_id = int(segment_info['link_id'])
+        try:
+            link = link_dict[link_id]
+        except KeyError:
+            print(f'WARNING: link {link_id} of segment {segment.segment_id} does not exist in the link file')
+            continue
+
+        if link.lanes is None:
+            print(f'WARNING: link {link_id} of segment {segment.segment_id} does not have lanes information')
+            continue
+
+        segment.link = link
+
+        ref_node_id = int(segment_info['ref_node_id'])
+        try:
+            ref_node = node_dict[ref_node_id]
+        except KeyError:
+            print(f'WARNING: ref_node {ref_node_id} of segment {segment.segment_id} does not exist in the node file')
+            continue
+
+        if ref_node is not link.from_node:
+            print(f'WARNING: osm2gmns only supports sgements with from_node_id of the corresponding link as the ref_node_id. segment {segment.segment_id} will be skipped')
+            continue
+
+        segment.ref_node = ref_node
+
+        segment.start_lr = float(segment_info['start_lr'])
+        segment.end_lr = float(segment_info['end_lr'])
+        segment.l_lanes_added = int(segment_info['l_lanes_added'])
+        segment.r_lanes_added = int(segment_info['r_lanes_added'])
+
+        # optional
+
+        # others
+        for field in other_fields:
+            segment.other_attrs[field] = segment_info[field]
+
+        link.segment_list.append(segment)
+
+    fin.close()
+    max_segment_id += 1
+
+    network.max_segment_id = max_segment_id
+    network.segment_other_attrs = other_fields
+
+
 def _loadMovements(network, movement_filepath, coordinate_type, encoding):
     if encoding is None:
         fin = open(movement_filepath, 'r')
@@ -277,6 +344,7 @@ def _loadMovements(network, movement_filepath, coordinate_type, encoding):
         except KeyError:
             print(f'WARNING: node {node_id} of movement {movement.movement_id} does not exist in the node file')
             continue
+        movement.node = node
 
         ib_link_id = int(movement_info['ib_link_id'])
         try:
@@ -284,15 +352,10 @@ def _loadMovements(network, movement_filepath, coordinate_type, encoding):
         except KeyError:
             print(f'WARNING: ib_link {ib_link_id} of movement {movement.movement_id} does not exist in the link file')
             continue
-        if ib_link.lanes is None:
-            print(f'WARNING: ib_link {ib_link_id} of movement {movement.movement_id} does not have lanes information')
-            continue
-        start_ib_lane = int(movement_info['start_ib_lane'])
-        if start_ib_lane > ib_link.lanes:
-            print(f'WARNING: start_ib_lane of movement {movement.movement_id} is larger than total lanes of ib_link {ib_link_id}')
-            continue
+
+        start_ib_lane = int(float(movement_info['start_ib_lane']))
         end_ib_lane_str = movement_info['end_ib_lane']
-        end_ib_lane = int(end_ib_lane_str) if end_ib_lane_str else start_ib_lane
+        end_ib_lane = int(float(end_ib_lane_str)) if end_ib_lane_str else start_ib_lane
 
         ob_link_id = int(movement_info['ob_link_id'])
         try:
@@ -300,21 +363,10 @@ def _loadMovements(network, movement_filepath, coordinate_type, encoding):
         except KeyError:
             print(f'WARNING: ob_link {ob_link_id} of movement {movement.movement_id} does not exist in the link file')
             continue
-        if ob_link.lanes is None:
-            print(f'WARNING: ob_link {ob_link_id} of movement {movement.movement_id} does not have lanes information')
-            continue
-        start_ob_lane = int(movement_info['start_ob_lane'])
-        if start_ob_lane > ob_link.lanes:
-            print(f'WARNING: start_ob_lane of movement {movement.movement_id} is larger than total lanes of ob_link {ob_link_id}')
-            continue
-        end_ob_lane_str = movement_info['end_ob_lane']
-        end_ob_lane = int(end_ob_lane_str) if end_ob_lane_str else start_ob_lane
 
-        ib_lanes, ob_lanes = end_ib_lane - start_ib_lane + 1, end_ob_lane - start_ob_lane + 1
-        if ib_lanes != ob_lanes:
-            print(f'WARNING: ib_lanes ({ib_lanes}) and ob_lanes ({ob_lanes}) of movement {movement.movement_id} are not consistent')
-            continue
-        movement.lanes = ib_lanes
+        start_ob_lane = int(float(movement_info['start_ob_lane']))
+        end_ob_lane_str = movement_info['end_ob_lane']
+        end_ob_lane = int(float(end_ob_lane_str)) if end_ob_lane_str else start_ob_lane
 
         movement.ib_link, movement.start_ib_lane, movement.end_ib_lane = ib_link, start_ib_lane, end_ib_lane
         movement.ob_link, movement.start_ob_lane, movement.end_ob_lane = ob_link, start_ob_lane, end_ob_lane
@@ -370,76 +422,13 @@ def _loadMovements(network, movement_filepath, coordinate_type, encoding):
         for field in other_fields:
             movement.other_attrs[field] = movement_info[field]
 
-        node.movement_list.append(movement)
+        network.user_input_movement_list.append(movement)
 
     fin.close()
     max_movement_id += 1
 
     network.max_movement_id = max_movement_id
     network.movement_other_attrs = other_fields
-
-
-def _loadSegments(network, segment_filepath, encoding):
-    if encoding is None:
-        fin = open(segment_filepath, 'r')
-    else:
-        fin = open(segment_filepath, 'r', encoding=encoding)
-    reader = csv.DictReader(fin)
-
-    for field in _segment_required_fields:
-        if field not in reader.fieldnames:
-            sys.exit(f'ERROR: required field ({field}) does not exist in the segment file')
-    other_fields = list(set(reader.fieldnames).difference(_segment_required_fields.union(_segment_optional_fields)))
-
-    node_dict = network.node_dict
-    link_dict = network.link_dict
-
-    max_segment_id = network.max_segment_id
-
-    for segment_info in reader:
-        # required
-        segment = Segment(int(segment_info['segment_id']))
-        if segment.segment_id > max_segment_id: max_segment_id = segment.segment_id
-
-        link_id = int(segment_info['link_id'])
-        try:
-            link = link_dict[link_id]
-        except KeyError:
-            print(f'WARNING: link {link_id} of segment {segment.segment_id} does not exist in the link file')
-            continue
-
-        if link.lanes is None:
-            print(f'WARNING: link {link_id} of segment {segment.segment_id} does not have lanes information')
-            continue
-
-        segment.link = link
-
-        ref_node_id = int(segment_info['ref_node_id'])
-        try:
-            ref_node = node_dict[ref_node_id]
-        except KeyError:
-            print(f'WARNING: ref_node {ref_node_id} of segment {segment.segment_id} does not exist in the node file')
-            continue
-        segment.ref_node = ref_node
-
-        segment.start_lr = float(segment_info['start_lr'])
-        segment.end_lr = float(segment_info['end_lr'])
-        segment.l_lanes_added = int(segment_info['l_lanes_added'])
-        segment.r_lanes_added = int(segment_info['r_lanes_added'])
-
-        # optional
-
-        # others
-        for field in other_fields:
-            segment.other_attrs[field] = segment_info[field]
-
-        link.segment_list.append(segment)
-
-    fin.close()
-    max_segment_id += 1
-
-    network.max_segment_id = max_segment_id
-    network.segment_other_attrs = other_fields
 
 
 def _loadGeometries(network, geometry_filepath, encoding):
@@ -575,11 +564,11 @@ def loadNetFromCSV(folder='', node_file=None, link_file=None, movement_file=None
 
     _loadLinks(network, link_filepath, coordinate_type, enconding)
 
-    if movement_file is not None:
-        _loadMovements(network, movement_filepath, coordinate_type, enconding)
-
     if segment_file is not None:
         _loadSegments(network, segment_filepath, enconding)
+
+    if movement_file is not None:
+        _loadMovements(network, movement_filepath, coordinate_type, enconding)
 
     if geometry_file is not None:
         _loadGeometries(network, geometry_filepath, enconding)

@@ -18,9 +18,9 @@ def getLineFromNodes(node_list):
 
 def getPolygonFromNodes(node_list):
     if len(node_list) < 3: return None, None
-    point_list = [node.geometry for node in node_list]
+    point_list = [(node.geometry.x, node.geometry.y) for node in node_list]
     poly = geometry.Polygon(point_list)
-    point_list_xy = [node.geometry_xy for node in node_list]
+    point_list_xy = [(node.geometry_xy.x, node.geometry_xy.y) for node in node_list]
     poly_xy = geometry.Polygon(point_list_xy)
     return poly, poly_xy
 
@@ -110,17 +110,17 @@ class GeoTransformer:
     def _transform(self, shape, func):
         construct = shape.__class__
 
-        if shape.type.startswith('Multi'):
+        if shape.geom_type.startswith('Multi'):
             parts = [self._transform(geom, func) for geom in shape.geoms]
             return construct(parts)
 
-        if shape.type == 'Point':
+        if shape.geom_type == 'Point':
             return construct(list(map(func, shape.coords))[0])
 
-        if shape.type in ('Point', 'LineString'):
+        if shape.geom_type in ('Point', 'LineString'):
             return construct(map(func, shape.coords))
 
-        if shape.type == 'Polygon':
+        if shape.geom_type == 'Polygon':
             exterior = map(func, shape.exterior.coords)
             rings = [map(func, ring.coords) for ring in shape.interiors]
             return construct(exterior, rings)

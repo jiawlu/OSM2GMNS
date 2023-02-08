@@ -30,8 +30,8 @@ def _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding):
     writer = csv.writer(outfile)
 
     writer.writerow(['link_id', 'from_node_id', 'to_node_id', 'dir_flag', 'length', 'lanes', 'capacity',
-                     'free_speed', 'link_type_name', 'link_type', 'geometry', 'macro_node_id', 'macro_link_id',
-                     'mvmt_txt_id', 'ctrl_type', 'allowed_uses'])
+                     'free_speed', 'link_type_name', 'link_type', 'geometry', 'macro_link_id', 'macro_node_id',
+                     'movement_id', 'mvmt_txt_id', 'ctrl_type', 'allowed_uses'])
     for _, mesolink in mesonet.link_dict.items():
         if projection:
             geometry_ = wkt.dumps(mesolink.geometry_xy, rounding_precision=og_settings.local_coord_precision)
@@ -40,7 +40,7 @@ def _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding):
 
         line = [mesolink.link_id, mesolink.from_node.node_id, mesolink.to_node.node_id, mesolink.dir_flag, mesolink.length,
                 mesolink.lanes, mesolink.capacity, mesolink.free_speed, mesolink.link_type_name,mesolink.link_type,
-                geometry_, mesolink.macro_node_id, mesolink.macro_link_id, mesolink.mvmt_txt_id, mesolink.ctrl_type,
+                geometry_, mesolink.macro_link_id, mesolink.macro_node_id,  mesolink.movement_id, mesolink.mvmt_txt_id, mesolink.ctrl_type,
                 ';'.join(mesolink.allowed_uses)]
         writer.writerow(line)
 

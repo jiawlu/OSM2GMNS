@@ -1,3 +1,5 @@
+import copy
+
 from osm2gmns.networkclass.mesonet import MesoNode, MesoLink, MesoNetwork
 from osm2gmns.networkclass.micronet import MicroNode, MicroLink, MicroNetwork
 from osm2gmns.utils.util_geo import offsetLine
@@ -45,22 +47,18 @@ class NetGenerator:
 
     def getLaneGeometry(self, original_geometry, lane_offset):
         if lane_offset < -1e-3 or lane_offset > 1e-3:
-            lane_geometry_xy_ = original_geometry.parallel_offset(distance=lane_offset, side='right', join_style=2)
-            if isinstance(lane_geometry_xy_, geometry.MultiLineString):
+
+            lane_geometry_xy = original_geometry.offset_curve(distance=-1*lane_offset, join_style=2)
+            if isinstance(lane_geometry_xy, geometry.MultiLineString):
                 lane_geometry_xy = offsetLine(original_geometry, lane_offset)
-            else:
-                if lane_offset > 1e-3:
-                    lane_geometry_xy = geometry.LineString(list(lane_geometry_xy_.coords)[::-1])
-                else:
-                    lane_geometry_xy = lane_geometry_xy_
 
             if lane_geometry_xy.is_empty:
                 return self.getLaneGeometry(original_geometry, lane_offset*0.6)
 
-        else:
-            lane_geometry_xy = original_geometry
+            return lane_geometry_xy
 
-        return lane_geometry_xy
+        else:
+            return copy.copy(original_geometry)
 
 
     def createMicroNetForNormalLink(self, link):
@@ -430,36 +428,36 @@ class NetGenerator:
         for _, macronode in self.macronet.node_dict.items():
             for mvmt in macronode.movement_list:
                 ib_link, ob_link = mvmt.ib_link, mvmt.ob_link
-                ib_lane_list = [lane_no for lane_no in range(int(mvmt.start_ib_lane), int(mvmt.end_ib_lane + 1))]
-                ob_lane_list = [lane_no for lane_no in range(int(mvmt.start_ob_lane), int(mvmt.end_ob_lane + 1))]
+                # ib_lane_seq_no_list = [lane_no for lane_no in range(int(mvmt.start_ib_lane_seq_no), int(mvmt.end_ib_lane_seq_no + 1))]
+                # ob_lane_seq_no_list = [lane_no for lane_no in range(int(mvmt.start_ob_lane_seq_no), int(mvmt.end_ob_lane_seq_no + 1))]
 
                 ib_mesolink = ib_link.mesolink_list[-1]
                 ob_mesolink = ob_link.mesolink_list[0]
 
-                if len(ib_lane_list) != len(ob_lane_list):
-                    print('  warning: number of inbound lanes and outbound lanes at movement {} is not consistent, movement info will be discarded'.format(mvmt.movement_id))
-                    continue
-                if (0 in ib_lane_list) or (0 in ob_lane_list):
-                    print('  warning: lane number 0 detected at movement {}, movement info will be discarded'.format(mvmt.movement_id))
-                    continue
-                number_of_lanes = len(ib_lane_list)
+                # if len(ib_lane_seq_no_list) != len(ob_lane_seq_no_list):
+                #     print('  warning: number of inbound lanes and outbound lanes at movement {} is not consistent, movement info will be discarded'.format(mvmt.movement_id))
+                #     continue
+                # if (0 in ib_lane_seq_no_list) or (0 in ob_lane_seq_no_list):
+                #     print('  warning: lane number 0 detected at movement {}, movement info will be discarded'.format(mvmt.movement_id))
+                #     continue
+                # number_of_lanes = len(ib_lane_seq_no_list)
 
                 # lane index starts from 0
-                ib_lane_index_start = ib_mesolink.lanes_change[0] + ib_lane_list[0] if ib_lane_list[0] < 0 else ib_mesolink.lanes_change[0] + ib_lane_list[0] - 1
-                ib_lane_index_end = ib_mesolink.lanes_change[0] + ib_lane_list[-1] if ib_lane_list[-1] < 0 else ib_mesolink.lanes_change[0] + ib_lane_list[-1] - 1
-                ob_lane_index_start = ob_mesolink.lanes_change[0] + ob_lane_list[0] if ob_lane_list[0] < 0 else ob_mesolink.lanes_change[0] + ob_lane_list[0] - 1
-                ob_lane_index_end = ob_mesolink.lanes_change[0] + ob_lane_list[-1] if ob_lane_list[-1] < 0 else ob_mesolink.lanes_change[0] + ob_lane_list[-1] - 1
+                # ib_lane_index_start = ib_mesolink.lanes_change[0] + ib_lane_seq_no_list[0] if ib_lane_seq_no_list[0] < 0 else ib_mesolink.lanes_change[0] + ib_lane_seq_no_list[0] - 1
+                # ib_lane_index_end = ib_mesolink.lanes_change[0] + ib_lane_seq_no_list[-1] if ib_lane_seq_no_list[-1] < 0 else ib_mesolink.lanes_change[0] + ib_lane_seq_no_list[-1] - 1
+                # ob_lane_index_start = ob_mesolink.lanes_change[0] + ob_lane_seq_no_list[0] if ob_lane_seq_no_list[0] < 0 else ob_mesolink.lanes_change[0] + ob_lane_seq_no_list[0] - 1
+                # ob_lane_index_end = ob_mesolink.lanes_change[0] + ob_lane_seq_no_list[-1] if ob_lane_seq_no_list[-1] < 0 else ob_mesolink.lanes_change[0] + ob_lane_seq_no_list[-1] - 1
 
-                if (ib_lane_index_start < 0) or (ob_lane_index_start < 0) or (ib_lane_index_end > ib_mesolink.lanes - 1) or (ob_lane_index_end > ob_mesolink.lanes - 1):
-                    print('  warning: inbound or outbound lane info of movement {} is not consistent with what inbound or outbound link has,'
-                        ' movement info will be discarded'.format(mvmt.movement_id))
-                    continue
+                # if (ib_lane_index_start < 0) or (ob_lane_index_start < 0) or (ib_lane_index_end > ib_mesolink.lanes - 1) or (ob_lane_index_end > ob_mesolink.lanes - 1):
+                #     print('  warning: inbound or outbound lane info of movement {} is not consistent with what inbound or outbound link has,'
+                #         ' movement info will be discarded'.format(mvmt.movement_id))
+                #     continue
 
                 if macronode.movement_link_needed:
                     mesolink = MesoLink(max_mesolink_id)
                     mesolink.from_node = ib_mesolink.to_node
                     mesolink.to_node = ob_mesolink.from_node
-                    mesolink.lanes = number_of_lanes
+                    mesolink.lanes = mvmt.lanes
                     mesolink.isconnector = True
                     mesolink.movement = mvmt
                     mesolink.macronode = macronode
@@ -474,7 +472,7 @@ class NetGenerator:
                     mesolink.to_node.incoming_link_list.append(mesolink)
 
                     if self.generate_micro_net:
-                        self.createMicroNetForConnector(mesolink, ib_mesolink, ib_lane_index_start, ob_mesolink, ob_lane_index_start)
+                        self.createMicroNetForConnector(mesolink, ib_mesolink, mvmt.start_ib_lane_seq_no, ob_mesolink, mvmt.start_ob_lane_seq_no)
                 else:
                     if ib_link.downstream_is_target and not ob_link.upstream_is_target:
                         # remove incoming micro nodes and links of ob_mesolink, then connect to ib_mesolink
@@ -486,9 +484,9 @@ class NetGenerator:
                         del self.mesonet.node_dict[ob_mesolink_from_node.node_id]
 
                         if self.generate_micro_net:
-                            for i in range(number_of_lanes):
-                                ib_lane_index = ib_lane_index_start + i
-                                ob_lane_index = ob_lane_index_start + i
+                            for i in range(mvmt.lanes):
+                                ib_lane_index = mvmt.start_ib_lane_seq_no + i
+                                ob_lane_index = mvmt.start_ob_lane_seq_no + i
                                 ib_mesolink_outgoing_micro_node = ib_mesolink.micronode_list[ib_lane_index][-1]
                                 ob_mesolink_incoming_micro_node = ob_mesolink.micronode_list[ob_lane_index][0]
                                 for microlink in ob_mesolink_incoming_micro_node.outgoing_link_list:
@@ -504,9 +502,9 @@ class NetGenerator:
                         del self.mesonet.node_dict[ib_mesolink_to_node.node_id]
 
                         if self.generate_micro_net:
-                            for i in range(number_of_lanes):
-                                ib_lane_index = ib_lane_index_start + i
-                                ob_lane_index = ob_lane_index_start + i
+                            for i in range(mvmt.lanes):
+                                ib_lane_index = mvmt.start_ib_lane_seq_no + i
+                                ob_lane_index = mvmt.start_ob_lane_seq_no + i
                                 ib_mesolink_outgoing_micro_node = ib_mesolink.micronode_list[ib_lane_index][-1]
                                 ob_mesolink_incoming_micro_node = ob_mesolink.micronode_list[ob_lane_index][0]
                                 for microlink in ib_mesolink_outgoing_micro_node.incoming_link_list:

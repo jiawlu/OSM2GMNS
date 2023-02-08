@@ -217,8 +217,7 @@ def _createConnector(from_node, to_node, link_id):
     link.free_speed = og_settings.default_speed_dict[link.link_type_name]
     link.allowed_uses = ['auto','bike','walk']
     link.from_bidirectional_way = True
-    link.lanes_list = [og_settings.default_lanes_dict[link.link_type_name]]
-    # link.lanes = link.lanes_list[0]
+    link.lanes = og_settings.default_lanes_dict[link.link_type_name]
     link.from_node = from_node
     link.to_node = to_node
     link.from_node.outgoing_link_list.append(link)

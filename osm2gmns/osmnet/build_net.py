@@ -6,6 +6,7 @@ from osm2gmns.osmnet.pois import generatePOIs
 from osm2gmns.osmnet.wayfilters import *
 from osm2gmns.osmnet.check_args import checkArgs_getNetFromFile
 from osm2gmns.utils.util import getLogger
+from osm2gmns.utils.util_geo import offsetLine
 import osm2gmns.settings as og_settings
 from shapely import geometry
 
@@ -210,23 +211,33 @@ def _offsetLinks(network, offset):
     if og_settings.verbose:
         print('    offseting link geometries')
 
+    distance_sp = -2 if offset == 'right' else 2
+    distance_ma = 2 if offset == 'right' else -2
+
     GT = network.GT
 
     for _, link in network.link_dict.items():
         if link.from_bidirectional_way:
-            # distance = max(link.lanes_list) / 2 * 3.5
-            geometry_xy = link.geometry_xy.parallel_offset(distance=2, side=offset, join_style=2)
-            if offset == 'right':
-                if isinstance(geometry_xy, geometry.MultiLineString):
-                    coords = []
-                    for ls in geometry_xy.geoms: coords += list(ls.coords)[::-1]
-                    link.geometry_xy = geometry.LineString(coords)
-                else:
-                    link.geometry_xy = geometry.LineString(list(geometry_xy.coords)[::-1])
-            elif offset == 'left':
-                link.geometry_xy = geometry_xy
+            geometry_xy = link.geometry_xy.offset_curve(distance=distance_sp, join_style=2)
+            if isinstance(geometry_xy, geometry.MultiLineString):
+                geometry_xy = offsetLine(link.geometry_xy, distance_ma)
 
+            link.geometry_xy = geometry_xy
             link.geometry = GT.geo_to_latlon(link.geometry_xy)
+
+            # distance = max(link.lanes_list) / 2 * 3.5
+            # geometry_xy = link.geometry_xy.parallel_offset(distance=2, side=offset, join_style=2)
+            # if offset == 'right':
+            #     if isinstance(geometry_xy, geometry.MultiLineString):
+            #         coords = []
+            #         for ls in geometry_xy.geoms: coords += list(ls.coords)[::-1]
+            #         link.geometry_xy = geometry.LineString(coords)
+            #     else:
+            #         link.geometry_xy = geometry.LineString(list(geometry_xy.coords)[::-1])
+            # elif offset == 'left':
+            #     link.geometry_xy = geometry_xy
+            #
+            # link.geometry = GT.geo_to_latlon(link.geometry_xy)
 
 
 def _preprocessWays(osmnetwork, link_types, network_types):

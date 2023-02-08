@@ -5,7 +5,6 @@ from osm2gmns.osmnet.enrich_net_info import generateNodeActivityInfo, generateLi
 from osm2gmns.osmnet.pois import connectPOIWithNet
 from osm2gmns.osmnet.visualization import show, saveFig
 from osm2gmns.movement.generate_movements import generateMovements
-# from osm2gmns.movement.generate_movements import generateMovements
 from osm2gmns.multiresolutionnet.build_mrnet import buildMultiResolutionNets
 from osm2gmns.io.load_from_csv import loadNetFromCSV
 from osm2gmns.io.downloader import downloadOSMData
@@ -14,7 +13,7 @@ from osm2gmns.utils.util import config
 import osm2gmns.settings as og_settings
 
 
-__version__ = '0.7.2'
+__version__ = '0.7.3'
 print(f'osm2gmns, {__version__}')
 
 

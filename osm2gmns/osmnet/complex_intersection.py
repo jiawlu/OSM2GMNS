@@ -105,12 +105,11 @@ def consolidateComplexIntersections(network, auto_identify=False, intersection_f
     with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in three ways.
 
     (1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
-    intersection_id for corresponding nodes;
+    intersection_id for corresponding nodes.
 
     (2) provide an intersection file that specifies the central position (required) and buffer (optional) of each complex intersection.
 
-    (3) user can assign intersection_id to nodes manually in network csv files (node.csv), and load the network using function
-    loadNetFromCSV provided by osm2gmns.
+    (3) user can assign intersection_id to nodes manually in network csv files (node.csv), and load the network using function loadNetFromCSV provided by osm2gmns.
 
     The priority of the three approaches is (3) > (2) > (1).
     Rules used in the approach (1) to identify if two nodes belong to a complex intersection: (a) ctrl_type of the two nodes must be signal;
@@ -126,7 +125,7 @@ def consolidateComplexIntersections(network, auto_identify=False, intersection_f
     intersection_file: str
         path of an intersction csv file that specifies complex intersections. required fields: central position of intersections
         (in the form of x_coord and y_coord); optional field: int_buffer (if not specified, the global int_buffer will be used,
-        i.e., the forth arugment). For each record in the int_file, osm2gmns consolidates all nodes with a distance to the
+        i.e., the forth arugment). For each record in the intersection_file, osm2gmns consolidates all nodes with a distance to the
         central position shorter than buffer.
     int_buffer: float
         the threshold used to check if two nodes belong to one complex intersection. the unit is meter

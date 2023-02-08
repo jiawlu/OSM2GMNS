@@ -64,10 +64,11 @@ class Link(BaseLink):
         self.link_class = ''        # highway, railway, aeroway
         self.link_type_name = ''
         self.link_type = 0
+        self.allowed_uses = None
         self.is_link = False
         self.is_connector = False
 
-        self.lanes_list = [None]
+
         self.from_bidirectional_way = False
         self.VDF_fftt1 = None
         self.VDF_cap1 = None
@@ -76,6 +77,7 @@ class Link(BaseLink):
         self.segment_list = []
 
         # ======== FOR MULTIRESOLUTION ========
+        self.lanes_list = []
         self.lanes_change_point_list = []
         self.lanes_change_list = []
         self.geometry_offset = None
@@ -100,20 +102,35 @@ class Link(BaseLink):
 
         self.mesolink_list = []
 
-
     @property
-    def lanes(self):
+    def incoming_lanes(self):
         return self.lanes_list[0]
     @property
     def outgoing_lanes(self):
         return self.lanes_list[-1]
     @property
     def max_lanes(self):
-        return None if None in self.lanes_list else max(self.lanes_list)
+        return max(self.lanes_list)
+    def _lane_indices(self, lanes_change_left, lanes_change_right):
+        lane_indices = list(range(1, self.lanes+1))
+        if lanes_change_left < 0:
+            lane_indices = lane_indices[-1*lanes_change_left:]
+        elif lanes_change_left > 0:
+            lane_indices = list(range(-1*lanes_change_left,0)) + lane_indices
+        if lanes_change_right < 0:
+            lane_indices = lane_indices[:lanes_change_right]
+        elif lanes_change_right > 0:
+            lane_indices = lane_indices + list(range(self.lanes+1, self.lanes+1+lanes_change_right))
+        return lane_indices
+    @property
+    def incoming_lane_indices(self):
+        return self._lane_indices(*self.lanes_change_list[0])
+    @property
+    def outgoing_lane_indices(self):
+        return self._lane_indices(*self.lanes_change_list[-1])
     @property
     def length_offset(self):
         return round(self.geometry_xy_offset.length, og_settings.local_coord_precision)
-
 
     def buildFromOSMWay(self, way, direction, ref_node_list, default_lanes, default_speed, default_capacity):
         self.osm_way_id = way.osm_way_id
@@ -135,25 +152,25 @@ class Link(BaseLink):
         if not way.oneway: self.from_bidirectional_way = True
 
         if way.oneway:
-            self.lanes_list = [way.lanes]
+            self.lanes = way.lanes
         else:
             if direction == 1:
                 if way.forward_lanes is not None:
-                    self.lanes_list = [way.forward_lanes]
+                    self.lanes = way.forward_lanes
                 elif way.lanes is not None:
-                    self.lanes_list = [math.ceil(way.lanes / 2)]
+                    self.lanes = math.ceil(way.lanes / 2)
                 else:
-                    self.lanes_list = [way.lanes]
+                    self.lanes = way.lanes
             else:
                 if way.backward_lanes is not None:
-                    self.lanes_list = [way.backward_lanes]
+                    self.lanes = way.backward_lanes
                 elif way.lanes is not None:
-                    self.lanes_list = [math.ceil(way.lanes / 2)]
+                    self.lanes = math.ceil(way.lanes / 2)
                 else:
-                    self.lanes_list = [way.lanes]
+                    self.lanes = way.lanes
 
         if (self.lanes is None) and default_lanes:
-            self.lanes_list = [default_lanes[self.link_type_name]]
+            self.lanes = default_lanes[self.link_type_name]
 
         for ref_node in ref_node_list[1:-1]:
             if ref_node.ctrl_type == 'signal':
@@ -164,6 +181,42 @@ class Link(BaseLink):
         self.geometry, self.geometry_xy = getLineFromNodes(ref_node_list)
         self.from_node.outgoing_link_list.append(self)
         self.to_node.incoming_link_list.append(self)
+
+    def linkLaneListFromSegment(self):
+        self.lanes_list = []
+        self.lanes_change_point_list = []
+        self.lanes_change_list = []
+
+        lanes_change_point_list_temp = [0.0, self.length]
+
+        if self.length <= og_settings.segment_resolution:
+            self.lanes_change_point_list = lanes_change_point_list_temp.copy()
+        else:
+            for segment in self.segment_list:
+                lanes_change_point_list_temp.append(max(0.0, segment.start_lr))
+                lanes_change_point_list_temp.append(min(self.length, segment.end_lr))
+
+            while lanes_change_point_list_temp:
+                target_point = lanes_change_point_list_temp[0]
+                remove_list = []
+                for item in lanes_change_point_list_temp:
+                    if target_point - og_settings.segment_resolution <= item <= target_point + og_settings.segment_resolution:
+                        remove_list.append(item)
+                self.lanes_change_point_list.append(target_point)
+                for item in remove_list: lanes_change_point_list_temp.remove(item)
+            self.lanes_change_point_list.sort()
+
+        for i in range(len(self.lanes_change_point_list) - 1):
+            self.lanes_list.append(self.lanes)
+            self.lanes_change_list.append([0, 0])
+            from_point = self.lanes_change_point_list[i]
+            to_point = self.lanes_change_point_list[i+1]
+            for segment in self.segment_list:
+                length_of_overlapping = min(to_point, segment.end_lr) - max(from_point, segment.start_lr)
+                if length_of_overlapping >= og_settings.segment_resolution:
+                    self.lanes_list[-1] += (segment.l_lanes_added + segment.r_lanes_added)
+                    self.lanes_change_list[-1][0] += segment.l_lanes_added
+                    self.lanes_change_list[-1][1] += segment.r_lanes_added
 
 
 class Segment:
@@ -190,6 +243,11 @@ class Movement:
         self.end_ib_lane = None
         self.start_ob_lane = None
         self.end_ob_lane = None
+
+        self.start_ib_lane_seq_no = None
+        self.end_ib_lane_seq_no = None
+        self.start_ob_lane_seq_no = None
+        self.end_ob_lane_seq_no = None
 
         self.name = ''
         self.lanes = 0
@@ -241,6 +299,8 @@ class Network(BaseNetwork):
         self.max_poi_id = 0
         self.max_movement_id = 0
 
+        self.user_input_movement_list = []
+
         self.POI_list = []
 
         self.movement_other_attrs = []
@@ -253,4 +313,12 @@ class Network(BaseNetwork):
     @property
     def number_of_pois(self):
         return len(self.POI_list)
+    @property
+    def complete_link_lane_info(self):
+        complete_link_lane_info = True
+        for _, link in self.link_dict.items():
+            if link.lanes is None:
+                complete_link_lane_info = False
+                break
+        return complete_link_lane_info
 

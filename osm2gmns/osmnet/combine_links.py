@@ -12,7 +12,6 @@ def _checkLinkAttr(ib_link, ob_link):
     if ib_link.free_speed != ob_link.free_speed: return False
     if set(ib_link.allowed_uses) != set(ob_link.allowed_uses): return False
 
-    if len(ib_link.lanes_list) > 1 or len(ob_link.lanes_list) > 1: return False
     if ib_link.lanes != ob_link.lanes: return False
 
     if ib_link.from_bidirectional_way != ob_link.from_bidirectional_way: return False
@@ -41,7 +40,7 @@ def _newLinkFromLinks(link_id, up_link, down_link):
     link.capacity = up_link.capacity
     link.allowed_uses = up_link.allowed_uses
     link.from_bidirectional_way = up_link.from_bidirectional_way
-    link.lanes_list = up_link.lanes_list
+    link.lanes = up_link.lanes
     link.ctrl_type = up_link.ctrl_type
 
     link.from_node = up_link.from_node

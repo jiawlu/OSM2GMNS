@@ -45,7 +45,6 @@ class MesoLink(BaseLink):
         self.macrolink = None
         self.movement = None
 
-        self.lanes = 0
         self.lanes_change = []
 
         self.micronode_list = []  # micronode, lane by lane;
@@ -65,6 +64,9 @@ class MesoLink(BaseLink):
     @property
     def macro_link_id(self):
         return self.macrolink.link_id if self.macrolink is not None else None
+    @property
+    def movement_id(self):
+        return self.movement.movement_id if self.movement is not None else None
     @property
     def mvmt_txt_id(self):
         return self.movement.mvmt_txt_id if self.movement is not None else None

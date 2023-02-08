@@ -24,8 +24,7 @@ class CAutoConnectorM:
     @classmethod
     def getLaneConnection(cls):
         cls.connection_list = [[] for _ in range(len(cls.ib_link_list_sorted))]
-        ob_lanes = cls.ob_link.lanes
-
+        ob_lanes = cls.ob_link.incoming_lanes
 
         left_ib_link = cls.ib_link_list_sorted[0]
         connection_lanes = min(ob_lanes, left_ib_link.outgoing_lanes)
