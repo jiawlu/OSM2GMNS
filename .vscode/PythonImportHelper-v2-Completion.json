@@ -1814,7 +1814,7 @@
         "kind": 2,
         "importPath": "osm2gmns.utils.util_coord",
         "description": "osm2gmns.utils.util_coord",
-        "peekOfCode": "def mixed_signs(x):\n    return use_numpy and mathlib.min(x) < 0 <= mathlib.max(x)\ndef negative(x):\n    if use_numpy:\n        return mathlib.max(x) < 0\n    return x < 0\ndef latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):",
+        "peekOfCode": "def mixed_signs(x):\n    return use_numpy and mathlib.min(x) < 0 <= mathlib.max(x)\ndef negative(x):\n    return mathlib.max(x) < 0 if use_numpy else x < 0\ndef latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None",
         "detail": "osm2gmns.utils.util_coord",
         "documentation": {}
     },
@@ -1823,7 +1823,7 @@
         "kind": 2,
         "importPath": "osm2gmns.utils.util_coord",
         "description": "osm2gmns.utils.util_coord",
-        "peekOfCode": "def negative(x):\n    if use_numpy:\n        return mathlib.max(x) < 0\n    return x < 0\ndef latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    if -80 <= latitude <= 84:",
+        "peekOfCode": "def negative(x):\n    return mathlib.max(x) < 0 if use_numpy else x < 0\ndef latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None\nclass OutOfRangeError(ValueError):\n    pass",
         "detail": "osm2gmns.utils.util_coord",
         "documentation": {}
     },
@@ -1832,7 +1832,7 @@
         "kind": 2,
         "importPath": "osm2gmns.utils.util_coord",
         "description": "osm2gmns.utils.util_coord",
-        "peekOfCode": "def latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    if -80 <= latitude <= 84:\n        return ZONE_LETTERS[int(latitude + 80) >> 3]\n    else:\n        return None\nclass OutOfRangeError(ValueError):",
+        "peekOfCode": "def latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None\nclass OutOfRangeError(ValueError):\n    pass\ndef from_latlon(longitude, latitude, central_longitude):\n    central_lon_rad = mathlib.radians(central_longitude)",
         "detail": "osm2gmns.utils.util_coord",
         "documentation": {}
     },
