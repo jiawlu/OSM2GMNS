@@ -1580,7 +1580,7 @@
         "kind": 2,
         "importPath": "osm2gmns.osmnet.build_net",
         "description": "osm2gmns.osmnet.build_net",
-        "peekOfCode": "def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,\n                   strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,\n                   default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):\n    \"\"\"\n    Get an osm2gmns Network object from an osm file\n    Parameters\n    ----------\n    filename: str\n        path of an osm file; can be absolute or relative path; supported osm file formats: .osm, .xml, and .pbf\n    network_types: str, tuple of strings, list of strings, or set of strings",
+        "peekOfCode": "def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=True, POI_sampling_ratio=1.0,\n                   strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,\n                   default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):\n    \"\"\"\n    Get an osm2gmns Network object from an osm file\n    Parameters\n    ----------\n    filename: str\n        path of an osm file; can be absolute or relative path; supported osm file formats: .osm, .xml, and .pbf\n    network_types: str, tuple of strings, list of strings, or set of strings",
         "detail": "osm2gmns.osmnet.build_net",
         "documentation": {}
     },
