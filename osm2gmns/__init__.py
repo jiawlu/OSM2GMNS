@@ -33,3 +33,5 @@ print(f'osm2gmns, {__version__}')
 
 # todo: og.link_types
 # todo: combine_link remove segment
+
+# TODO: find global relation id locally (user can update locally as well)
