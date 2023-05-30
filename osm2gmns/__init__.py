@@ -10,6 +10,7 @@ from osm2gmns.io.load_from_csv import loadNetFromCSV
 from osm2gmns.io.downloader import downloadOSMData
 from osm2gmns.io.writefile import outputNetToCSV
 from osm2gmns.utils.util import config
+from osm2gmns.func_lib.extract_relation_id import OSM_RelationID_Finder
 import osm2gmns.settings as og_settings
 
 
@@ -22,7 +23,6 @@ print(f'osm2gmns, {__version__}')
 
 # todo: turns
 # todo: parse speed
-
 
 # todo: link_id: int, str
 # todo: compatible with networkx

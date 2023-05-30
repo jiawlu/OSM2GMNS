@@ -18,6 +18,33 @@
         "documentation": {}
     },
     {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "urllib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "urllib",
+        "description": "urllib",
+        "detail": "urllib",
+        "documentation": {}
+    },
+    {
         "label": "http.client",
         "kind": 6,
         "isExtraImport": true,
@@ -1015,6 +1042,15 @@
         "description": "docs.source.conf",
         "peekOfCode": "html_static_path = ['_static']",
         "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "OSM_RelationID_Finder",
+        "kind": 6,
+        "importPath": "osm2gmns.func_lib.extract_relation_id",
+        "description": "osm2gmns.func_lib.extract_relation_id",
+        "peekOfCode": "class OSM_RelationID_Finder:\n    \"\"\"A class to find the osm relation id of a place of interest globally\n       Use the Nominatim API to find the relation id of a place of interest\n    \"\"\"\n    def __init__(self, poi_name: str):\n        \"\"\"\n        Args:\n            poi_name (str): the name of the place of interest,\n                            e.g., \"Arizona State University\"\n                            e.g., \"Tempe, Arizona, USA\"",
+        "detail": "osm2gmns.func_lib.extract_relation_id",
         "documentation": {}
     },
     {
@@ -2174,7 +2210,7 @@
         "kind": 5,
         "importPath": "osm2gmns.settings",
         "description": "osm2gmns.settings",
-        "peekOfCode": "link_type_no_dict = {'motorway':1, 'trunk':2, 'primary':3, 'secondary':4, 'tertiary':5, 'residential':6, 'living_street':7, 'service':8,\n                     'cycleway':9, 'footway':10, 'track':11, 'unclassified':15, 'connector':20, 'railway':30, 'aeroway':31}\ndefault_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2, 'tertiary': 2, 'residential': 1, 'living_street':1, 'service': 1,\n                      'cycleway':1, 'footway':1, 'track':1, 'unclassified': 1, 'connector': 2}\ndefault_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60, 'tertiary': 40, 'residential': 30, 'living_street':30, 'service': 30,\n                      'cycleway':5, 'footway':5, 'track':30, 'unclassified': 30, 'connector':120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800, 'secondary': 1600, 'tertiary': 1200, 'residential': 1000, 'living_street':1000, 'service': 800,\n                         'cycleway':800, 'footway':800, 'track':800, 'unclassified': 800, 'connector':9999}\ndefault_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,\n                            'residential':False,'living_street':False,'service':False,'cycleway':True, 'footway':True,'track': True,",
+        "peekOfCode": "link_type_no_dict = {'motorway': 1, 'trunk': 2, 'primary': 3, 'secondary': 4,\n                     'tertiary': 5, 'residential': 6, 'living_street': 7,\n                     'service': 8, 'cycleway': 9, 'footway': 10, 'track': 11,\n                     'unclassified': 15, 'connector': 20, 'railway': 30, 'aeroway': 31}\ndefault_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2,\n                      'tertiary': 2, 'residential': 1, 'living_street': 1, 'service': 1,\n                      'cycleway': 1, 'footway': 1, 'track': 1, 'unclassified': 1, 'connector': 2}\ndefault_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60,\n                      'tertiary': 40, 'residential': 30, 'living_street': 30, 'service': 30,\n                      'cycleway': 5, 'footway': 5, 'track': 30, 'unclassified': 30, 'connector': 120}",
         "detail": "osm2gmns.settings",
         "documentation": {}
     },
@@ -2183,7 +2219,7 @@
         "kind": 5,
         "importPath": "osm2gmns.settings",
         "description": "osm2gmns.settings",
-        "peekOfCode": "default_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2, 'tertiary': 2, 'residential': 1, 'living_street':1, 'service': 1,\n                      'cycleway':1, 'footway':1, 'track':1, 'unclassified': 1, 'connector': 2}\ndefault_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60, 'tertiary': 40, 'residential': 30, 'living_street':30, 'service': 30,\n                      'cycleway':5, 'footway':5, 'track':30, 'unclassified': 30, 'connector':120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800, 'secondary': 1600, 'tertiary': 1200, 'residential': 1000, 'living_street':1000, 'service': 800,\n                         'cycleway':800, 'footway':800, 'track':800, 'unclassified': 800, 'connector':9999}\ndefault_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,\n                            'residential':False,'living_street':False,'service':False,'cycleway':True, 'footway':True,'track': True,\n                            'unclassified':False, 'connector':False, 'railway':True, 'aeroway':True}\ndefault_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}",
+        "peekOfCode": "default_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2,\n                      'tertiary': 2, 'residential': 1, 'living_street': 1, 'service': 1,\n                      'cycleway': 1, 'footway': 1, 'track': 1, 'unclassified': 1, 'connector': 2}\ndefault_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60,\n                      'tertiary': 40, 'residential': 30, 'living_street': 30, 'service': 30,\n                      'cycleway': 5, 'footway': 5, 'track': 30, 'unclassified': 30, 'connector': 120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800,\n                         'secondary': 1600, 'tertiary': 1200, 'residential': 1000,\n                         'living_street': 1000, 'service': 800,\n                         'cycleway': 800, 'footway': 800, 'track': 800,",
         "detail": "osm2gmns.settings",
         "documentation": {}
     },
@@ -2192,7 +2228,7 @@
         "kind": 5,
         "importPath": "osm2gmns.settings",
         "description": "osm2gmns.settings",
-        "peekOfCode": "default_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60, 'tertiary': 40, 'residential': 30, 'living_street':30, 'service': 30,\n                      'cycleway':5, 'footway':5, 'track':30, 'unclassified': 30, 'connector':120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800, 'secondary': 1600, 'tertiary': 1200, 'residential': 1000, 'living_street':1000, 'service': 800,\n                         'cycleway':800, 'footway':800, 'track':800, 'unclassified': 800, 'connector':9999}\ndefault_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,\n                            'residential':False,'living_street':False,'service':False,'cycleway':True, 'footway':True,'track': True,\n                            'unclassified':False, 'connector':False, 'railway':True, 'aeroway':True}\ndefault_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}",
+        "peekOfCode": "default_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60,\n                      'tertiary': 40, 'residential': 30, 'living_street': 30, 'service': 30,\n                      'cycleway': 5, 'footway': 5, 'track': 30, 'unclassified': 30, 'connector': 120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800,\n                         'secondary': 1600, 'tertiary': 1200, 'residential': 1000,\n                         'living_street': 1000, 'service': 800,\n                         'cycleway': 800, 'footway': 800, 'track': 800,\n                         'unclassified': 800, 'connector': 9999}\ndefault_oneway_flag_dict = {'motorway': False, 'trunk': False, 'primary': False,\n                            'secondary': False, 'tertiary': False,",
         "detail": "osm2gmns.settings",
         "documentation": {}
     },
@@ -2201,7 +2237,7 @@
         "kind": 5,
         "importPath": "osm2gmns.settings",
         "description": "osm2gmns.settings",
-        "peekOfCode": "default_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800, 'secondary': 1600, 'tertiary': 1200, 'residential': 1000, 'living_street':1000, 'service': 800,\n                         'cycleway':800, 'footway':800, 'track':800, 'unclassified': 800, 'connector':9999}\ndefault_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,\n                            'residential':False,'living_street':False,'service':False,'cycleway':True, 'footway':True,'track': True,\n                            'unclassified':False, 'connector':False, 'railway':True, 'aeroway':True}\ndefault_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}",
+        "peekOfCode": "default_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800,\n                         'secondary': 1600, 'tertiary': 1200, 'residential': 1000,\n                         'living_street': 1000, 'service': 800,\n                         'cycleway': 800, 'footway': 800, 'track': 800,\n                         'unclassified': 800, 'connector': 9999}\ndefault_oneway_flag_dict = {'motorway': False, 'trunk': False, 'primary': False,\n                            'secondary': False, 'tertiary': False,\n                            'residential': False, 'living_street': False,\n                            'service': False, 'cycleway': True, 'footway': True,\n                            'track': True, 'unclassified': False, 'connector': False,",
         "detail": "osm2gmns.settings",
         "documentation": {}
     },
@@ -2210,7 +2246,7 @@
         "kind": 5,
         "importPath": "osm2gmns.settings",
         "description": "osm2gmns.settings",
-        "peekOfCode": "default_oneway_flag_dict = {'motorway': False,'trunk':False,'primary':False,'secondary':False,'tertiary':False,\n                            'residential':False,'living_street':False,'service':False,'cycleway':True, 'footway':True,'track': True,\n                            'unclassified':False, 'connector':False, 'railway':True, 'aeroway':True}\ndefault_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}",
+        "peekOfCode": "default_oneway_flag_dict = {'motorway': False, 'trunk': False, 'primary': False,\n                            'secondary': False, 'tertiary': False,\n                            'residential': False, 'living_street': False,\n                            'service': False, 'cycleway': True, 'footway': True,\n                            'track': True, 'unclassified': False, 'connector': False,\n                            'railway': True, 'aeroway': True}\ndefault_bounds = {'minlat': -90.0,\n                  'minlon': -180.0,\n                  'maxlat': 90.0,\n                  'maxlon': 180.0}",
         "detail": "osm2gmns.settings",
         "documentation": {}
     },
@@ -2219,7 +2255,7 @@
         "kind": 5,
         "importPath": "osm2gmns.settings",
         "description": "osm2gmns.settings",
-        "peekOfCode": "default_bounds = {'minlat':-90.0, 'minlon':-180.0, 'maxlat':90.0, 'maxlon':180.0}",
+        "peekOfCode": "default_bounds = {'minlat': -90.0,\n                  'minlon': -180.0,\n                  'maxlat': 90.0,\n                  'maxlon': 180.0}",
         "detail": "osm2gmns.settings",
         "documentation": {}
     }
