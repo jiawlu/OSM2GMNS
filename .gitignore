@@ -1,4 +1,3 @@
 *.vscode/*
 *__pycache__/*
 *.pyc
-*/global_rel_id.json
