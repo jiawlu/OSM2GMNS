@@ -5,4 +5,5 @@
 # Author/Copyright: Mr. Xiangyong Luo
 ##############################################################
 
-
+# Please note,
+# All countries, states, and cities in g_country_state_city.json file are from https://github.com/dr5hn/countries-states-cities-database/tree/master
