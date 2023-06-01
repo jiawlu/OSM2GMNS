@@ -88,6 +88,10 @@ class OSM_RelationID_Finder:
             github_url = "https://raw.githubusercontent.com/xyluo25/OSM2GMNS/master/osm2gmns/func_lib/global_rel_id.json"
             self._global_rel_id = json.loads(requests.get(github_url).text)
 
+        # if we can not load dictionary, return None
+        if isinstance(self._global_rel_id, dict):
+            return None
+
         search_name = self._poi_name.split(",")[0].strip()
         if search_name == self._poi_name:
             search_name = self._poi_name.split(" ")[0].strip()
