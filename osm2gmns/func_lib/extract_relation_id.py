@@ -34,8 +34,8 @@ class OSM_RelationID_Finder:
         self._max_show = 5
 
         # the default path to save/load global country, state, and city information
-        self._path_country_state_city = self._path2linux(os.path.join(
-            Path(__file__).resolve().parent, "g_country_state_city.json"))
+        self._path_global_rel_id = self._path2linux(os.path.join(
+            Path(__file__).resolve().parent, "global_rel_id.json"))
 
     def _get_url_data(self):
         # prepare url
@@ -81,23 +81,27 @@ class OSM_RelationID_Finder:
     def _find_local_rel_id(self) -> str:
 
         # Step 0 load the global country, state, and city information locally
-        with open(self._path_country_state_city, "r") as f:
-            self._g_osm_relation_id = json.load(f)
+        try:
+            with open(self._path_global_rel_id, "r") as f:
+                self._global_rel_id = json.load(f)
+        except Exception:
+            github_url = "https://raw.githubusercontent.com/xyluo25/OSM2GMNS/master/osm2gmns/func_lib/global_rel_id.json"
+            self._global_rel_id = json.loads(requests.get(github_url).text)
 
         search_name = self._poi_name.split(",")[0].strip()
         if search_name == self._poi_name:
             search_name = self._poi_name.split(" ")[0].strip()
 
         # Step 1 Find the country start with the input characters
-        start_with_country = [country_name for country_name in self._g_osm_relation_id["country"].keys(
+        start_with_country = [country_name for country_name in self._global_rel_id["country"].keys(
         ) if country_name.lower().startswith(search_name.lower())][:self._max_show]
 
         # Step 2 Find the state start with the input characters
-        start_with_state = [state_name for state_name in self._g_osm_relation_id["state"].keys(
+        start_with_state = [state_name for state_name in self._global_rel_id["state"].keys(
         ) if state_name.lower().startswith(search_name.lower())][:self._max_show]
 
         # Step 3 Find the city start with the input characters
-        start_with_city = [city_name for city_name in self._g_osm_relation_id["city"].keys(
+        start_with_city = [city_name for city_name in self._global_rel_id["city"].keys(
         ) if city_name.lower().startswith(search_name.lower())][:self._max_show]
 
         # Step 4 Format the results
@@ -105,17 +109,17 @@ class OSM_RelationID_Finder:
         if start_with_city:
             formatted_str += "City:\n"
             for city_name in start_with_city:
-                formatted_str += f"""{city_name}, {self._g_osm_relation_id["city"][city_name]["state"]}, {self._g_osm_relation_id["city"][city_name]["country"]}, rel_id: {self._g_osm_relation_id["city"][city_name]["osm_id"]} \n"""
+                formatted_str += f"""{city_name}, {self._global_rel_id["city"][city_name]["state"]}, {self._global_rel_id["city"][city_name]["country"]}, rel_id: {self._global_rel_id["city"][city_name]["osm_id"]} \n"""
 
         if start_with_state:
             formatted_str += "State:\n"
             for state_name in start_with_state:
-                formatted_str += f"""{state_name}, {self._g_osm_relation_id["state"][state_name]["country"]}, rel_id: {self._g_osm_relation_id["state"][state_name]["osm_id"]} \n"""
+                formatted_str += f"""{state_name}, {self._global_rel_id["state"][state_name]["country"]}, rel_id: {self._global_rel_id["state"][state_name]["osm_id"]} \n"""
 
         if start_with_country:
             formatted_str += "Country:\n"
             for country_name in start_with_country:
-                formatted_str += f"""{country_name}, rel_id: {self._g_osm_relation_id["country"][country_name]["osm_id"]} \n"""
+                formatted_str += f"""{country_name}, rel_id: {self._global_rel_id["country"][country_name]["osm_id"]} \n"""
 
         if formatted_str:
 
@@ -129,5 +133,5 @@ class OSM_RelationID_Finder:
 
 if __name__ == "__main__":
 
-    rel = OSM_RelationID_Finder("tempe, Az, USA")
+    rel = OSM_RelationID_Finder("tem, Az, USA")
     print(rel.rel_id)
