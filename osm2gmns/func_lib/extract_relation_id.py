@@ -70,7 +70,7 @@ class OSM_RelationID_Finder:
         # show detailed information of the relation id
         return self._url_json if len(self._url_json) < self._max_show else self._url_json[:self._max_show]
 
-        # convert OS path to standard linux path
+    # convert OS path to standard linux path
     def _path2linux(self, path: Union[str, Path]) -> str:
         """Convert a path to a linux path, linux path can run in windows, linux and mac"""
         try:
@@ -89,7 +89,7 @@ class OSM_RelationID_Finder:
             self._global_rel_id = json.loads(requests.get(github_url).text)
 
         # if we can not load dictionary, return None
-        if isinstance(self._global_rel_id, dict):
+        if not isinstance(self._global_rel_id, dict):
             return None
 
         search_name = self._poi_name.split(",")[0].strip()
@@ -137,5 +137,5 @@ class OSM_RelationID_Finder:
 
 if __name__ == "__main__":
 
-    rel = OSM_RelationID_Finder("tem, Az, USA")
+    rel = OSM_RelationID_Finder("tempe, arizona, usa")
     print(rel.rel_id)

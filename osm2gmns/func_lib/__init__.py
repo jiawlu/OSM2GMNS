@@ -6,4 +6,4 @@
 ##############################################################
 
 # Please note,
-# All countries, states, and cities in g_country_state_city.json file are from https://github.com/dr5hn/countries-states-cities-database/tree/master
+# All countries, states, and cities in global_rel_id.json file are from https://github.com/dr5hn/countries-states-cities-database/tree/master
