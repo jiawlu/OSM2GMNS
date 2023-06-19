@@ -399,7 +399,7 @@ def _buildNet(osmnetwork, network_types, link_types, POI, POI_percentage, offset
     return network
 
 
-def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,
+def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=True, POI_sampling_ratio=1.0,
                    strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,
                    default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):
     """

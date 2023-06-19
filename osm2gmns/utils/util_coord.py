@@ -65,9 +65,7 @@ def mixed_signs(x):
 
 
 def negative(x):
-    if use_numpy:
-        return mathlib.max(x) < 0
-    return x < 0
+    return mathlib.max(x) < 0 if use_numpy else x < 0
 
 
 def latitude_to_zone_letter(latitude):
@@ -76,10 +74,7 @@ def latitude_to_zone_letter(latitude):
     if use_numpy and isinstance(latitude, mathlib.ndarray):
         latitude = latitude.flat[0]
 
-    if -80 <= latitude <= 84:
-        return ZONE_LETTERS[int(latitude + 80) >> 3]
-    else:
-        return None
+    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None
 
 
 class OutOfRangeError(ValueError):

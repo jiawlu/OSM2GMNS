@@ -1,0 +1,2278 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "urllib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "urllib",
+        "description": "urllib",
+        "detail": "urllib",
+        "documentation": {}
+    },
+    {
+        "label": "Union",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "http.client",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "http.client",
+        "description": "http.client",
+        "detail": "http.client",
+        "documentation": {}
+    },
+    {
+        "label": "urllib.parse",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "urllib.parse",
+        "description": "urllib.parse",
+        "detail": "urllib.parse",
+        "documentation": {}
+    },
+    {
+        "label": "base64",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "base64",
+        "description": "base64",
+        "detail": "base64",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Link",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Movement",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Segment",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "POI",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Network",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Movement",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Network",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Link",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Network",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Link",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Network",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Link",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "POI",
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "getMovementDescription",
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "getMovementGeometry",
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "getMovementDescription",
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "getMovementGeometry",
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "from_latlon",
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "from_latlon",
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "to_latlon",
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "from_latlon",
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "GeoTransformer",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "GeoTransformer",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineAngle",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineAngle",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineAngle",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineAngle",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "offsetLine",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "offsetLine",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineFromNodes",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "offsetLine",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineAngle",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineFromNodes",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getPolygonFromNodes",
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "osm2gmns.settings",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "csv",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "csv",
+        "description": "csv",
+        "detail": "csv",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "wkt",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "wkt",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "wkt",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "ops",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "geometry",
+        "importPath": "shapely",
+        "description": "shapely",
+        "isExtraImport": true,
+        "detail": "shapely",
+        "documentation": {}
+    },
+    {
+        "label": "getFileHandle",
+        "importPath": "osm2gmns.io.util_io",
+        "description": "osm2gmns.io.util_io",
+        "isExtraImport": true,
+        "detail": "osm2gmns.io.util_io",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "getLogger",
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "getLogger",
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "getLogger",
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "isExtraImport": true,
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "osmium",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "osmium",
+        "description": "osmium",
+        "detail": "osmium",
+        "documentation": {}
+    },
+    {
+        "label": "namedtuple",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "multiprocessing",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "multiprocessing",
+        "description": "multiprocessing",
+        "detail": "multiprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "OSMNode",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Way",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Relation",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "OSMNetwork",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "OSMNode",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "OSMNode",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Way",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Relation",
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "outputMesoNet",
+        "importPath": "osm2gmns.io.output_mrnet",
+        "description": "osm2gmns.io.output_mrnet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.io.output_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "outputMicroNet",
+        "importPath": "osm2gmns.io.output_mrnet",
+        "description": "osm2gmns.io.output_mrnet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.io.output_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "Enum",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "osm2gmns.movement.exp_connection_from_turns",
+        "description": "osm2gmns.movement.exp_connection_from_turns",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.exp_connection_from_turns",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "osm2gmns.movement.exp_auto_connection",
+        "description": "osm2gmns.movement.exp_auto_connection",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.exp_auto_connection",
+        "documentation": {}
+    },
+    {
+        "label": "CAutoConnectorIntD",
+        "importPath": "osm2gmns.movement.autoconintd",
+        "description": "osm2gmns.movement.autoconintd",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.autoconintd",
+        "documentation": {}
+    },
+    {
+        "label": "CAutoConnectorM",
+        "importPath": "osm2gmns.movement.autoconm",
+        "description": "osm2gmns.movement.autoconm",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.autoconm",
+        "documentation": {}
+    },
+    {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
+        "label": "copy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "copy",
+        "description": "copy",
+        "detail": "copy",
+        "documentation": {}
+    },
+    {
+        "label": "NetGenerator",
+        "importPath": "osm2gmns.multiresolutionnet.netgen",
+        "description": "osm2gmns.multiresolutionnet.netgen",
+        "isExtraImport": true,
+        "detail": "osm2gmns.multiresolutionnet.netgen",
+        "documentation": {}
+    },
+    {
+        "label": "generateMovements",
+        "importPath": "osm2gmns.movement.generate_movements",
+        "description": "osm2gmns.movement.generate_movements",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.generate_movements",
+        "documentation": {}
+    },
+    {
+        "label": "validateUserInputMovements",
+        "importPath": "osm2gmns.movement.generate_movements",
+        "description": "osm2gmns.movement.generate_movements",
+        "isExtraImport": true,
+        "detail": "osm2gmns.movement.generate_movements",
+        "documentation": {}
+    },
+    {
+        "label": "substring",
+        "importPath": "shapely.ops",
+        "description": "shapely.ops",
+        "isExtraImport": true,
+        "detail": "shapely.ops",
+        "documentation": {}
+    },
+    {
+        "label": "MesoNode",
+        "importPath": "osm2gmns.networkclass.mesonet",
+        "description": "osm2gmns.networkclass.mesonet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.mesonet",
+        "documentation": {}
+    },
+    {
+        "label": "MesoLink",
+        "importPath": "osm2gmns.networkclass.mesonet",
+        "description": "osm2gmns.networkclass.mesonet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.mesonet",
+        "documentation": {}
+    },
+    {
+        "label": "MesoNetwork",
+        "importPath": "osm2gmns.networkclass.mesonet",
+        "description": "osm2gmns.networkclass.mesonet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.mesonet",
+        "documentation": {}
+    },
+    {
+        "label": "MicroNode",
+        "importPath": "osm2gmns.networkclass.micronet",
+        "description": "osm2gmns.networkclass.micronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.micronet",
+        "documentation": {}
+    },
+    {
+        "label": "MicroLink",
+        "importPath": "osm2gmns.networkclass.micronet",
+        "description": "osm2gmns.networkclass.micronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.micronet",
+        "documentation": {}
+    },
+    {
+        "label": "MicroNetwork",
+        "importPath": "osm2gmns.networkclass.micronet",
+        "description": "osm2gmns.networkclass.micronet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.micronet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNode",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseLink",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNetwork",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNode",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseLink",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNetwork",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNode",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseLink",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNetwork",
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "isExtraImport": true,
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "readOSMFile",
+        "importPath": "osm2gmns.io.read_from_osm",
+        "description": "osm2gmns.io.read_from_osm",
+        "isExtraImport": true,
+        "detail": "osm2gmns.io.read_from_osm",
+        "documentation": {}
+    },
+    {
+        "label": "combineShortLinks",
+        "importPath": "osm2gmns.osmnet.combine_links",
+        "description": "osm2gmns.osmnet.combine_links",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.combine_links",
+        "documentation": {}
+    },
+    {
+        "label": "generatePOIs",
+        "importPath": "osm2gmns.osmnet.pois",
+        "description": "osm2gmns.osmnet.pois",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.pois",
+        "documentation": {}
+    },
+    {
+        "label": "*",
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "network_types_all",
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "checkArgs_getNetFromFile",
+        "importPath": "osm2gmns.osmnet.check_args",
+        "description": "osm2gmns.osmnet.check_args",
+        "isExtraImport": true,
+        "detail": "osm2gmns.osmnet.check_args",
+        "documentation": {}
+    },
+    {
+        "label": "Point",
+        "importPath": "shapely.geometry",
+        "description": "shapely.geometry",
+        "isExtraImport": true,
+        "detail": "shapely.geometry",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "functools",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "functools",
+        "description": "functools",
+        "detail": "functools",
+        "documentation": {}
+    },
+    {
+        "label": "autodoc_mock_imports",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "autodoc_mock_imports = [\n    \"shapely\",\n    \"osmium\",\n    \"numpy\"\n]\n# -- Project information -----------------------------------------------------\nproject = 'osm2gmns'\ncopyright = '2020-2022, Jiawei Lu, Xuesong (Simon) Zhou'\nauthor = 'Jiawei Lu, Xuesong (Simon) Zhou'\n# The full version, including alpha/beta/rc tags",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "project",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "project = 'osm2gmns'\ncopyright = '2020-2022, Jiawei Lu, Xuesong (Simon) Zhou'\nauthor = 'Jiawei Lu, Xuesong (Simon) Zhou'\n# The full version, including alpha/beta/rc tags\nrelease = '0.7.3'\n# -- General configuration ---------------------------------------------------\n# Add any Sphinx extension module names here, as strings. They can be\n# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom\n# ones.\nextensions = ['sphinx.ext.autodoc', \"sphinx.ext.napoleon\"]",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "copyright",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "copyright = '2020-2022, Jiawei Lu, Xuesong (Simon) Zhou'\nauthor = 'Jiawei Lu, Xuesong (Simon) Zhou'\n# The full version, including alpha/beta/rc tags\nrelease = '0.7.3'\n# -- General configuration ---------------------------------------------------\n# Add any Sphinx extension module names here, as strings. They can be\n# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom\n# ones.\nextensions = ['sphinx.ext.autodoc', \"sphinx.ext.napoleon\"]\n# Add any paths that contain templates here, relative to this directory.",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "author",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "author = 'Jiawei Lu, Xuesong (Simon) Zhou'\n# The full version, including alpha/beta/rc tags\nrelease = '0.7.3'\n# -- General configuration ---------------------------------------------------\n# Add any Sphinx extension module names here, as strings. They can be\n# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom\n# ones.\nextensions = ['sphinx.ext.autodoc', \"sphinx.ext.napoleon\"]\n# Add any paths that contain templates here, relative to this directory.\ntemplates_path = ['_templates']",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "release",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "release = '0.7.3'\n# -- General configuration ---------------------------------------------------\n# Add any Sphinx extension module names here, as strings. They can be\n# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom\n# ones.\nextensions = ['sphinx.ext.autodoc', \"sphinx.ext.napoleon\"]\n# Add any paths that contain templates here, relative to this directory.\ntemplates_path = ['_templates']\n# List of patterns, relative to source directory, that match files and\n# directories to ignore when looking for source files.",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "extensions",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "extensions = ['sphinx.ext.autodoc', \"sphinx.ext.napoleon\"]\n# Add any paths that contain templates here, relative to this directory.\ntemplates_path = ['_templates']\n# List of patterns, relative to source directory, that match files and\n# directories to ignore when looking for source files.\n# This pattern also affects html_static_path and html_extra_path.\nexclude_patterns = []\n# -- Options for HTML output -------------------------------------------------\n# The theme to use for HTML and HTML Help pages.  See the documentation for\n# a list of builtin themes.",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "templates_path",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "templates_path = ['_templates']\n# List of patterns, relative to source directory, that match files and\n# directories to ignore when looking for source files.\n# This pattern also affects html_static_path and html_extra_path.\nexclude_patterns = []\n# -- Options for HTML output -------------------------------------------------\n# The theme to use for HTML and HTML Help pages.  See the documentation for\n# a list of builtin themes.\n#\nhtml_theme = 'sphinx_rtd_theme'",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "exclude_patterns",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "exclude_patterns = []\n# -- Options for HTML output -------------------------------------------------\n# The theme to use for HTML and HTML Help pages.  See the documentation for\n# a list of builtin themes.\n#\nhtml_theme = 'sphinx_rtd_theme'\n# Add any paths that contain custom static files (such as style sheets) here,\n# relative to this directory. They are copied after the builtin static files,\n# so a file named \"default.css\" will overwrite the builtin \"default.css\".\nhtml_static_path = ['_static']",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "html_theme",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "html_theme = 'sphinx_rtd_theme'\n# Add any paths that contain custom static files (such as style sheets) here,\n# relative to this directory. They are copied after the builtin static files,\n# so a file named \"default.css\" will overwrite the builtin \"default.css\".\nhtml_static_path = ['_static']",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "html_static_path",
+        "kind": 5,
+        "importPath": "docs.source.conf",
+        "description": "docs.source.conf",
+        "peekOfCode": "html_static_path = ['_static']",
+        "detail": "docs.source.conf",
+        "documentation": {}
+    },
+    {
+        "label": "OSM_RelationID_Finder",
+        "kind": 6,
+        "importPath": "osm2gmns.func_lib.extract_relation_id",
+        "description": "osm2gmns.func_lib.extract_relation_id",
+        "peekOfCode": "class OSM_RelationID_Finder:\n    \"\"\"A class to find the osm relation id of a place of interest globally\n       Use the Nominatim API to find the relation id of a place of interest\n    \"\"\"\n    def __init__(self, poi_name: str):\n        \"\"\"\n        Args:\n            poi_name (str): the name of the place of interest,\n                            e.g., \"Arizona State University\"\n                            e.g., \"Tempe, Arizona, USA\"",
+        "detail": "osm2gmns.func_lib.extract_relation_id",
+        "documentation": {}
+    },
+    {
+        "label": "downloadOSMData",
+        "kind": 2,
+        "importPath": "osm2gmns.io.downloader",
+        "description": "osm2gmns.io.downloader",
+        "peekOfCode": "def downloadOSMData(area_id, output_filename='map.osm', url=_url):\n    \"\"\"\n    Download OpenStreetMap data via overpass API\n    Parameters\n    ----------\n    area_id: int\n        relation_id of the area of interest\n    output_filename: int\n        full path where the downloaded network will be stored\n    url: int",
+        "detail": "osm2gmns.io.downloader",
+        "documentation": {}
+    },
+    {
+        "label": "_url",
+        "kind": 5,
+        "importPath": "osm2gmns.io.downloader",
+        "description": "osm2gmns.io.downloader",
+        "peekOfCode": "_url = \"www.overpass-api.de/api/interpreter\"\n# alternatives: overpass.kumi.systems/api/interpreter, sumo.dlr.de/osm/api/interpreter\ndef _readCompressed(conn, urlpath, query, filename):\n    conn.request(\"POST\", \"/\" + urlpath, \"\"\"\n    <osm-script timeout=\"240\" element-limit=\"1073741824\">\n    <union>\n       %s\n       <recurse type=\"node-relation\" into=\"rels\"/>\n       <recurse type=\"node-way\"/>\n       <recurse type=\"way-relation\"/>",
+        "detail": "osm2gmns.io.downloader",
+        "documentation": {}
+    },
+    {
+        "label": "loadNetFromCSV",
+        "kind": 2,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "def loadNetFromCSV(folder='', node_file=None, link_file=None, movement_file=None,\n                   segment_file=None, geometry_file=None, POI_file=None,\n                   coordinate_type='lonlat', enconding=None):\n    \"\"\"\n    Load a network from csv files in GMNS format\n    Parameters\n    ----------\n    folder: str\n        the folder where network files are stored\n    node_file: str",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_node_required_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_node_required_fields = {'node_id', 'x_coord', 'y_coord'}\n_node_optional_fields = {'name', 'osm_node_id', 'osm_highway', 'zone_id', 'ctrl_type', 'node_type', 'activity_type', 'is_boundary', 'intersection_id', 'poi_id', 'notes'}\n_link_required_fields = {'link_id', 'from_node_id', 'to_node_id', 'lanes'}\n_link_optional_fields = {'name', 'osm_way_id', 'dir_flag', 'length', 'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry', 'allowed_uses', 'from_biway', 'is_link', 'VDF_fftt1', 'VDF_cap1'}\n_mvmt_required_fields = {'mvmt_id', 'node_id', 'ib_link_id', 'start_ib_lane', 'end_ib_lane', 'ob_link_id', 'start_ob_lane', 'end_ob_lane'}\n_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}\n_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_node_optional_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_node_optional_fields = {'name', 'osm_node_id', 'osm_highway', 'zone_id', 'ctrl_type', 'node_type', 'activity_type', 'is_boundary', 'intersection_id', 'poi_id', 'notes'}\n_link_required_fields = {'link_id', 'from_node_id', 'to_node_id', 'lanes'}\n_link_optional_fields = {'name', 'osm_way_id', 'dir_flag', 'length', 'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry', 'allowed_uses', 'from_biway', 'is_link', 'VDF_fftt1', 'VDF_cap1'}\n_mvmt_required_fields = {'mvmt_id', 'node_id', 'ib_link_id', 'start_ib_lane', 'end_ib_lane', 'ob_link_id', 'start_ob_lane', 'end_ob_lane'}\n_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}\n_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_link_required_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_link_required_fields = {'link_id', 'from_node_id', 'to_node_id', 'lanes'}\n_link_optional_fields = {'name', 'osm_way_id', 'dir_flag', 'length', 'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry', 'allowed_uses', 'from_biway', 'is_link', 'VDF_fftt1', 'VDF_cap1'}\n_mvmt_required_fields = {'mvmt_id', 'node_id', 'ib_link_id', 'start_ib_lane', 'end_ib_lane', 'ob_link_id', 'start_ob_lane', 'end_ob_lane'}\n_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}\n_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')\n    else:",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_link_optional_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_link_optional_fields = {'name', 'osm_way_id', 'dir_flag', 'length', 'free_speed', 'capacity', 'link_type_name', 'link_type', 'geometry', 'allowed_uses', 'from_biway', 'is_link', 'VDF_fftt1', 'VDF_cap1'}\n_mvmt_required_fields = {'mvmt_id', 'node_id', 'ib_link_id', 'start_ib_lane', 'end_ib_lane', 'ob_link_id', 'start_ob_lane', 'end_ob_lane'}\n_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}\n_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')\n    else:\n        fin = open(node_filepath, 'r', encoding=encoding)",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_mvmt_required_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_mvmt_required_fields = {'mvmt_id', 'node_id', 'ib_link_id', 'start_ib_lane', 'end_ib_lane', 'ob_link_id', 'start_ob_lane', 'end_ob_lane'}\n_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}\n_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')\n    else:\n        fin = open(node_filepath, 'r', encoding=encoding)\n    reader = csv.DictReader(fin)",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_mvmt_optional_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_mvmt_optional_fields = {'osm_node_id', 'name', 'lanes', 'ib_osm_node_id', 'ob_osm_node_id', 'type', 'penalty', 'capacity', 'ctrl_type', 'mvmt_txt_id', 'geometry', 'volume', 'free_speed', 'allowed_uses','generated_by_osm2gmns'}\n_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')\n    else:\n        fin = open(node_filepath, 'r', encoding=encoding)\n    reader = csv.DictReader(fin)\n    fieldnames = reader.fieldnames.copy()",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_segment_required_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_segment_required_fields = {'segment_id', 'link_id', 'ref_node_id', 'start_lr', 'end_lr', 'l_lanes_added', 'r_lanes_added'}\n_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')\n    else:\n        fin = open(node_filepath, 'r', encoding=encoding)\n    reader = csv.DictReader(fin)\n    fieldnames = reader.fieldnames.copy()\n    if '' in fieldnames:",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "_segment_optional_fields",
+        "kind": 5,
+        "importPath": "osm2gmns.io.load_from_csv",
+        "description": "osm2gmns.io.load_from_csv",
+        "peekOfCode": "_segment_optional_fields = {'grade', 'capacity', 'free_speed', 'lanes', 'bike_facility', 'ped_facility', 'parking', 'allowed_uses', 'toll', 'jurisdiction', 'row_width', 'opt_comment'}\ndef _loadNodes(network, node_filepath, coordinate_type, encoding):\n    if encoding is None:\n        fin = open(node_filepath, 'r')\n    else:\n        fin = open(node_filepath, 'r', encoding=encoding)\n    reader = csv.DictReader(fin)\n    fieldnames = reader.fieldnames.copy()\n    if '' in fieldnames:\n        print('WARNING: columns with an empty header are detected in the node file. these columns will be skipped')",
+        "detail": "osm2gmns.io.load_from_csv",
+        "documentation": {}
+    },
+    {
+        "label": "outputMesoNet",
+        "kind": 2,
+        "importPath": "osm2gmns.io.output_mrnet",
+        "description": "osm2gmns.io.output_mrnet",
+        "peekOfCode": "def outputMesoNet(mesonet, output_folder, prefix, projection, encoding):\n    mesonet_folder = os.path.join(output_folder, 'mesonet')\n    if not os.path.isdir(mesonet_folder): os.mkdir(mesonet_folder)\n    mesonode_filepath = os.path.join(mesonet_folder, f'{prefix}node.csv')\n    _outputMesoNodes(mesonet, mesonode_filepath, projection, encoding)\n    mesolink_filepath = os.path.join(mesonet_folder, f'{prefix}link.csv')\n    _outputMesoLinks(mesonet, mesolink_filepath, projection, encoding)\ndef outputMicroNet(micronet, output_folder, prefix, projection, encoding):\n    micronet_folder = os.path.join(output_folder, 'micronet')\n    if not os.path.isdir(micronet_folder): os.mkdir(micronet_folder)",
+        "detail": "osm2gmns.io.output_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "outputMicroNet",
+        "kind": 2,
+        "importPath": "osm2gmns.io.output_mrnet",
+        "description": "osm2gmns.io.output_mrnet",
+        "peekOfCode": "def outputMicroNet(micronet, output_folder, prefix, projection, encoding):\n    micronet_folder = os.path.join(output_folder, 'micronet')\n    if not os.path.isdir(micronet_folder): os.mkdir(micronet_folder)\n    micronode_filepath = os.path.join(micronet_folder, f'{prefix}node.csv')\n    _outputMicroNodes(micronet, micronode_filepath, projection, encoding)\n    microlink_filepath = os.path.join(micronet_folder, f'{prefix}link.csv')\n    _outputMicroLinks(micronet, microlink_filepath, projection, encoding)",
+        "detail": "osm2gmns.io.output_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "collectNodes1",
+        "kind": 2,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "def collectNodes1(filename):\n    class NodeHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.nodes = []\n        def node(self, n):\n            node_id = n.id\n            if node_id % 3 == 1:\n                lonlat = (n.location.lon, n.location.lat)\n                tags = {tag.k: tag.v for tag in n.tags}",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "collectNodes2",
+        "kind": 2,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "def collectNodes2(filename):\n    class NodeHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.nodes = []\n        def node(self, n):\n            node_id = n.id\n            if node_id % 3 == 2:\n                lonlat = (n.location.lon, n.location.lat)\n                tags = {tag.k: tag.v for tag in n.tags}",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "collectNodes3",
+        "kind": 2,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "def collectNodes3(filename):\n    class NodeHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.nodes = []\n        def node(self, n):\n            node_id = n.id\n            if node_id % 3 == 0:\n                lonlat = (n.location.lon, n.location.lat)\n                tags = {tag.k: tag.v for tag in n.tags}",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "collectWaysRelations",
+        "kind": 2,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "def collectWaysRelations(filename):\n    class WayRelationHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.ways = []\n            self.relations = []\n        def way(self, w):\n            way_id = w.id\n            refs = [node.ref for node in w.nodes]\n            tags = {tag.k: tag.v for tag in w.tags}",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "readOSMFile",
+        "kind": 2,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "def readOSMFile(filename):\n    bounds = default_bounds\n    f = osmium.io.Reader(filename)\n    header = f.header()\n    print('Bbox:', header.box())\n    results = []\n    p = mp.Pool(4)\n    results.append(p.apply_async(collectNodes1, (filename,)))\n    results.append(p.apply_async(collectNodes2, (filename,)))\n    results.append(p.apply_async(collectNodes3, (filename,)))",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "readCSVFile",
+        "kind": 2,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "def readCSVFile(folder, encoding):\n    node_filepath = os.path.join(folder,'node.csv')\n    link_filepath = os.path.join(folder,'link.csv')\n    if encoding is None:\n        nfin = open(node_filepath, 'r')\n        lfin = open(link_filepath, 'r')\n    else:\n        nfin = open(node_filepath, 'r', encoding=encoding)\n        lfin = open(link_filepath, 'r', encoding=encoding)\n    reader = csv.DictReader(nfin)",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "kind": 5,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "Node = namedtuple('Node', ('id', 'tags', 'lonlat'))\nWay = namedtuple('Way', ('id', 'tags', 'refs'))\nRelation = namedtuple('Relation', ('id', 'tags', 'members'))\ndef collectNodes1(filename):\n    class NodeHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.nodes = []\n        def node(self, n):\n            node_id = n.id",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "Way",
+        "kind": 5,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "Way = namedtuple('Way', ('id', 'tags', 'refs'))\nRelation = namedtuple('Relation', ('id', 'tags', 'members'))\ndef collectNodes1(filename):\n    class NodeHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.nodes = []\n        def node(self, n):\n            node_id = n.id\n            if node_id % 3 == 1:",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "Relation",
+        "kind": 5,
+        "importPath": "osm2gmns.io.readfile_mp",
+        "description": "osm2gmns.io.readfile_mp",
+        "peekOfCode": "Relation = namedtuple('Relation', ('id', 'tags', 'members'))\ndef collectNodes1(filename):\n    class NodeHandler(osmium.SimpleHandler):\n        def __init__(self):\n            osmium.SimpleHandler.__init__(self)\n            self.nodes = []\n        def node(self, n):\n            node_id = n.id\n            if node_id % 3 == 1:\n                lonlat = (n.location.lon, n.location.lat)",
+        "detail": "osm2gmns.io.readfile_mp",
+        "documentation": {}
+    },
+    {
+        "label": "NWRHandler",
+        "kind": 6,
+        "importPath": "osm2gmns.io.read_from_osm",
+        "description": "osm2gmns.io.read_from_osm",
+        "peekOfCode": "class NWRHandler(osmium.SimpleHandler):\n    def __init__(self):\n        osmium.SimpleHandler.__init__(self)\n        self.strict_mode = True\n        self.bounds = None\n        self.POI = False\n        self.osm_node_dict = {}\n        self.osm_node_id_list = []\n        self.osm_node_coord_list = []\n        self.osm_way_dict = {}",
+        "detail": "osm2gmns.io.read_from_osm",
+        "documentation": {}
+    },
+    {
+        "label": "readOSMFile",
+        "kind": 2,
+        "importPath": "osm2gmns.io.read_from_osm",
+        "description": "osm2gmns.io.read_from_osm",
+        "peekOfCode": "def readOSMFile(filename, POI, strict_mode, bbox):\n    \"\"\"\n    Get nodes, ways and relations from osm file\n    Parameters\n    ----------\n    filename: str\n        filename of the osm file\n    POI: bool\n        get POI information or not\n    strict_mode: bool",
+        "detail": "osm2gmns.io.read_from_osm",
+        "documentation": {}
+    },
+    {
+        "label": "getFileHandle",
+        "kind": 2,
+        "importPath": "osm2gmns.io.util_io",
+        "description": "osm2gmns.io.util_io",
+        "peekOfCode": "def getFileHandle(filepath, encoding):\n    while True:\n        try:\n            if encoding is None:\n                outfile = open(filepath, 'w', newline='',errors='ignore')\n            else:\n                outfile = open(filepath, 'w', newline='', errors='ignore', encoding=encoding)\n            break\n        except PermissionError:\n            print(f'{filepath} may be locked by other programs. please release it then press Enter to try again')",
+        "detail": "osm2gmns.io.util_io",
+        "documentation": {}
+    },
+    {
+        "label": "outputNetToCSV",
+        "kind": 2,
+        "importPath": "osm2gmns.io.writefile",
+        "description": "osm2gmns.io.writefile",
+        "peekOfCode": "def outputNetToCSV(network, output_folder='', prefix='', projection=False, encoding=None):\n    \"\"\"\n    Output an osm2gmns network object to csv files in GMNS format\n    Parameters\n    ----------\n    network: Network\n        an osm2gmns network object\n    output_folder: str\n        path of the folder to store network files. can be an absolute or a relative path\n    prefix: str",
+        "detail": "osm2gmns.io.writefile",
+        "documentation": {}
+    },
+    {
+        "label": "CAutoConnectorIntD",
+        "kind": 6,
+        "importPath": "osm2gmns.movement.autoconintd",
+        "description": "osm2gmns.movement.autoconintd",
+        "peekOfCode": "class CAutoConnectorIntD:\n    default_right_most_lanes = 1        # do not change\n    default_left_most_lanes = 1         # do not change\n    ib_link = None\n    ob_link_list = []\n    ob_link_list_sorted = []\n    connection_list = []\n    @classmethod\n    def getSequence(cls):       # order outbound links from left to right\n        angle_list = []",
+        "detail": "osm2gmns.movement.autoconintd",
+        "documentation": {}
+    },
+    {
+        "label": "CAutoConnectorM",
+        "kind": 6,
+        "importPath": "osm2gmns.movement.autoconm",
+        "description": "osm2gmns.movement.autoconm",
+        "peekOfCode": "class CAutoConnectorM:\n    default_right_most_lanes = 1        # do not change\n    default_left_most_lanes = 1         # do not change\n    ib_link_list = []\n    ob_link = None\n    ib_link_list_sorted = []\n    connection_list = []\n    @classmethod\n    def getSequence(cls):       # order inbound links from left to right\n        angle_list = []",
+        "detail": "osm2gmns.movement.autoconm",
+        "documentation": {}
+    },
+    {
+        "label": "MainDirections",
+        "kind": 6,
+        "importPath": "osm2gmns.movement.exp_auto_connection",
+        "description": "osm2gmns.movement.exp_auto_connection",
+        "peekOfCode": "class MainDirections:\n    def __init__(self, parent, outgoing, available_lanes):\n        pass\n    def getStraightest(self):\n        return 0\n    def empty(self):\n        pass\n    def includes(self, d):\n        pass\ndef _prepareLinkPriorities(current_link, outgoing, available_lanes):",
+        "detail": "osm2gmns.movement.exp_auto_connection",
+        "documentation": {}
+    },
+    {
+        "label": "guessMovements",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.exp_auto_connection",
+        "description": "osm2gmns.movement.exp_auto_connection",
+        "peekOfCode": "def guessMovements(net, processed_node_set):\n    _computeLanes2Edges(net.link_dict, processed_node_set)\n    _computeLanes2Lanes(net)",
+        "detail": "osm2gmns.movement.exp_auto_connection",
+        "documentation": {}
+    },
+    {
+        "label": "Direction",
+        "kind": 5,
+        "importPath": "osm2gmns.movement.exp_auto_connection",
+        "description": "osm2gmns.movement.exp_auto_connection",
+        "peekOfCode": "Direction = Enum('Direction', ('RIGHTMOST', 'LEFTMOST', 'FORWARD'))\nclass MainDirections:\n    def __init__(self, parent, outgoing, available_lanes):\n        pass\n    def getStraightest(self):\n        return 0\n    def empty(self):\n        pass\n    def includes(self, d):\n        pass",
+        "detail": "osm2gmns.movement.exp_auto_connection",
+        "documentation": {}
+    },
+    {
+        "label": "generateMovementsFromTurns",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.exp_connection_from_turns",
+        "description": "osm2gmns.movement.exp_connection_from_turns",
+        "peekOfCode": "def generateMovementsFromTurns(net):\n    processed_node_set = set()\n    return processed_node_set",
+        "detail": "osm2gmns.movement.exp_connection_from_turns",
+        "documentation": {}
+    },
+    {
+        "label": "generateMovements",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.exp_generate_movements",
+        "description": "osm2gmns.movement.exp_generate_movements",
+        "peekOfCode": "def generateMovements(net, auto_connection=True):\n    processed_node_set = generateMovementsFromTurns(net)\n    if auto_connection:\n        guessMovements(net, processed_node_set)\n    pass",
+        "detail": "osm2gmns.movement.exp_generate_movements",
+        "documentation": {}
+    },
+    {
+        "label": "validateUserInputMovements",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.generate_movements",
+        "description": "osm2gmns.movement.generate_movements",
+        "peekOfCode": "def validateUserInputMovements(network):\n    for movement in network.user_input_movement_list:\n        ib_link, ob_link = movement.ib_link, movement.ob_link\n        if movement.start_ib_lane not in ib_link.outgoing_lane_indices:\n            print(f'WARNING: start_ib_lane of movement {movement.movement_id} does not belong to ib_link {ib_link.link_id} outgoing lane indices {ib_link.outgoing_lane_indices}')\n            continue\n        start_ib_lane_seq_no = ib_link.outgoing_lane_indices.index(movement.start_ib_lane)\n        if movement.end_ib_lane not in ib_link.outgoing_lane_indices:\n            print(f'WARNING: end_ib_lane of movement {movement.movement_id} does not belong to ib_link {ib_link.link_id} outgoing lane indices {ib_link.outgoing_lane_indices}')\n            continue",
+        "detail": "osm2gmns.movement.generate_movements",
+        "documentation": {}
+    },
+    {
+        "label": "generateMovements",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.generate_movements",
+        "description": "osm2gmns.movement.generate_movements",
+        "peekOfCode": "def generateMovements(network):\n    \"\"\"\n    Use osm2gmns built-in methods to generate movements for each node (intersection) in a network\n    Parameters\n    ----------\n    network: Network\n        an osm2gmns Network object\n    Returns\n    -------\n    None",
+        "detail": "osm2gmns.movement.generate_movements",
+        "documentation": {}
+    },
+    {
+        "label": "getMovementDescription",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "peekOfCode": "def getMovementDescription(ib_link, ob_link):\n    ib_start, ib_end = ib_link.geometry_xy.coords[0], ib_link.geometry_xy.coords[-1]\n    ob_end = ob_link.geometry_xy.coords[-1]\n    angle_ib = math.atan2(ib_end[1] - ib_start[1], ib_end[0] - ib_start[0])\n    if -0.75 * math.pi <= angle_ib < -0.25 * math.pi:\n        direction = 'SB'\n    elif -0.25 * math.pi <= angle_ib < 0.25 * math.pi:\n        direction = 'EB'\n    elif 0.25 * math.pi <= angle_ib < 0.75 * math.pi:\n        direction = 'NB'",
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "getMovementGeometry",
+        "kind": 2,
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "peekOfCode": "def getMovementGeometry(ib_link, ob_link):\n    ib_geometry_xy = ib_link.geometry_xy\n    ib_indent = _indent if ib_geometry_xy.length > _indent else ib_geometry_xy.length / 2\n    ib_point = ib_geometry_xy.interpolate(-1 * ib_indent)\n    ob_geometry_xy = ob_link.geometry_xy\n    ob_indent = _indent if ob_geometry_xy.length > _indent else ob_geometry_xy.length / 2\n    ob_point = ob_geometry_xy.interpolate(ob_indent)\n    geometry_xy = geometry.LineString([ib_point, ob_point])\n    return geometry_xy",
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "_indent",
+        "kind": 5,
+        "importPath": "osm2gmns.movement.util_mvmt",
+        "description": "osm2gmns.movement.util_mvmt",
+        "peekOfCode": "_indent = 8.0\ndef getMovementDescription(ib_link, ob_link):\n    ib_start, ib_end = ib_link.geometry_xy.coords[0], ib_link.geometry_xy.coords[-1]\n    ob_end = ob_link.geometry_xy.coords[-1]\n    angle_ib = math.atan2(ib_end[1] - ib_start[1], ib_end[0] - ib_start[0])\n    if -0.75 * math.pi <= angle_ib < -0.25 * math.pi:\n        direction = 'SB'\n    elif -0.25 * math.pi <= angle_ib < 0.25 * math.pi:\n        direction = 'EB'\n    elif 0.25 * math.pi <= angle_ib < 0.75 * math.pi:",
+        "detail": "osm2gmns.movement.util_mvmt",
+        "documentation": {}
+    },
+    {
+        "label": "buildMultiResolutionNets",
+        "kind": 2,
+        "importPath": "osm2gmns.multiresolutionnet.build_mrnet",
+        "description": "osm2gmns.multiresolutionnet.build_mrnet",
+        "peekOfCode": "def buildMultiResolutionNets(macronet, generate_micro_net=True,\n                             auto_movement_generation=True, exclusive_bike_walk_lanes=True, connector_type=None,\n                             width_of_lane=3.5, length_of_cell=7.0):\n    \"\"\"\n    Build the corresponding mesoscopic and microscopic networks for a source (macroscopic) network\n    Parameters\n    ----------\n    macronet: Network\n        a soucrce osm2gmns Network object\n    generate_micro_net: bool",
+        "detail": "osm2gmns.multiresolutionnet.build_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "_length_of_short_cut",
+        "kind": 5,
+        "importPath": "osm2gmns.multiresolutionnet.build_mrnet",
+        "description": "osm2gmns.multiresolutionnet.build_mrnet",
+        "peekOfCode": "_length_of_short_cut = 0.1\n_length_of_cut = {0: 2.0, 1: 8.0, 2: 12.0, 3: 14.0, 4: 16.0, 5: 18.0, 6: 20, 7:22, 8:24}  # e.g. 2:8.0 cut 8 meters if the original macro link has 2 lanes, etc\nfor i_ in range(9,100): _length_of_cut[i_] = 25\n_minimum_cutted_length = 2.0\ndef _checkMovementLinkNecessity(node_dict):\n    for node_id, node in node_dict.items():\n        if node.ctrl_type == 'signal': continue\n        if len(node.incoming_link_list) == 1 and len(node.outgoing_link_list) >= 1:\n            # one imcoming link\n            ib_link = node.incoming_link_list[0]",
+        "detail": "osm2gmns.multiresolutionnet.build_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "_length_of_cut",
+        "kind": 5,
+        "importPath": "osm2gmns.multiresolutionnet.build_mrnet",
+        "description": "osm2gmns.multiresolutionnet.build_mrnet",
+        "peekOfCode": "_length_of_cut = {0: 2.0, 1: 8.0, 2: 12.0, 3: 14.0, 4: 16.0, 5: 18.0, 6: 20, 7:22, 8:24}  # e.g. 2:8.0 cut 8 meters if the original macro link has 2 lanes, etc\nfor i_ in range(9,100): _length_of_cut[i_] = 25\n_minimum_cutted_length = 2.0\ndef _checkMovementLinkNecessity(node_dict):\n    for node_id, node in node_dict.items():\n        if node.ctrl_type == 'signal': continue\n        if len(node.incoming_link_list) == 1 and len(node.outgoing_link_list) >= 1:\n            # one imcoming link\n            ib_link = node.incoming_link_list[0]\n            angle_flag = True",
+        "detail": "osm2gmns.multiresolutionnet.build_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "_minimum_cutted_length",
+        "kind": 5,
+        "importPath": "osm2gmns.multiresolutionnet.build_mrnet",
+        "description": "osm2gmns.multiresolutionnet.build_mrnet",
+        "peekOfCode": "_minimum_cutted_length = 2.0\ndef _checkMovementLinkNecessity(node_dict):\n    for node_id, node in node_dict.items():\n        if node.ctrl_type == 'signal': continue\n        if len(node.incoming_link_list) == 1 and len(node.outgoing_link_list) >= 1:\n            # one imcoming link\n            ib_link = node.incoming_link_list[0]\n            angle_flag = True\n            for ob_link in node.outgoing_link_list:\n                angle = getLineAngle(ib_link.geometry_xy, ob_link.geometry_xy)",
+        "detail": "osm2gmns.multiresolutionnet.build_mrnet",
+        "documentation": {}
+    },
+    {
+        "label": "NetGenerator",
+        "kind": 6,
+        "importPath": "osm2gmns.multiresolutionnet.netgen",
+        "description": "osm2gmns.multiresolutionnet.netgen",
+        "peekOfCode": "class NetGenerator:\n    def __init__(self, macronet, generate_micro_net, exclusive_bike_walk_lanes, length_of_cell, width_of_lane):\n        self.macronet = macronet\n        self.generate_micro_net = generate_micro_net\n        # self.exclusive_bike_walk_lanes = exclusive_bike_walk_lanes\n        self.exclusive_bike_walk_lanes = False          # todo: update in the next release\n        self.length_of_cell = length_of_cell\n        self.width_of_lane = width_of_lane\n        self.bike_lane_width = 0.5\n        self.walk_lane_width = 0.5",
+        "detail": "osm2gmns.multiresolutionnet.netgen",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNode",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "peekOfCode": "class BaseNode:\n    def __init__(self, node_id):\n        self.name = None\n        self.node_id = node_id\n        self.geometry = None\n        self.geometry_xy = None\n        self.other_attrs = {}\n        self.incoming_link_list = []\n        self.outgoing_link_list = []\nclass BaseLink:",
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseLink",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "peekOfCode": "class BaseLink:\n    def __init__(self, link_id):\n        self.name = None\n        self.link_id = link_id\n        self.from_node = None\n        self.to_node = None\n        self.lanes = None\n        self.dir_flag = 1\n        self.geometry = None\n        self.geometry_xy = None",
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "BaseNetwork",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.basenet",
+        "description": "osm2gmns.networkclass.basenet",
+        "peekOfCode": "class BaseNetwork:\n    def __init__(self):\n        self.node_dict = {}\n        self.link_dict = {}\n        self.max_node_id = 0\n        self.max_link_id = 0\n        self.original_coordinate_type = 'lonlat'\n        self.GT = None\n        self.bounds = None\n        self.node_other_attrs = []",
+        "detail": "osm2gmns.networkclass.basenet",
+        "documentation": {}
+    },
+    {
+        "label": "Node",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "peekOfCode": "class Node(BaseNode):\n    def __init__(self, node_id):\n        super().__init__(node_id)\n        self.zone_id = None\n        self.osm_node_id = None     # str\n        self.intersection_id = None\n        self.osm_highway = None\n        self.node_type = ''\n        self.ctrl_type = ''\n        self.activity_type = ''",
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Link",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "peekOfCode": "class Link(BaseLink):\n    def __init__(self, link_id):\n        super().__init__(link_id)\n        self.osm_way_id = None      # str\n        self.free_speed = None\n        self.capacity = None\n        self.link_class = ''        # highway, railway, aeroway\n        self.link_type_name = ''\n        self.link_type = 0\n        self.allowed_uses = None",
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Segment",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "peekOfCode": "class Segment:\n    def __init__(self, segment_id):\n        self.segment_id = segment_id\n        self.link = None\n        self.ref_node = None\n        self.start_lr = 0.0\n        self.end_lr = 0.0\n        self.l_lanes_added = 0\n        self.r_lanes_added = 0\n        self.other_attrs = {}",
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Movement",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "peekOfCode": "class Movement:\n    def __init__(self, movement_id):\n        self.movement_id = movement_id\n        self.node = None\n        self.ib_link = None\n        self.ob_link = None\n        self.start_ib_lane = None\n        self.end_ib_lane = None\n        self.start_ob_lane = None\n        self.end_ob_lane = None",
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "POI",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "peekOfCode": "class POI:\n    def __init__(self):\n        self.poi_id = 0\n        self.osm_way_id = None      # str\n        self.osm_relation_id = None\n        self.name = None\n        self.geometry = None\n        self.geometry_xy = None\n        self.centroid = None\n        self.centroid_xy = None",
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "Network",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.macronet",
+        "description": "osm2gmns.networkclass.macronet",
+        "peekOfCode": "class Network(BaseNetwork):\n    def __init__(self):\n        super().__init__()\n        self.default_lanes = False\n        self.default_speed = False\n        self.default_capacity = False\n        self.max_intersection_id = 0\n        self.max_segment_id = 0\n        self.max_poi_id = 0\n        self.max_movement_id = 0",
+        "detail": "osm2gmns.networkclass.macronet",
+        "documentation": {}
+    },
+    {
+        "label": "MesoNode",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.mesonet",
+        "description": "osm2gmns.networkclass.mesonet",
+        "peekOfCode": "class MesoNode(BaseNode):\n    def __init__(self, node_id):\n        super().__init__(node_id)\n        self.macronode = None\n        self.macrolink = None\n    @property\n    def zone_id(self):\n        return self.macronode.zone_id if self.macronode is not None else None\n    @property\n    def macro_node_id(self):",
+        "detail": "osm2gmns.networkclass.mesonet",
+        "documentation": {}
+    },
+    {
+        "label": "MesoLink",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.mesonet",
+        "description": "osm2gmns.networkclass.mesonet",
+        "peekOfCode": "class MesoLink(BaseLink):\n    def __init__(self, link_id):\n        super().__init__(link_id)\n        self.macronode = None\n        self.macrolink = None\n        self.movement = None\n        self.lanes_change = []\n        self.micronode_list = []  # micronode, lane by lane;\n        self.microlink_list = []  # microlink\n        self.micronode_bike = []",
+        "detail": "osm2gmns.networkclass.mesonet",
+        "documentation": {}
+    },
+    {
+        "label": "MesoNetwork",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.mesonet",
+        "description": "osm2gmns.networkclass.mesonet",
+        "peekOfCode": "class MesoNetwork(BaseNetwork):\n    def __init__(self):\n        super().__init__()",
+        "detail": "osm2gmns.networkclass.mesonet",
+        "documentation": {}
+    },
+    {
+        "label": "MicroNode",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.micronet",
+        "description": "osm2gmns.networkclass.micronet",
+        "peekOfCode": "class MicroNode(BaseNode):\n    def __init__(self, node_id):\n        super().__init__(node_id)\n        self.mesolink = None\n        self.lane_no = 0\n        self.is_link_upstream_end_node = False        # nodes on the two ends of macro links\n        self.is_link_downstream_end_node = False\n    @property\n    def zone_id(self):\n        if self.is_link_upstream_end_node:",
+        "detail": "osm2gmns.networkclass.micronet",
+        "documentation": {}
+    },
+    {
+        "label": "MicroLink",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.micronet",
+        "description": "osm2gmns.networkclass.micronet",
+        "peekOfCode": "class MicroLink(BaseLink):\n    def __init__(self, link_id):\n        super().__init__(link_id)\n        self.mesolink = None\n        self.cell_type = 1\t            # //1:traveling; 2:changing\n        self.allowed_uses = []\n        self.is_first_movement_cell = False\n    @property\n    def mvmt_txt_id(self):\n        if self.is_first_movement_cell and self.mesolink.mvmt_txt_id is not None:",
+        "detail": "osm2gmns.networkclass.micronet",
+        "documentation": {}
+    },
+    {
+        "label": "MicroNetwork",
+        "kind": 6,
+        "importPath": "osm2gmns.networkclass.micronet",
+        "description": "osm2gmns.networkclass.micronet",
+        "peekOfCode": "class MicroNetwork(BaseNetwork):\n    def __init__(self):\n        super().__init__()",
+        "detail": "osm2gmns.networkclass.micronet",
+        "documentation": {}
+    },
+    {
+        "label": "getNetFromFile",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.build_net",
+        "description": "osm2gmns.osmnet.build_net",
+        "peekOfCode": "def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=True, POI_sampling_ratio=1.0,\n                   strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,\n                   default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):\n    \"\"\"\n    Get an osm2gmns Network object from an osm file\n    Parameters\n    ----------\n    filename: str\n        path of an osm file; can be absolute or relative path; supported osm file formats: .osm, .xml, and .pbf\n    network_types: str, tuple of strings, list of strings, or set of strings",
+        "detail": "osm2gmns.osmnet.build_net",
+        "documentation": {}
+    },
+    {
+        "label": "checkArgs_getNetFromFile",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.check_args",
+        "description": "osm2gmns.osmnet.check_args",
+        "peekOfCode": "def checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampling_ratio,\n               strict_mode, offset, min_nodes, combine, bbox,\n               default_lanes, default_speed, default_capacity, start_node_id, start_link_id):\n    # filename\n    file_extension = os.path.splitext(filename)[-1]\n    if not file_extension:\n        sys.exit(f'ERROR: cannot detect the format of file {filename}. If it is a xml-based text file, please add extension .xml or .osm after the filename')\n    if not os.path.exists(filename):\n        sys.exit(f'ERROR: file {filename} does not exist')\n    # network_types",
+        "detail": "osm2gmns.osmnet.check_args",
+        "documentation": {}
+    },
+    {
+        "label": "combineShortLinks",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.combine_links",
+        "description": "osm2gmns.osmnet.combine_links",
+        "peekOfCode": "def combineShortLinks(network):\n    \"\"\"\n    Combine links connected by two-degree nodes into a longer link\n    Parameters\n    ----------\n    network: Network\n        osm2gmns Network object\n    Returns\n    -------\n    None",
+        "detail": "osm2gmns.osmnet.combine_links",
+        "documentation": {}
+    },
+    {
+        "label": "consolidateComplexIntersections",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.complex_intersection",
+        "description": "osm2gmns.osmnet.complex_intersection",
+        "peekOfCode": "def consolidateComplexIntersections(network, auto_identify=False, intersection_file=None, int_buffer=og_settings.default_int_buffer):\n    \"\"\"\n    Consolidate each complex intersection that are originally represented by multiple nodes in osm into one node. Nodes\n    with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in three ways.\n    (1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign\n    intersection_id for corresponding nodes.\n    (2) provide an intersection file that specifies the central position (required) and buffer (optional) of each complex intersection.\n    (3) user can assign intersection_id to nodes manually in network csv files (node.csv), and load the network using function loadNetFromCSV provided by osm2gmns.\n    The priority of the three approaches is (3) > (2) > (1).\n    Rules used in the approach (1) to identify if two nodes belong to a complex intersection: (a) ctrl_type of the two nodes must be signal;",
+        "detail": "osm2gmns.osmnet.complex_intersection",
+        "documentation": {}
+    },
+    {
+        "label": "generateNodeActivityInfo",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.enrich_net_info",
+        "description": "osm2gmns.osmnet.enrich_net_info",
+        "peekOfCode": "def generateNodeActivityInfo(network):\n    \"\"\"\n    Generate activity information, including activity_type, is_boundary, zone_id for nodes. activity_type includes\n    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links\n    Parameters\n    ----------\n    network: Network\n        osm2gmns Network object\n    Returns\n    -------",
+        "detail": "osm2gmns.osmnet.enrich_net_info",
+        "documentation": {}
+    },
+    {
+        "label": "generateLinkVDFInfo",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.enrich_net_info",
+        "description": "osm2gmns.osmnet.enrich_net_info",
+        "peekOfCode": "def generateLinkVDFInfo(network):\n    \"\"\"\n    Generate VDF information, including VDF_fftt1 and VDF_cap1 for links.\n    The unit of VDF_fftt1 and VDF_cap1 are min and veh/hour/link, respectively\n    Parameters\n    ----------\n    network: Network\n        osm2gmns Network object\n    Returns\n    -------",
+        "detail": "osm2gmns.osmnet.enrich_net_info",
+        "documentation": {}
+    },
+    {
+        "label": "OSMNode",
+        "kind": 6,
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "peekOfCode": "class OSMNode:\n    def __init__(self, osm_node_name, osm_node_id, geometry, in_region, osm_highway, ctrl_type):\n        \"\"\"\n        OSMNode Construction function\n        Parameters\n        ----------\n        osm_node_name: str\n        osm_node_id: str\n        geometry: Point\n        in_region: bool",
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Way",
+        "kind": 6,
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "peekOfCode": "class Way:\n    def __init__(self):\n        self.osm_way_id = None          # string\n        self.highway = None\n        self.railway = None\n        self.aeroway = None\n        self.link_class = ''                    # highway, railway, aeroway\n        self.link_type_name = ''\n        self.link_type = 0\n        self.is_link = False",
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "Relation",
+        "kind": 6,
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "peekOfCode": "class Relation:\n    def __init__(self):\n        self.osm_relation_id = None\n        self.member_id_list = []\n        self.member_type_list = []\n        self.member_list = []\n        self.member_role_list = []\n        self.name = ''\n        self.building = None\n        self.amenity = None",
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "OSMNetwork",
+        "kind": 6,
+        "importPath": "osm2gmns.osmnet.osmclasses",
+        "description": "osm2gmns.osmnet.osmclasses",
+        "peekOfCode": "class OSMNetwork:\n    def __init__(self):\n        self.osm_node_dict = {}\n        self.osm_way_dict = {}\n        self.osm_relation_list = []\n        self.link_way_list = []\n        self.POI_way_list = []\n        self.bounds = None\n        self.GT = None",
+        "detail": "osm2gmns.osmnet.osmclasses",
+        "documentation": {}
+    },
+    {
+        "label": "generatePOIs",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.pois",
+        "description": "osm2gmns.osmnet.pois",
+        "peekOfCode": "def generatePOIs(POI_way_list, osm_relation_list, network, POI_percentage):\n    if og_settings.verbose:\n        print('    generating POIs')\n    POI_list1 = _POIFromWay(POI_way_list, network.bounds)\n    POI_list2 = _POIFromRelation(osm_relation_list, network.bounds)\n    POI_list_ = POI_list1 + POI_list2\n    if POI_percentage == 1:\n        POI_list = POI_list_\n    else:\n        POI_list = random.sample(POI_list_,int(len(POI_list_)*POI_percentage))",
+        "detail": "osm2gmns.osmnet.pois",
+        "documentation": {}
+    },
+    {
+        "label": "connectPOIWithNet",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.pois",
+        "description": "osm2gmns.osmnet.pois",
+        "peekOfCode": "def connectPOIWithNet(network):\n    \"\"\"\n    Connect POIs with the traffic network. Specifically, for each POI, osm2gmns will build a bi-directional connector to connect the POI\n    with its nearest node in the traffic network\n    Parameters\n    ----------\n    network: Network\n        an osm2gmns Network object\n    Returns\n    -------",
+        "detail": "osm2gmns.osmnet.pois",
+        "documentation": {}
+    },
+    {
+        "label": "show",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.visualization",
+        "description": "osm2gmns.osmnet.visualization",
+        "peekOfCode": "def show(network, save=False, figsize=None):\n    \"\"\"\n    Show the network in a pop-up window\n    Parameters\n    ----------\n    network: Network\n        an osm2gmns Network object\n    save: bool\n        if True, the plot will also be saved to a local file named network.jpg\n    figsize: tuple of int/float, list of int/float",
+        "detail": "osm2gmns.osmnet.visualization",
+        "documentation": {}
+    },
+    {
+        "label": "saveFig",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.visualization",
+        "description": "osm2gmns.osmnet.visualization",
+        "peekOfCode": "def saveFig(network, picpath='network.jpg',figsize=None):\n    \"\"\"\n    Save the network plot to a local file\n    Parameters\n    ----------\n    network: Network\n        an osm2gmns Network object\n    picpath: str\n        path to store to network plot. can be an absolute or a relative path\n    figsize: tuple of int/float, list of int/float",
+        "detail": "osm2gmns.osmnet.visualization",
+        "documentation": {}
+    },
+    {
+        "label": "getAllowableAgentType",
+        "kind": 2,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "def getAllowableAgentType(way):\n    allowable_agent_type_list = []\n    for agent_type in _agent_types_all:\n        allowed = _checkIn(way, agent_type)\n        if allowed:\n            allowable_agent_type_list.append(agent_type)\n            continue\n        allowed = _checkEx(way, agent_type)\n        if allowed:\n            allowable_agent_type_list.append(agent_type)",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "negligible_highway_type_set",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "negligible_highway_type_set = {'path','construction','proposed','raceway','bridleway','rest_area','su',\n                               'road','abandoned','planned','trailhead','stairs','dismantled','disused','razed','access',\n                               'corridor','stop'}\nnegligible_railway_type_set = {'construction','abandoned','disused','proposed','planned','dismantled','razed','ventilation_shaft'}\nnegligible_aeroway_type_set = set()\nhighway_poi_set = {'bus_stop','platform'}\nrailway_poi_set = {'depot','station','workshop','halt','interlocking','junction','spur_junction','terminal','platform'}\naeroway_poi_set = set()\nnetwork_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "negligible_railway_type_set",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "negligible_railway_type_set = {'construction','abandoned','disused','proposed','planned','dismantled','razed','ventilation_shaft'}\nnegligible_aeroway_type_set = set()\nhighway_poi_set = {'bus_stop','platform'}\nrailway_poi_set = {'depot','station','workshop','halt','interlocking','junction','spur_junction','terminal','platform'}\naeroway_poi_set = set()\nnetwork_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "negligible_aeroway_type_set",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "negligible_aeroway_type_set = set()\nhighway_poi_set = {'bus_stop','platform'}\nrailway_poi_set = {'depot','station','workshop','halt','interlocking','junction','spur_junction','terminal','platform'}\naeroway_poi_set = set()\nnetwork_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}\n_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "highway_poi_set",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "highway_poi_set = {'bus_stop','platform'}\nrailway_poi_set = {'depot','station','workshop','halt','interlocking','junction','spur_junction','terminal','platform'}\naeroway_poi_set = set()\nnetwork_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}\n_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},\n                       'motor_vehicle':{'no'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "railway_poi_set",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "railway_poi_set = {'depot','station','workshop','halt','interlocking','junction','spur_junction','terminal','platform'}\naeroway_poi_set = set()\nnetwork_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}\n_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},\n                       'motor_vehicle':{'no'},\n                       'motorcar':{'no'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "aeroway_poi_set",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "aeroway_poi_set = set()\nnetwork_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}\n_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},\n                       'motor_vehicle':{'no'},\n                       'motorcar':{'no'},\n                       'access':{'private'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "network_types_all",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "network_types_all = {'auto','bike','walk','railway','aeroway'}\n_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}\n_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},\n                       'motor_vehicle':{'no'},\n                       'motorcar':{'no'},\n                       'access':{'private'},\n                       'service':{'parking','parking_aisle','driveway','private','emergency_access'}},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "_filter_in",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "_filter_in = {'auto': {'motor_vehicle':{'yes'},\n                      'motorcar':{'yes'}},\n              'bike': {'bicycle':{'yes'}},\n              'walk': {'foot':{'yes'}}}\n_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},\n                       'motor_vehicle':{'no'},\n                       'motorcar':{'no'},\n                       'access':{'private'},\n                       'service':{'parking','parking_aisle','driveway','private','emergency_access'}},\n               'bike': {'highway':{'footway','steps','corridor','elevator','escalator','motor','motorway','motorway_link'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "_filters_ex",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "_filters_ex = {'auto': {'highway':{'cycleway','footway','pedestrian','steps','track','corridor','elevator','escalator','service','living_street'},\n                       'motor_vehicle':{'no'},\n                       'motorcar':{'no'},\n                       'access':{'private'},\n                       'service':{'parking','parking_aisle','driveway','private','emergency_access'}},\n               'bike': {'highway':{'footway','steps','corridor','elevator','escalator','motor','motorway','motorway_link'},\n                       'bicycle':{'no'},\n                       'service':{'private'},\n                       'access':{'private'}},\n               'walk': {'highway':{'cycleway','motor','motorway','motorway_link'},",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "_agent_types_all",
+        "kind": 5,
+        "importPath": "osm2gmns.osmnet.wayfilters",
+        "description": "osm2gmns.osmnet.wayfilters",
+        "peekOfCode": "_agent_types_all = ['auto', 'bike', 'walk']\ndef _checkIn(way, agent_type):\n    m_filter_in = _filter_in[agent_type]\n    for tag, include_list in m_filter_in.items():\n        if getattr(way, tag) in include_list:\n            return True\n    return None\ndef _checkEx(way, agent_type):\n    m_filter_ex = _filters_ex[agent_type]\n    for tag, exclude_list in m_filter_ex.items():",
+        "detail": "osm2gmns.osmnet.wayfilters",
+        "documentation": {}
+    },
+    {
+        "label": "getLogger",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "peekOfCode": "def getLogger():\n    global _log_created\n    if not og_settings.log:\n        return None\n    logger = logging.getLogger(og_settings.log_name)\n    if not _log_created:\n        logger.setLevel(og_settings.log_level)\n        handler = logging.FileHandler('osm2gmns.log', 'w')\n        formatter = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', '%H:%M:%S')\n        handler.setFormatter(formatter)",
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "config",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "peekOfCode": "def config(verbose=og_settings.verbose,\n           lonlat_coord_precision=og_settings.lonlat_coord_precision,\n           local_coord_precision=og_settings.local_coord_precision,\n           log_level=None):\n    og_settings.verbose = verbose\n    og_settings.lonlat_coord_precision = lonlat_coord_precision\n    og_settings.local_coord_precision = local_coord_precision\n    if log_level is not None:\n        if not isinstance(log_level, str):\n            print('WARNING: log_level must be a string and chosen from DEBUG, INFO, WARNING, ERROR, CRITICAL')",
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "_log_created",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util",
+        "description": "osm2gmns.utils.util",
+        "peekOfCode": "_log_created = False\ndef getLogger():\n    global _log_created\n    if not og_settings.log:\n        return None\n    logger = logging.getLogger(og_settings.log_name)\n    if not _log_created:\n        logger.setLevel(og_settings.log_level)\n        handler = logging.FileHandler('osm2gmns.log', 'w')\n        formatter = logging.Formatter('%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s', '%H:%M:%S')",
+        "detail": "osm2gmns.utils.util",
+        "documentation": {}
+    },
+    {
+        "label": "OutOfRangeError",
+        "kind": 6,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "class OutOfRangeError(ValueError):\n    pass\ndef from_latlon(longitude, latitude, central_longitude):\n    central_lon_rad = mathlib.radians(central_longitude)\n    lat_rad = mathlib.radians(latitude)\n    lat_sin = mathlib.sin(lat_rad)\n    lat_cos = mathlib.cos(lat_rad)\n    lat_tan = lat_sin / lat_cos\n    lat_tan2 = lat_tan * lat_tan\n    lat_tan4 = lat_tan2 * lat_tan2",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "in_bounds",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "def in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:\n        return lower <= x < upper\n    elif use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) <= upper\n    return lower <= x <= upper\ndef mixed_signs(x):\n    return use_numpy and mathlib.min(x) < 0 <= mathlib.max(x)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "mixed_signs",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "def mixed_signs(x):\n    return use_numpy and mathlib.min(x) < 0 <= mathlib.max(x)\ndef negative(x):\n    return mathlib.max(x) < 0 if use_numpy else x < 0\ndef latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "negative",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "def negative(x):\n    return mathlib.max(x) < 0 if use_numpy else x < 0\ndef latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None\nclass OutOfRangeError(ValueError):\n    pass",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "latitude_to_zone_letter",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "def latitude_to_zone_letter(latitude):\n    # If the input is a numpy array, just use the first element\n    # User responsibility to make sure that all points are in one zone\n    if use_numpy and isinstance(latitude, mathlib.ndarray):\n        latitude = latitude.flat[0]\n    return ZONE_LETTERS[int(latitude + 80) >> 3] if -80 <= latitude <= 84 else None\nclass OutOfRangeError(ValueError):\n    pass\ndef from_latlon(longitude, latitude, central_longitude):\n    central_lon_rad = mathlib.radians(central_longitude)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "from_latlon",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "def from_latlon(longitude, latitude, central_longitude):\n    central_lon_rad = mathlib.radians(central_longitude)\n    lat_rad = mathlib.radians(latitude)\n    lat_sin = mathlib.sin(lat_rad)\n    lat_cos = mathlib.cos(lat_rad)\n    lat_tan = lat_sin / lat_cos\n    lat_tan2 = lat_tan * lat_tan\n    lat_tan4 = lat_tan2 * lat_tan2\n    lon_rad = mathlib.radians(longitude)\n    n = R / mathlib.sqrt(1 - E * lat_sin ** 2)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "to_latlon",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "def to_latlon(easting, northing, central_longitude, northern):  # , zone_number, zone_letter=None, northern=None, strict=True\n    # if not zone_letter and northern is None:\n    #     raise ValueError('either zone_letter or northern needs to be set')\n    #\n    # elif zone_letter and northern is not None:\n    #     raise ValueError('set either zone_letter or northern, but not both')\n    #\n    #\n    if not in_bounds(easting, 100000, 1000000, upper_strict=True):\n        raise OutOfRangeError('easting out of range (must be between 100.000 m and 999.999 m)')",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "K0",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "K0 = 0.9996\nE = 0.00669438\nE2 = E * E\nE3 = E2 * E\nE_P2 = E / (1.0 - E)\nSQRT_E = (1 - E)**0.5\n_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "E",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "E = 0.00669438\nE2 = E * E\nE3 = E2 * E\nE_P2 = E / (1.0 - E)\nSQRT_E = (1 - E)**0.5\n_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "E2",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "E2 = E * E\nE3 = E2 * E\nE_P2 = E / (1.0 - E)\nSQRT_E = (1 - E)**0.5\n_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "E3",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "E3 = E2 * E\nE_P2 = E / (1.0 - E)\nSQRT_E = (1 - E)**0.5\n_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "E_P2",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "E_P2 = E / (1.0 - E)\nSQRT_E = (1 - E)**0.5\n_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "SQRT_E",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "SQRT_E = (1 - E)**0.5\n_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "_E",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "_E = (1 - SQRT_E) / (1 + SQRT_E)\n_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "_E2",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "_E2 = _E * _E\n_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "_E3",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "_E3 = _E2 * _E\n_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "_E4",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "_E4 = _E3 * _E\n_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "_E5",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "_E5 = _E4 * _E\nM1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "M1",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "M1 = (1 - E / 4 - 3 * E2 / 64 - 5 * E3 / 256)\nM2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "M2",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "M2 = (3 * E / 8 + 3 * E2 / 32 + 45 * E3 / 1024)\nM3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "M3",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "M3 = (15 * E2 / 256 + 45 * E3 / 1024)\nM4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "M4",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "M4 = (35 * E3 / 3072)\nP2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "P2",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "P2 = (3. / 2 * _E - 27. / 32 * _E3 + 269. / 512 * _E5)\nP3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "P3",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "P3 = (21. / 16 * _E2 - 55. / 32 * _E4)\nP4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:\n        return lower <= x < upper",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "P4",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "P4 = (151. / 96 * _E3 - 417. / 128 * _E5)\nP5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:\n        return lower <= x < upper\n    elif use_numpy:",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "P5",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "P5 = (1097. / 512 * _E4)\nR = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:\n        return lower <= x < upper\n    elif use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) <= upper",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "R",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "R = 6378137\nZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:\n        return lower <= x < upper\n    elif use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) <= upper\n    return lower <= x <= upper",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "ZONE_LETTERS",
+        "kind": 5,
+        "importPath": "osm2gmns.utils.util_coord",
+        "description": "osm2gmns.utils.util_coord",
+        "peekOfCode": "ZONE_LETTERS = \"CDEFGHJKLMNPQRSTUVWXX\"\ndef in_bounds(x, lower, upper, upper_strict=False):\n    if upper_strict and use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) < upper\n    elif upper_strict and not use_numpy:\n        return lower <= x < upper\n    elif use_numpy:\n        return lower <= mathlib.min(x) and mathlib.max(x) <= upper\n    return lower <= x <= upper\ndef mixed_signs(x):",
+        "detail": "osm2gmns.utils.util_coord",
+        "documentation": {}
+    },
+    {
+        "label": "GeoTransformer",
+        "kind": 6,
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "peekOfCode": "class GeoTransformer:\n    def __init__(self, central_lon, central_lat, northern):\n        self.central_lon = central_lon\n        self.central_lat = central_lat\n        self.northern = northern\n        self.from_latlon = functools.partial(from_latlon, central_longitude=self.central_lon)\n        self.to_latlon = functools.partial(to_latlon, central_longitude=self.central_lon, northern=self.northern)\n    def _from_latlon_(self, p):\n        return np.round(self.from_latlon(*p), og_settings.local_coord_precision)\n    def _to_latlon_(self, p):",
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineFromNodes",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "peekOfCode": "def getLineFromNodes(node_list):\n    if len(node_list) < 2: return None, None\n    point_list = [node.geometry for node in node_list]\n    line = geometry.LineString(point_list)\n    point_list_xy = [node.geometry_xy for node in node_list]\n    line_xy = geometry.LineString(point_list_xy)\n    return line, line_xy\ndef getPolygonFromNodes(node_list):\n    if len(node_list) < 3: return None, None\n    point_list = [(node.geometry.x, node.geometry.y) for node in node_list]",
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getPolygonFromNodes",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "peekOfCode": "def getPolygonFromNodes(node_list):\n    if len(node_list) < 3: return None, None\n    point_list = [(node.geometry.x, node.geometry.y) for node in node_list]\n    poly = geometry.Polygon(point_list)\n    point_list_xy = [(node.geometry_xy.x, node.geometry_xy.y) for node in node_list]\n    poly_xy = geometry.Polygon(point_list_xy)\n    return poly, poly_xy\ndef getLineAngle(ib_line, ob_line, complete_line=True):\n    # complete_line - True (False): use the last and first (second last) coords to calculate line direction\n    # ob_line counter clockwise: 0 to 180; ob_line clockwise: 0 to -180",
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "getLineAngle",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "peekOfCode": "def getLineAngle(ib_line, ob_line, complete_line=True):\n    # complete_line - True (False): use the last and first (second last) coords to calculate line direction\n    # ob_line counter clockwise: 0 to 180; ob_line clockwise: 0 to -180\n    if complete_line:\n        angle_ib = math.atan2(ib_line.coords[-1][1] - ib_line.coords[0][1],\n                              ib_line.coords[-1][0] - ib_line.coords[0][0])\n        angle_ob = math.atan2(ob_line.coords[-1][1] - ob_line.coords[0][1],\n                              ob_line.coords[-1][0] - ob_line.coords[0][0])\n    else:\n        angle_ib = math.atan2(ib_line.coords[-1][1] - ib_line.coords[-2][1],",
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "offsetLine",
+        "kind": 2,
+        "importPath": "osm2gmns.utils.util_geo",
+        "description": "osm2gmns.utils.util_geo",
+        "peekOfCode": "def offsetLine(line, distance):\n    coords = list(line.coords)\n    offset_coord_list_temp = []\n    for i in range(len(coords) - 1):\n        start_x, start_y = coords[i]\n        end_x, end_y = coords[i+1]\n        delta_x = end_x - start_x\n        delta_y = end_y - start_y\n        length = (delta_x ** 2 + delta_y ** 2) ** 0.5\n        offset_x = delta_y / length * distance",
+        "detail": "osm2gmns.utils.util_geo",
+        "documentation": {}
+    },
+    {
+        "label": "log",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "log = False\nlog_level = logging.WARNING\nlog_name = 'osm2gmns'\nverbose = True\nlonlat_coord_precision = 7\nlocal_coord_precision = 2\ndefault_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "log_level",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "log_level = logging.WARNING\nlog_name = 'osm2gmns'\nverbose = True\nlonlat_coord_precision = 7\nlocal_coord_precision = 2\ndefault_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "log_name",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "log_name = 'osm2gmns'\nverbose = True\nlonlat_coord_precision = 7\nlocal_coord_precision = 2\ndefault_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "verbose",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "verbose = True\nlonlat_coord_precision = 7\nlocal_coord_precision = 2\ndefault_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),\n                         'primary': ('primary', False),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "lonlat_coord_precision",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "lonlat_coord_precision = 7\nlocal_coord_precision = 2\ndefault_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),\n                         'primary': ('primary', False),\n                         'primary_link': ('primary', True),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "local_coord_precision",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "local_coord_precision = 2\ndefault_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),\n                         'primary': ('primary', False),\n                         'primary_link': ('primary', True),\n                         'secondary': ('secondary', False),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "default_int_buffer",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "default_int_buffer = 20.0           # meter\nsegment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),\n                         'primary': ('primary', False),\n                         'primary_link': ('primary', True),\n                         'secondary': ('secondary', False),\n                         'secondary_link': ('secondary', True),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "segment_resolution",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "segment_resolution = 5.0            # meter\nosm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),\n                         'primary': ('primary', False),\n                         'primary_link': ('primary', True),\n                         'secondary': ('secondary', False),\n                         'secondary_link': ('secondary', True),\n                         'tertiary': ('tertiary', False),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "osm_highway_type_dict",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "osm_highway_type_dict = {'motorway': ('motorway', False),\n                         'motorway_link': ('motorway', True),\n                         'trunk': ('trunk', False),\n                         'trunk_link': ('trunk', True),\n                         'primary': ('primary', False),\n                         'primary_link': ('primary', True),\n                         'secondary': ('secondary', False),\n                         'secondary_link': ('secondary', True),\n                         'tertiary': ('tertiary', False),\n                         'tertiary_link': ('tertiary', True),",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "link_type_no_dict",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "link_type_no_dict = {'motorway': 1, 'trunk': 2, 'primary': 3, 'secondary': 4,\n                     'tertiary': 5, 'residential': 6, 'living_street': 7,\n                     'service': 8, 'cycleway': 9, 'footway': 10, 'track': 11,\n                     'unclassified': 15, 'connector': 20, 'railway': 30, 'aeroway': 31}\ndefault_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2,\n                      'tertiary': 2, 'residential': 1, 'living_street': 1, 'service': 1,\n                      'cycleway': 1, 'footway': 1, 'track': 1, 'unclassified': 1, 'connector': 2}\ndefault_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60,\n                      'tertiary': 40, 'residential': 30, 'living_street': 30, 'service': 30,\n                      'cycleway': 5, 'footway': 5, 'track': 30, 'unclassified': 30, 'connector': 120}",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "default_lanes_dict",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "default_lanes_dict = {'motorway': 4, 'trunk': 3, 'primary': 3, 'secondary': 2,\n                      'tertiary': 2, 'residential': 1, 'living_street': 1, 'service': 1,\n                      'cycleway': 1, 'footway': 1, 'track': 1, 'unclassified': 1, 'connector': 2}\ndefault_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60,\n                      'tertiary': 40, 'residential': 30, 'living_street': 30, 'service': 30,\n                      'cycleway': 5, 'footway': 5, 'track': 30, 'unclassified': 30, 'connector': 120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800,\n                         'secondary': 1600, 'tertiary': 1200, 'residential': 1000,\n                         'living_street': 1000, 'service': 800,\n                         'cycleway': 800, 'footway': 800, 'track': 800,",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "default_speed_dict",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "default_speed_dict = {'motorway': 120, 'trunk': 100, 'primary': 80, 'secondary': 60,\n                      'tertiary': 40, 'residential': 30, 'living_street': 30, 'service': 30,\n                      'cycleway': 5, 'footway': 5, 'track': 30, 'unclassified': 30, 'connector': 120}\ndefault_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800,\n                         'secondary': 1600, 'tertiary': 1200, 'residential': 1000,\n                         'living_street': 1000, 'service': 800,\n                         'cycleway': 800, 'footway': 800, 'track': 800,\n                         'unclassified': 800, 'connector': 9999}\ndefault_oneway_flag_dict = {'motorway': False, 'trunk': False, 'primary': False,\n                            'secondary': False, 'tertiary': False,",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "default_capacity_dict",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "default_capacity_dict = {'motorway': 2300, 'trunk': 2200, 'primary': 1800,\n                         'secondary': 1600, 'tertiary': 1200, 'residential': 1000,\n                         'living_street': 1000, 'service': 800,\n                         'cycleway': 800, 'footway': 800, 'track': 800,\n                         'unclassified': 800, 'connector': 9999}\ndefault_oneway_flag_dict = {'motorway': False, 'trunk': False, 'primary': False,\n                            'secondary': False, 'tertiary': False,\n                            'residential': False, 'living_street': False,\n                            'service': False, 'cycleway': True, 'footway': True,\n                            'track': True, 'unclassified': False, 'connector': False,",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "default_oneway_flag_dict",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "default_oneway_flag_dict = {'motorway': False, 'trunk': False, 'primary': False,\n                            'secondary': False, 'tertiary': False,\n                            'residential': False, 'living_street': False,\n                            'service': False, 'cycleway': True, 'footway': True,\n                            'track': True, 'unclassified': False, 'connector': False,\n                            'railway': True, 'aeroway': True}\ndefault_bounds = {'minlat': -90.0,\n                  'minlon': -180.0,\n                  'maxlat': 90.0,\n                  'maxlon': 180.0}",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    },
+    {
+        "label": "default_bounds",
+        "kind": 5,
+        "importPath": "osm2gmns.settings",
+        "description": "osm2gmns.settings",
+        "peekOfCode": "default_bounds = {'minlat': -90.0,\n                  'minlon': -180.0,\n                  'maxlat': 90.0,\n                  'maxlon': 180.0}",
+        "detail": "osm2gmns.settings",
+        "documentation": {}
+    }
+]

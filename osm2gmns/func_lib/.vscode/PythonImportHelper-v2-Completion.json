@@ -1,0 +1,89 @@
+[
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "urllib",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "urllib",
+        "description": "urllib",
+        "detail": "urllib",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "Union",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Pool",
+        "importPath": "multiprocessing",
+        "description": "multiprocessing",
+        "isExtraImport": true,
+        "detail": "multiprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "OSM_RelationID_Finder",
+        "kind": 6,
+        "importPath": "extract_relation_id",
+        "description": "extract_relation_id",
+        "peekOfCode": "class OSM_RelationID_Finder:\n    \"\"\"A class to find the osm relation id of a place of interest globally\n       Use the Nominatim API to find the relation id of a place of interest\n    \"\"\"\n    def __init__(self, poi_name: str):\n        \"\"\"\n        Args:\n            poi_name (str): the name of the place of interest,\n                            e.g., \"Arizona State University\"\n                            e.g., \"Tempe, Arizona, USA\"",
+        "detail": "extract_relation_id",
+        "documentation": {}
+    },
+    {
+        "label": "f",
+        "kind": 2,
+        "importPath": "tt",
+        "description": "tt",
+        "peekOfCode": "def f(x):\n    print(x)\n    return a.append(x)\nif __name__ == '__main__':\n    with Pool(5) as p:\n        print(p.map(f, [1, 2, 3]))",
+        "detail": "tt",
+        "documentation": {}
+    },
+    {
+        "label": "a",
+        "kind": 5,
+        "importPath": "tt",
+        "description": "tt",
+        "peekOfCode": "a = []\ndef f(x):\n    print(x)\n    return a.append(x)\nif __name__ == '__main__':\n    with Pool(5) as p:\n        print(p.map(f, [1, 2, 3]))",
+        "detail": "tt",
+        "documentation": {}
+    }
+]
