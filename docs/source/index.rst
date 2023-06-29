@@ -13,10 +13,16 @@ practitioners with flexible, standard and ready-to-use multi-modal transportatio
 as well as a bunch of customized and practical functions to facilitate various research 
 and applications on traffic modeling.
 
-**If you use osm2gmns in your research, please cite our paper. Lu, J., Zhou, X.S., 2022. 
-Modeling partially schedulable connected and automated mobility systems on layered 
-virtual-track networks: modeling framework and open-source tools.
-https://www.researchgate.net/publication/364341612.**
+
+Publication
+====================================
+
+Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and 
+open-source tools for simplified and efficient connected and automated mobility (CAM) system 
+design based on general modeling network specification (GMNS). Transportation Research 
+Part C: Emerging Technologies, 153, 104223.
+
+Link: https://authors.elsevier.com/a/1hJZS,M0mRRLOF
 
 
 Main Features
