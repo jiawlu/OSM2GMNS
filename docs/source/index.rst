@@ -22,8 +22,6 @@ open-source tools for simplified and efficient connected and automated mobility 
 design based on general modeling network specification (GMNS). Transportation Research 
 Part C: Emerging Technologies, 153, 104223. `paper link`_
 
-Link: https://authors.elsevier.com/a/1hJZS,M0mRRLOF
-
 
 Main Features
 ====================================
