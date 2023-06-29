@@ -20,7 +20,7 @@ Publication
 Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and 
 open-source tools for simplified and efficient connected and automated mobility (CAM) system 
 design based on general modeling network specification (GMNS). Transportation Research 
-Part C: Emerging Technologies, 153, 104223.
+Part C: Emerging Technologies, 153, 104223. `paper link`_
 
 Link: https://authors.elsevier.com/a/1hJZS,M0mRRLOF
 
@@ -116,6 +116,7 @@ You can check the `user's guide`_ for a detailed introduction of osm2gmns.
 
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
+.. _`paper link`: https://doi.org/10.1016/j.trc.2023.104223
 .. _`NeXTA`: https://github.com/asu-trans-ai-lab/NeXTA4GMNS
 .. _`QGIS`: https://qgis.org
 .. _`user's guide`: https://osm2gmns.readthedocs.io
