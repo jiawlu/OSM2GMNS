@@ -204,6 +204,14 @@ def consolidateComplexIntersections(network, auto_identify=False, intersection_f
         y_coord_xy_ave = round(y_coord_xy_sum / len(node_group), og_settings.local_coord_precision)
         new_node.geometry_xy = geometry.Point(x_coord_xy_ave, y_coord_xy_ave)
 
+        # Keep the geometry of the links up to date by adding a small edge to join to the newly created node
+        for link in new_node.incoming_link_list:
+            new_coordinates = list(link.geometry.coords) + list(link.to_node.geometry.coords)
+            link.geometry = geometry.LineString(new_coordinates)
+        for link in new_node.outgoing_link_list:
+            new_coordinates = list(link.from_node.geometry.coords) + list(link.geometry.coords)
+            link.geometry = geometry.LineString(new_coordinates)
+
         network.node_dict[new_node.node_id] = new_node
         network.max_node_id += 1
         number_of_intersections_consolidated += 1
