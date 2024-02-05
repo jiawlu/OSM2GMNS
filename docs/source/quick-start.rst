@@ -14,6 +14,47 @@ osm files to extract useful network information. As a result, the first step is 
 Thanks to the open-source nature of OpenStreetMap, there are lots of APIs and mirror sites that we can use to
 download osm map data. We list several popular sites here for users to choose.
 
+0) osm2gmns built-in class: OSM_RelationID_Finder
+Get the relation id of a place of interest, eg. "Arizona State University", "Arizona, United States", "Tempe, AZ"...
+
+-- code-block:: python
+
+    >>> import osm2gmns as og
+    # get relation id of a place of interest
+    # For the place of interest, e.g. Arizona State University
+    # e.g. "Tempe, Arizona, United States"
+    # e.g. "Arizona, US"
+    # e.g. "Beijing Jiaotong University, Beijing, China"
+    >>> rel_id = og.getOSMRelationID('Arizona State University')
+    >>> rel_id
+        Info: Found relation id 3444656 from web
+        Info: location of the place of interest:
+        {
+            "place_id": 318528634,
+            "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+            "osm_type": "relation",
+            "osm_id": 3444656,
+            "lat": "33.4213174",
+            "lon": "-111.93316305413154",
+            "class": "amenity",
+            "type": "university",
+            "place_rank": 30,
+            "importance": 0.5547365758311374,
+            "addresstype": "amenity",
+            "name": "Arizona State University",
+            "display_name": "Arizona State University, 1151, South Forest Avenue, Tempe Junction, Tempe, Maricopa County, Arizona, 85281, United States",
+            "boundingbox": [
+                "33.4102062",
+                "33.4329786",
+                "-111.9411651",
+                "-111.9092447"
+            ]
+        }
+    3444656
+
+    # download the corresponding osm file
+    >>> og.downloadOSMData(rel_id, 'asu.osm')
+
 
 1) OpenStreetMap Homepage
 
@@ -180,7 +221,7 @@ Consolidate Intersections
 =========================
 
 In OpenStreetMap, one large intersection is often represented by multiple nodes. This structure brings some
-difficulties when performing traffic-oriented modelings. osm2gmns enables users to consolidate intersections 
+difficulties when performing traffic-oriented modelings. osm2gmns enables users to consolidate intersections
 that are originally represented by multiple nodes into a single node. Note that osm2gmns only identifies and
 consolidates signalized intersections.
 
@@ -197,9 +238,9 @@ consolidates signalized intersections.
 
     Complex intersection consolidation
 
-Users can visualize the consolidated network in `QGIS`_ or `NeXTA`_. 
-For complex interestions that were not successfully identified and consolidated by osm2gmns, users can manually specify 
-them by revising the column "intersection_id" in node.csv and utilize the commands below to do the re-consolidation. 
+Users can visualize the consolidated network in `QGIS`_ or `NeXTA`_.
+For complex interestions that were not successfully identified and consolidated by osm2gmns, users can manually specify
+them by revising the column "intersection_id" in node.csv and utilize the commands below to do the re-consolidation.
 Nodes assgined with the same "intersection_id" will be consolidated into a new node.
 
 .. code-block:: python

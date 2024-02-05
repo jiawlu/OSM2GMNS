@@ -17,9 +17,9 @@ and applications on traffic modeling.
 Publication
 ====================================
 
-Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and 
-open-source tools for simplified and efficient connected and automated mobility (CAM) system 
-design based on general modeling network specification (GMNS). Transportation Research 
+Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and
+open-source tools for simplified and efficient connected and automated mobility (CAM) system
+design based on general modeling network specification (GMNS). Transportation Research
 Part C: Emerging Technologies, 153, 104223. `paper link`_
 
 
@@ -88,10 +88,35 @@ You can use the following code to get the relation id of a place of interest and
     # e.g. "Tempe, Arizona, United States"
     # e.g. "Arizona, US"
     # e.g. "Beijing Jiaotong University, Beijing, China"
-    >>> rel = og.OSM_RelationID_Finder('Arizona State University')
+    >>> rel_id = og.getOSMRelationID('Arizona State University')
+    >>> rel_id
+        Info: Found relation id 3444656 from web
+        Info: location of the place of interest:
+        {
+            "place_id": 318528634,
+            "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+            "osm_type": "relation",
+            "osm_id": 3444656,
+            "lat": "33.4213174",
+            "lon": "-111.93316305413154",
+            "class": "amenity",
+            "type": "university",
+            "place_rank": 30,
+            "importance": 0.5547365758311374,
+            "addresstype": "amenity",
+            "name": "Arizona State University",
+            "display_name": "Arizona State University, 1151, South Forest Avenue, Tempe Junction, Tempe, Maricopa County, Arizona, 85281, United States",
+            "boundingbox": [
+                "33.4102062",
+                "33.4329786",
+                "-111.9411651",
+                "-111.9092447"
+            ]
+        }
+    3444656
 
     # download the corresponding osm file
-    >>> og.downloadOSMdata(rel.rel_id, 'asu.osm')
+    >>> og.downloadOSMData(rel_id, 'asu.osm')
 
 
 Visualization
