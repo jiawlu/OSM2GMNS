@@ -77,7 +77,7 @@ Generate multi-resolution networks from an osm file
 
 
 Get relation id of a place of interest and download the corresponding osm file
-====================================
+=====================================================================================================================
 You can use the following code to get the relation id of a place of interest and download the corresponding osm file.
 
 .. code:: python
