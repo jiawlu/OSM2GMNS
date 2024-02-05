@@ -10,7 +10,7 @@ from osm2gmns.io.load_from_csv import loadNetFromCSV
 from osm2gmns.io.downloader import downloadOSMData
 from osm2gmns.io.writefile import outputNetToCSV
 from osm2gmns.utils.util import config
-from osm2gmns.func_lib.extract_relation_id import OSM_RelationID_Finder
+from osm2gmns.func_lib.extract_relation_id import getOSMRelationID
 import osm2gmns.settings as og_settings
 
 

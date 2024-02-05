@@ -88,8 +88,8 @@ You can use the following code to get the relation id of a place of interest and
     # e.g. "Tempe, Arizona, United States"
     # e.g. "Arizona, US"
     # e.g. "Beijing Jiaotong University, Beijing, China"
-    >>> rel = og.OSM_RelationID_Finder('Arizona State University')
-    >>> rel.rel_id
+    >>> rel_id = og.getOSMRelationID('Arizona State University')
+    >>> rel_id
         Info: Found relation id 3444656 from web
         Info: location of the place of interest:
         {
@@ -116,7 +116,7 @@ You can use the following code to get the relation id of a place of interest and
     3444656
 
     # download the corresponding osm file
-    >>> og.downloadOSMData(rel.rel_id, 'asu.osm')
+    >>> og.downloadOSMData(rel_id, 'asu.osm')
 
 
 Visualization

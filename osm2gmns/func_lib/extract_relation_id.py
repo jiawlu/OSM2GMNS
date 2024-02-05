@@ -14,7 +14,7 @@ from typing import Union
 from pathlib import Path
 
 
-class OSM_RelationID_Finder:
+class OSMRelationIDFinder:
     """A class to find the osm relation id of a place of interest globally
        Use the Nominatim API to find the relation id of a place of interest
 
@@ -202,3 +202,48 @@ class OSM_RelationID_Finder:
         print("  Info: Could not load global_rel_id.json locally")
         print("  Please search from https://www.openstreetmap.org/#map=5/40.298/-102.500  \n")
         return None
+
+
+def getOSMRelationID(poi_name: str) -> Union[float, None]:
+    """Get the relation id of a place of interest globally
+
+    Args:
+        poi_name (str): the name of the place of interest,
+            e.g., "Arizona State University"
+            e.g., "Tempe, Arizona, USA"
+            e.g., "Arizona, USA"
+
+    Returns:
+        Union[float, None]: the relation id of the place of interest, if not found, return None
+
+    Example:
+        >>> import osm2gmns as og
+        >>> rel = og.getOSMRelationID("Arizona State University")
+        >>> rel
+            Info: Found relation id 3444656 from web
+            Info: location of the place of interest:
+            {
+                "place_id": 318528634,
+                "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+                "osm_type": "relation",
+                "osm_id": 3444656,
+                "lat": "33.4213174",
+                "lon": "-111.93316305413154",
+                "class": "amenity",
+                "type": "university",
+                "place_rank": 30,
+                "importance": 0.5547365758311374,
+                "addresstype": "amenity",
+                "name": "Arizona State University",
+                "display_name": "Arizona State University, 1151, South Forest Avenue, Tempe Junction, Tempe, Maricopa County, Arizona, 85281, United States",
+                "boundingbox": [
+                    "33.4102062",
+                    "33.4329786",
+                    "-111.9411651",
+                    "-111.9092447"
+                ]
+            }
+        3444656
+    """
+    rel = OSMRelationIDFinder(poi_name)
+    return rel.rel_id
