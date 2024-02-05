@@ -14,7 +14,7 @@ from osm2gmns.func_lib.extract_relation_id import OSM_RelationID_Finder
 import osm2gmns.settings as og_settings
 
 
-__version__ = '0.7.3'
+__version__ = '0.7.4'
 print(f'osm2gmns, {__version__}')
 
 
