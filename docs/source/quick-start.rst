@@ -14,7 +14,7 @@ osm files to extract useful network information. As a result, the first step is 
 Thanks to the open-source nature of OpenStreetMap, there are lots of APIs and mirror sites that we can use to
 download osm map data. We list several popular sites here for users to choose.
 
-0) osm2gmns built-in class: OSM_RelationID_Finder
+0) osm2gmns built-in function: getOSMRelationID
 Get the relation id of a place of interest, eg. "Arizona State University", "Arizona, United States", "Tempe, AZ"...
 
 -- code-block:: python
