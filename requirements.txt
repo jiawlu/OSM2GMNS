@@ -1,0 +1,5 @@
+matplotlib==3.7.2
+numpy==1.24.3
+osmium==3.7.0
+Requests==2.31.0
+Shapely==2.0.2

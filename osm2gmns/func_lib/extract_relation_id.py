@@ -23,6 +23,39 @@ class OSM_RelationID_Finder:
             e.g., "Arizona State University"
             e.g., "Tempe, Arizona, USA"
             e.g., "Arizona, USA"
+
+    Example:
+    >>> import osm2gmns as og
+    >>> rel = og.OSM_RelationID_Finder("Arizona State University")
+    >>> rel.rel_id
+        Info: Found relation id 3444656 from web
+        Info: location of the place of interest:
+        {
+            "place_id": 318528634,
+            "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+            "osm_type": "relation",
+            "osm_id": 3444656,
+            "lat": "33.4213174",
+            "lon": "-111.93316305413154",
+            "class": "amenity",
+            "type": "university",
+            "place_rank": 30,
+            "importance": 0.5547365758311374,
+            "addresstype": "amenity",
+            "name": "Arizona State University",
+            "display_name": "Arizona State University, 1151, South Forest Avenue, Tempe Junction, Tempe, Maricopa County, Arizona, 85281, United States",
+            "boundingbox": [
+                "33.4102062",
+                "33.4329786",
+                "-111.9411651",
+                "-111.9092447"
+            ]
+        }
+    3444656
+
+    # download the corresponding osm file
+    >>> og.downloadOSMData(rel.rel_id, 'asu.osm')
+
     """
 
     def __init__(self, poi_name: str) -> None:
@@ -40,7 +73,7 @@ class OSM_RelationID_Finder:
         self._path_global_rel_id = self.__path2linux(os.path.join(
             Path(__file__).resolve().parent.parent.parent, "dependencies/global_rel_id.json"))
 
-    def __get_url_data(self):
+    def __get_url_data(self) -> dict:
         # prepare url
         base_url = 'https://nominatim.openstreetmap.org/search?'
         params = {"q": self.poi_name, "format": "json"}
@@ -52,7 +85,7 @@ class OSM_RelationID_Finder:
         return url_json
 
     @property
-    def rel_id(self):
+    def rel_id(self) -> Union[float, None]:
         # Three logic to find the relation id
         # 1. Search from web, if relation id exist, return the relation id
         # 2. If relation id does not exist
@@ -78,7 +111,7 @@ class OSM_RelationID_Finder:
         return self.__find_local_rel_id()
 
     @property
-    def rel_id_info(self):
+    def rel_id_info(self) -> dict:
         # show detailed information of the relation id
         return self.__url_json if len(self.__url_json) < self._max_show else self.__url_json[:self._max_show]
 
