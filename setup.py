@@ -12,7 +12,7 @@ with open("README.rst", "r", encoding="utf-8") as f:
 
 setuptools.setup(
     name='osm2gmns',
-    version='0.7.4',
+    version='0.7.5',
     author='Jiawei Lu, Xuesong Zhou',
     author_email='jiaweil9@asu.edu, xzhou74@asu.edu',
     url='https://github.com/jiawlu/OSM2GMNS',
