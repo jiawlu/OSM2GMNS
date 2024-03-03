@@ -12,7 +12,7 @@ with open("README.rst", "r", encoding="utf-8") as f:
 
 setuptools.setup(
     name='osm2gmns',
-    version='0.7.5',
+    version='0.7.6',
     author='Jiawei Lu, Xuesong Zhou',
     author_email='jiaweil9@asu.edu, xzhou74@asu.edu',
     url='https://github.com/jiawlu/OSM2GMNS',
@@ -21,8 +21,12 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     license='GPLv3+',
     packages=setuptools.find_packages(),
-    python_requires=">=3.9.0",
+    python_requires=">=3.10",
     classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-                 'Programming Language :: Python :: 3'],
+                 'Programming Language :: Python :: 3',
+                 'Programming Language :: Python :: 3.10',
+                 'Programming Language :: Python :: 3.11',
+                 'Programming Language :: Python :: 3.12'
+                 ],
     install_requires=modules_needed,
 )
