@@ -1,17 +1,28 @@
 import setuptools
 
+try:
+    # if have requirements.txt file inside the folder
+    with open("requirements.txt", "r", encoding="utf-8") as f:
+        modules_needed = [i.strip() for i in f.readlines()]
+except Exception:
+    modules_needed = []
+
+with open("README.rst", "r", encoding="utf-8") as f:
+    _long_description = f.read()
+
 setuptools.setup(
     name='osm2gmns',
-    version='0.7.4',
+    version='0.7.5',
     author='Jiawei Lu, Xuesong Zhou',
     author_email='jiaweil9@asu.edu, xzhou74@asu.edu',
     url='https://github.com/jiawlu/OSM2GMNS',
-    description='convert map data from OpenStreetMap to network files in GMNS format',
-    long_description=open('README_pypi.rst').read(),
+    description="convert map data from OpenStreetMap to network files in GMNS format",
+    long_description=_long_description,
+    long_description_content_type="text/x-rst",
     license='GPLv3+',
     packages=setuptools.find_packages(),
-    python_requires=">=3.6.0",
-    install_requires=['shapely >= 2.0.1', 'osmium >= 3.1.3', 'numpy'],
+    python_requires=">=3.9.0",
     classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
-                 'Programming Language :: Python :: 3']
+                 'Programming Language :: Python :: 3'],
+    install_requires=modules_needed,
 )
