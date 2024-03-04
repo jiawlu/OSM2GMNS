@@ -30,3 +30,8 @@ osm2gmns.movement
 osm2gmns.multiresolutionnet
 ==================================================
 .. autofunction:: osm2gmns.multiresolutionnet.build_mrnet.buildMultiResolutionNets
+
+
+osm2gmns.func_lib
+==================================================
+.. autofunction:: osm2gmns.func_lib.getOSMRelationID

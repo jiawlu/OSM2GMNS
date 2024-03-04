@@ -6,12 +6,12 @@
 ##############################################################
 
 
-from osm2gmns.func_lib.extract_relation_id import OSM_RelationID_Finder
+from osm2gmns.func_lib.extract_relation_id import OSMRelationIDFinder
 
 
 def test_rel_id_web_search_exists():
 
-    rel_identifier = OSM_RelationID_Finder("Arizona State University")
+    rel_identifier = OSMRelationIDFinder("Arizona State University")
     rel_id = rel_identifier.rel_id
     print(type(rel_id))
     assert isinstance(rel_id, int)
@@ -19,6 +19,6 @@ def test_rel_id_web_search_exists():
 
 def test_rel_id_web_search_not_exists():
 
-    rel_identifier = OSM_RelationID_Finder("TTTTTTEEEEEESSSSSTTTTT")
+    rel_identifier = OSMRelationIDFinder("TTTTTTEEEEEESSSSSTTTTT")
     rel_id = rel_identifier.rel_id
     assert rel_id is None
