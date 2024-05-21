@@ -1,15 +1,21 @@
 import osm2gmns.settings as og_settings
+from shapely import wkt, Point, Polygon, MultiPolygon
+import csv
 
 
-def generateNodeActivityInfo(network):
+def generateNodeActivityInfo(network, zone_file=None):
     """
     Generate activity information, including activity_type, is_boundary, zone_id for nodes. activity_type includes
-    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links
+    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links,
+    If a zone_file is provided, zone_id of boundary nodes will be determined by zones defined in the zone_file.
+    Otherwise, for each boundary node, its node_id will be used as zone_id.
 
     Parameters
     ----------
     network: Network
         osm2gmns Network object
+    zone_file: str, None
+        filename of the zone file. optional
 
     Returns
     -------
@@ -74,10 +80,41 @@ def generateNodeActivityInfo(network):
                 node.is_boundary = 2
 
     # zone
+    point_zone_dict = {}
+    polygon_zone_dict = {}
+    if zone_file is not None:
+        fin = open(zone_file, 'r')
+        reader = csv.DictReader(fin)
+        for zone_info in reader:
+            zond_id = zone_info['zone_id']
+            geo = wkt.loads(zone_info['geometry'])
+            if isinstance(geo, Point):
+                point_zone_dict[zond_id] = geo
+            elif isinstance(geo, Polygon) or isinstance(geo, MultiPolygon):
+                polygon_zone_dict[zond_id] = geo
+            else:
+                print(f'invalid geometry type detected for zone {zond_id}. only support Point, Polygon and MultiPolygon')
+
     for node_id, node in network.node_dict.items():
         if node.is_boundary == 0: continue
-        node.zone_id = node.node_id
-
+        if zone_file is None:
+            node.zone_id = node.node_id
+            continue
+        polygon_zone_found = False
+        for zone_id, polygon in polygon_zone_dict.items():
+            if polygon.covers(node.geometry):
+                polygon_zone_found = True
+                node.zone_id = zone_id
+                break
+        if polygon_zone_found: continue
+        min_distance = 1e10
+        nearest_zone_id = None
+        for zone_id, point in point_zone_dict.items():
+            distance = node.geometry.distance(point)
+            if distance < min_distance:
+                min_distance = distance
+                nearest_zone_id = zone_id
+        node.zone_id = nearest_zone_id
 
 
 def generateLinkVDFInfo(network):
