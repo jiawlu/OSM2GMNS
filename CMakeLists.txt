@@ -1,39 +1,105 @@
-cmake_minimum_required(VERSION 3.24)
-
-# if (WIN32)
-#     set(CMAKE_C_COMPILER "C:\\mingw64\\bin\\gcc")
-#     set(CMAKE_CXX_COMPILER "C:\\mingw64\\bin\\g++")
-# elseif(UNIX)
-#     set(CMAKE_C_COMPILER /opt/homebrew/Cellar/llvm/15.0.7_1/bin/clang)
-#     set(CMAKE_CXX_COMPILER /opt/homebrew/Cellar/llvm/15.0.7_1/bin/clang++)
-# endif()
-
-# option(BUILD_X86 "BUILD X86 or not" ON)
-
-#set(CMAKE_OSX_ARCHITECTURES "x86_64")
-
-
+cmake_minimum_required(VERSION 3.25)
 project(osm2gmns)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+#set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
+#add_subdirectory(libraries/geos)
+#add_subdirectory(libraries/bzip2)
+#add_subdirectory(libraries/libexpat/expat)
+#add_subdirectory(libraries/zlib)
+
+include(FetchContent)
+set(FETCHCONTENT_QUIET OFF)
 
 
-add_subdirectory(libraries/geos)
+FetchContent_Declare(
+        protozero
+        GIT_REPOSITORY https://github.com/mapbox/protozero.git
+        GIT_TAG v1.7.1
+        SYSTEM
+)
+FetchContent_Populate(protozero)
+include_directories(${protozero_SOURCE_DIR}/include)
 
-add_subdirectory(libraries/bzip2)
-add_subdirectory(libraries/libexpat/expat)
-add_subdirectory(libraries/zlib)
+FetchContent_Declare(
+        bzip2
+        GIT_REPOSITORY https://gitlab.com/bzip2/bzip2.git
+        GIT_TAG  master
+        SYSTEM
+)
+FetchContent_MakeAvailable(bzip2)
+set(Required_Libraries ${Required_Libraries} bz2)
+#include_directories(${geos_SOURCE_DIR}/include)
 
+FetchContent_Declare(
+        expat
+        GIT_REPOSITORY https://github.com/libexpat/libexpat.git
+        GIT_TAG  R_2_6_2
+        SYSTEM
+)
+FetchContent_MakeAvailable(expat)
+set(Required_Libraries ${Required_Libraries} expat)
+#include_directories(${geos_SOURCE_DIR}/include)
+
+FetchContent_Declare(
+        z
+        GIT_REPOSITORY https://github.com/madler/zlib.git
+        GIT_TAG  v1.3.1
+        SYSTEM
+)
+FetchContent_MakeAvailable(z)
+set(Required_Libraries ${Required_Libraries} z)
+#include_directories(${geos_SOURCE_DIR}/include)
+
+FetchContent_Declare(
+        osmium
+        GIT_REPOSITORY https://github.com/osmcode/libosmium.git
+        GIT_TAG v2.20.0
+        SYSTEM
+)
+FetchContent_Populate(osmium)
+include_directories(${osmium_SOURCE_DIR}/include)
+
+
+FetchContent_Declare(
+        geos
+        GIT_REPOSITORY https://github.com/libgeos/geos.git
+        GIT_TAG  3.12.1
+        SYSTEM
+)
+FetchContent_MakeAvailable(geos)
+#set(Required_Libraries ${Required_Libraries} date::date date::date-tz)
+include_directories(${geos_SOURCE_DIR}/include)
+include_directories(${geos_BINARY_DIR}/include)
 
 
 add_subdirectory(src)
 
-add_executable(osm2gmns_test osm2gmns_test.cpp)
 
-target_link_libraries(osm2gmns_test geos osm2gmns)
+option(BUILD_EXE "Build osm2gmns executable" ON)
+if (BUILD_EXE)
+    add_executable(osm2gmns osm2gmns_main.cpp)
+    target_link_libraries(osm2gmns osm2gmns_core)
+endif ()
+
+option(BUILD_LIB "Build osm2gmns library" ON)
+if (BUILD_LIB)
+    add_library(osm2gmnslib osm2gmns_lib.cpp)
+    target_link_libraries(osm2gmnslib osm2gmns_core)
+    set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
+endif ()
+
+option(BUILD_TEST_DEV "Build Test For Development" OFF)
+if (BUILD_TEST_DEV)
+    add_subdirectory(test_dev)
+endif ()
+
+
+#add_executable(osm2gmns_test osm2gmns_test.cpp)
+#
+#target_link_libraries(osm2gmns_test geos osm2gmns)
 
 
 #set(CMAKE_BUILD_TYPE  "Release")

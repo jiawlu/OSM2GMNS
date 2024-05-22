@@ -12,7 +12,7 @@
 
 //#include <osmium/io/any_input.hpp>
 //#include <osmium/handler.hpp>
-#include "../libraries/libosmium/include/osmium/visitor.hpp"
+#include <osmium/visitor.hpp>
 
 
 class Node;

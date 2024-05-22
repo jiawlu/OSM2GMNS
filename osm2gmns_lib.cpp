@@ -2,8 +2,8 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
-#include "buildnet.h"
-#include "io.h"
+#include "src/buildnet.h"
+#include "src/io.h"
 
 #ifdef _WIN32
 #define C_API __declspec(dllexport)
