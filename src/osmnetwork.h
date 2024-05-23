@@ -7,9 +7,17 @@
 
 // #include <osmium/io/any_input.hpp>
 // #include <osmium/handler.hpp>
+
+#include <map>
+#include <string>
+#include <vector>
+
+// #include "absl/strings/match.h"
+// #include "geos/geom/Geometry.h"
 #include <geos.h>
 
-#include <osmium/visitor.hpp>
+#include "osmium/osm/node.hpp"
+#include "osmium/osm/way.hpp"
 
 class OSMNode {
  public:
@@ -18,13 +26,17 @@ class OSMNode {
     //        geometry = GEOSGeom_createPointFromXY(node.location().lon(), node.location().lat());
 
     const char* name_ = node.tags()["name"];
-    if (name_) name = name_;
+    if (name_ != nullptr) {
+      name = name_;
+    }
     const char* highway_ = node.tags()["highway"];
-    if (highway_) osm_highway = highway_;
+    if (highway_ != nullptr) {
+      osm_highway = highway_;
+    }
     const char* signal_ = node.tags()["signal"];
     if (signal_ != nullptr) {
-      std::string signal_str = signal_;
-      ctrl_type = signal_str.find("signal") != std::string::npos ? "signal" : "";
+      const std::string signal_str = signal_;
+      //      ctrl_type = absl::StrContains(signal_str, "signal") ? "signal" : "";
     }
 
     in_region = true;
@@ -54,22 +66,24 @@ class OSMNode {
 
 class Way {
  public:
-  explicit Way(const osmium::Way& way) : osm_way_id(way.id()), number_of_segments(0) {
-    for (auto& way_node : way.nodes()) ref_node_id_vector.push_back(way_node.ref());
+  explicit Way(const osmium::Way& way) : osm_way_id(way.id()) {
+    for (const auto& way_node : way.nodes()) {
+      ref_node_id_vector.push_back(way_node.ref());
+    }
 
     const char* highway_ = way.tags()["highway"];
-    highway = highway_ ? highway_ : "";
+    highway = highway_ != nullptr ? highway_ : "";
     const char* railway_ = way.tags()["railway"];
-    railway = railway_ ? railway_ : "";
+    railway = railway_ != nullptr ? railway_ : "";
     const char* aeroway_ = way.tags()["aeroway"];
-    aeroway = aeroway_ ? aeroway_ : "";
+    aeroway = aeroway_ != nullptr ? aeroway_ : "";
 
     const char* building_ = way.tags()["building"];
-    building = building_ ? building_ : "";
+    building = building_ != nullptr ? building_ : "";
     const char* amenity_ = way.tags()["amenity"];
-    amenity = amenity_ ? amenity_ : "";
+    amenity = amenity_ != nullptr ? amenity_ : "";
     const char* leisure_ = way.tags()["leisure"];
-    leisure = leisure_ ? leisure_ : "";
+    leisure = leisure_ != nullptr ? leisure_ : "";
   }
 
   unsigned long osm_way_id;
@@ -86,11 +100,11 @@ class Way {
   std::string amenity{};
   std::string leisure{};
 
-  int number_of_segments;
+  int number_of_segments{0};
   std::vector<std::vector<OSMNode*>> segment_node_vector{};
 
   void getNodeListForSegments() {
-    int number_of_ref_nodes = 0 = ref_node_vector.size();
+    const int number_of_ref_nodes = ref_node_vector.size();
     int last_idx = 0;
     int idx = 0;
     OSMNode* osmnode = nullptr;

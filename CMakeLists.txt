@@ -4,8 +4,20 @@ project(osm2gmns)
 set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+#find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
+SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
+
+FetchContent_Declare(
+        absl
+        GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
+        GIT_TAG 20230125.3
+        SYSTEM
+)
+FetchContent_MakeAvailable(absl)
+include_directories(SYSTEM ${absl_SOURCE_DIR})
 
 FetchContent_Declare(
         protozero

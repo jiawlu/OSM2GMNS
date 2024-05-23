@@ -5,11 +5,11 @@
 #ifndef OSM2GMNS_NETWORKS_H
 #define OSM2GMNS_NETWORKS_H
 
-#include <geos.h>
-
 #include <map>
 #include <string>
+#include <vector>
 
+#include "geos/geom/Geometry.h"
 #include "osmnetwork.h"
 
 class Node;
@@ -51,7 +51,7 @@ class Link {
   Node *from_node{}, *to_node{};
   Geometry* geometry{};
 
-  void buildFromOSMWay(Way* way, std::vector<OSMNode*>& ref_node_vector) {
+  void buildFromOSMWay(Way* way, std::vector<OSMNode*>& /*ref_node_vector*/) {
     osm_way_id = way->osm_way_id;
     //        from_node = ref_node_vector[0]->node;
     //        to_node = ref_node_vector[ref_node_vector.size()-1]->node;
@@ -63,10 +63,7 @@ class Link {
 
 class Network {
  public:
-  Network() {
-    
-    
-  }
+  Network() = default;
 
   std::map<unsigned int, Node*> node_dict{};
   std::map<unsigned int, Link*> link_dict{};
