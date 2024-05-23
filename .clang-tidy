@@ -1,0 +1,4 @@
+Checks: '*,-=,-fuchsia-*,-zircon-*,-modernize-use-trailing-return-type,-hicpp-use-emplace,-modernize-use-emplace,-llvm-*,-llvmlibc-*,-readability-function-cognitive-complexity,-altera-*'
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'src/.*'
+FormatStyle: 'file'
