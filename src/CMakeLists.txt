@@ -1,6 +1,11 @@
 
 
-add_library(osm2gmns_core STATIC buildnet.cpp networks.cpp io.cpp util_geo.cpp)
+add_library(osm2gmns_core STATIC
+        osmnetwork.cpp
+        buildnet.cpp
+        networks.cpp
+        io.cpp
+        util_geo.cpp)
 
 
 #target_include_directories(osm2gmns PUBLIC
