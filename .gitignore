@@ -5,6 +5,7 @@ test_dev/
 *.pyc
 .pypirc
 cmake-build*/
+[Bb]in/
 
 # Byte-compiled / optimized / DLL files
 *__pycache__/*

@@ -55,7 +55,6 @@ class Link {
     osm_way_id = way->osm_way_id;
     //        from_node = ref_node_vector[0]->node;
     //        to_node = ref_node_vector[ref_node_vector.size()-1]->node;
-
     from_node->outgoing_link_vector.push_back(this);
     to_node->incoming_link_vector.push_back(this);
   }

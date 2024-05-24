@@ -1,10 +1,19 @@
 cmake_minimum_required(VERSION 3.25)
-project(osm2gmns)
+project(osm2gmns VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-#find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
+#include(cmake/StandardSettings.cmake)
+#include(cmake/rootutils.cmake)
+message("\nStarted CMake for ${PROJECT_NAME} v${PROJECT_VERSION}...\n")
+file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/config)
+configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config/config.h)
+
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
+find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
