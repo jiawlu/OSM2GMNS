@@ -8,60 +8,51 @@
 // #include <osmium/io/any_input.hpp>
 // #include <osmium/handler.hpp>
 
+#include <cstddef>
+#include <cstdint>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 // #include "absl/strings/match.h"
 // #include "geos/geom/Geometry.h"
-#include <geos.h>
+#include <geos.h>  // NOLINT
+#include <geos/geom/Geometry.h>
 
 #include "osmium/osm/node.hpp"
 #include "osmium/osm/way.hpp"
 
-class OSMNode {
+using OsmIdType = int64_t;
+
+class OsmNode;
+
+using OsmNodePtr = std::shared_ptr<OsmNode>;
+
+class OsmNode {
  public:
-  explicit OSMNode(const osmium::Node& node)
-      : osm_node_id(node.id()), x(node.location().lon()), y(node.location().lat()) {
-    //        geometry = GEOSGeom_createPointFromXY(node.location().lon(), node.location().lat());
+  explicit OsmNode(const osmium::Node& node);
 
-    const char* name_ = node.tags()["name"];
-    if (name_ != nullptr) {
-      name = name_;
-    }
-    const char* highway_ = node.tags()["highway"];
-    if (highway_ != nullptr) {
-      osm_highway = highway_;
-    }
-    const char* signal_ = node.tags()["signal"];
-    if (signal_ != nullptr) {
-      const std::string signal_str = signal_;
-      //      ctrl_type = absl::StrContains(signal_str, "signal") ? "signal" : "";
-    }
+  [[nodiscard]] OsmIdType osmNodeId() const;
+  [[nodiscard]] const std::string& name() const;
+  [[nodiscard]] bool isCrossing() const;
 
-    in_region = true;
-    is_crossing = false;
-
-    notes = "";
-    node_assigned = false;
-    usage_count = 0;
-  }
-
-  std::string name{};
-  unsigned long osm_node_id;
+ private:
+  OsmIdType osm_node_id_;
+  std::string name_;
   Geometry* geometry{};
   double x, y;
-  std::string osm_highway{};
+  std::string osm_highway_;
   std::string ctrl_type{};
 
-  bool in_region;
-  bool is_crossing;
+  bool in_region{true};
+  bool is_crossing{false};
 
   std::string notes{};
   //    Node* node;
-  bool node_assigned;
+  bool node_assigned{false};
 
-  int usage_count;
+  int usage_count{0};
 };
 
 class Way {
@@ -86,35 +77,20 @@ class Way {
     leisure = leisure_ != nullptr ? leisure_ : "";
   }
 
-  unsigned long osm_way_id;
-  std::vector<unsigned long> ref_node_id_vector{};
-  std::vector<OSMNode*> ref_node_vector{};
-
-  std::string highway{};
-  std::string railway{};
-  std::string aeroway{};
-
-  bool oneway{};
-
-  std::string building{};
-  std::string amenity{};
-  std::string leisure{};
-
-  int number_of_segments{0};
-  std::vector<std::vector<OSMNode*>> segment_node_vector{};
+  [[nodiscard]] int64_t getOsmWayId() const;
 
   void getNodeListForSegments() {
-    const int number_of_ref_nodes = ref_node_vector.size();
+    const size_t number_of_ref_nodes = ref_node_vector.size();
     int last_idx = 0;
     int idx = 0;
-    OSMNode* osmnode = nullptr;
+    OsmNode* osmnode = nullptr;
 
     while (true) {
-      std::vector<OSMNode*> m_segment_node_vector{ref_node_vector[last_idx]};
+      std::vector<OsmNode*> m_segment_node_vector{ref_node_vector[last_idx]};
       for (idx = last_idx + 1; idx < number_of_ref_nodes; idx++) {
         osmnode = ref_node_vector[idx];
         m_segment_node_vector.push_back(osmnode);
-        if (osmnode->is_crossing) {
+        if (osmnode->isCrossing()) {
           last_idx = idx;
           break;
         }
@@ -128,14 +104,33 @@ class Way {
       }
     }
   }
+
+ private:
+  int64_t osm_way_id;
+  std::vector<OsmIdType> ref_node_id_vector{};
+  std::vector<OsmNode*> ref_node_vector{};
+
+  std::string highway{};
+  std::string railway{};
+  std::string aeroway{};
+
+  bool oneway{};
+
+  std::string building{};
+  std::string amenity{};
+  std::string leisure{};
+
+  int number_of_segments{0};
+  std::vector<std::vector<OsmNode*>> segment_node_vector{};
 };
 
 class OSMNetwork {
  public:
   OSMNetwork() = default;
 
-  std::map<unsigned long, OSMNode*> osm_node_dict{};
-  std::map<unsigned long, Way*> osm_way_dict{};
+ private:
+  std::map<OsmIdType, OsmNode*> osm_node_dict{};
+  std::map<OsmIdType, Way*> osm_way_dict{};
 
   std::vector<Way*> link_way_vector{};
 

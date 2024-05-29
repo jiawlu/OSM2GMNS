@@ -35,7 +35,7 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_Populate(protozero)
-include_directories(${protozero_SOURCE_DIR}/include)
+include_directories(SYSTEM ${protozero_SOURCE_DIR}/include)
 
 FetchContent_Declare(
         bzip2
@@ -45,7 +45,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(bzip2)
 set(Required_Libraries ${Required_Libraries} bz2)
-#include_directories(${geos_SOURCE_DIR}/include)
+include_directories(SYSTEM ${bzip2_SOURCE_DIR})
 
 FetchContent_Declare(
         expat
@@ -74,7 +74,7 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_Populate(osmium)
-include_directories(${osmium_SOURCE_DIR}/include)
+include_directories(SYSTEM ${osmium_SOURCE_DIR}/include)
 
 
 FetchContent_Declare(
@@ -85,8 +85,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(geos)
 #set(Required_Libraries ${Required_Libraries} date::date date::date-tz)
-include_directories(${geos_SOURCE_DIR}/include)
-include_directories(${geos_BINARY_DIR}/include)
+include_directories(SYSTEM ${geos_SOURCE_DIR}/include)
+include_directories(SYSTEM ${geos_BINARY_DIR}/include)
 
 add_subdirectory(src)
 

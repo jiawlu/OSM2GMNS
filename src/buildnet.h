@@ -5,17 +5,11 @@
 #ifndef OSM2GMNS_BUILDNET_H
 #define OSM2GMNS_BUILDNET_H
 
+#include <memory>
+#include <string>
 
-#include "io.h"
-#include <iostream>
+#include "networks.h"
 
-Network* getNetFromFile(std::string filename, bool POI);
+std::unique_ptr<Network> getNetFromFile(const std::string& filename, bool POI);
 
-
-
-
-
-
-
-
-#endif //OSM2GMNS_BUILDNET_H
+#endif  // OSM2GMNS_BUILDNET_H
