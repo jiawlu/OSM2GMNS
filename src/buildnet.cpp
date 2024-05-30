@@ -5,7 +5,6 @@
 #include <string>
 #include <utility>
 
-#include "io.h"
 #include "networks.h"
 #include "osmnetwork.h"
 
@@ -65,7 +64,7 @@
 //   createNodesAndLinks(osmnet, network);
 // }
 //
-std::unique_ptr<Network> buildNet(std::unique_ptr<OSMNetwork> /*osmnet*/, bool /*POI*/) {
+std::unique_ptr<Network> buildNet(std::unique_ptr<OsmNetwork> /*osmnet*/, bool /*POI*/) {
   //  auto* network = new Network();
 
   //   creatNLPs(osmnet, network, POI);
@@ -75,7 +74,7 @@ std::unique_ptr<Network> buildNet(std::unique_ptr<OSMNetwork> /*osmnet*/, bool /
 
 std::unique_ptr<Network> getNetFromFile(const std::string& filename, bool POI) {
   std::cout << "loading from OSM\n";
-  std::unique_ptr<OSMNetwork> osmnet = readOSMFile(filename, POI, false);
+  std::unique_ptr<OsmNetwork> osmnet = std::make_unique<OsmNetwork>(filename, POI, false);
 
   std::cout << "building network\n";
   return buildNet(std::move(osmnet), POI);

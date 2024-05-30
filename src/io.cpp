@@ -4,40 +4,10 @@
 
 #include "io.h"
 
-#include <exception>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <osmium/handler.hpp>
-#include <osmium/io/file.hpp>
-#include <osmium/io/reader.hpp>
-#include <osmium/visitor.hpp>
 #include <string>
 
 #include "networks.h"
 #include "osmnetwork.h"
-
-struct CountHandler : public osmium::handler::Handler {
-  void node(const osmium::Node& node) noexcept { osm_node_dict[node.id()] = std::make_shared<OsmNode>(node); }
-
-  //    void way(const osmium::Way& way) noexcept
-  //    {
-  //        Way *way_ = new Way(way);
-  //        osm_way_dict[way_->osm_way_id] = way_;
-  //    }
-  //
-  //
-  //    void relation(const osmium::Relation& relation) noexcept
-  //    {
-  //        if (!POI)
-  //            return;
-  //    }
- private:
-  bool POI{};
-
-  std::map<OsmIdType, OsmNodePtr> osm_node_dict;
-  std::map<OsmIdType, Way*> osm_way_dict;
-};
 
 // static void geos_message_handler(const char* fmt, ...) {
 //   va_list ap = nullptr;
@@ -46,10 +16,10 @@ struct CountHandler : public osmium::handler::Handler {
 //   va_end(ap);
 // }
 
-void getBounds(OSMNetwork* osmnet, const std::string& filename) {}
+void getBounds(OsmNetwork* osmnet, const std::string& filename) {}
+/*
+void processNWR(OSMNetwork* osmnet, OsmHandler* handler) {
 
-void processNWR(OSMNetwork* osmnet, CountHandler* handler) {
-  /*
     // ==============  Node ================ //
     osmnet->osm_node_dict = handler->osm_node_dict;
 
@@ -73,32 +43,9 @@ void processNWR(OSMNetwork* osmnet, CountHandler* handler) {
     }
 
     // ==============  Relation ================ //
+
+}
 */
-}
-
-std::unique_ptr<OSMNetwork> readOSMFile(const std::string& filename, bool /*POI*/, bool /*strict_mode*/) {
-  //    initGEOS(geos_message_handler, geos_message_handler);
-
-  auto osmnet = std::make_unique<OSMNetwork>();
-  //  auto* osmnet = new OSMNetwork();
-  //  getBounds(osmnet, filename);
-
-  CountHandler handler;
-  //  handler.POI = POI;
-
-  try {
-    const osmium::io::File input_file{filename};
-    osmium::io::Reader reader{input_file};
-    osmium::apply(reader, handler);
-    reader.close();
-  } catch (const std::exception& e) {
-    std::cerr << e.what() << '\n';
-  }
-
-  //  processNWR(osmnet, &handler);
-
-  return osmnet;
-}
 
 void outputNetToCSV(Network& network, const std::string& output_folder) {
   //  const std::string node_filepath = output_folder.empty() ? "node.csv" : output_folder + "/node.csv";

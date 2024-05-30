@@ -8,17 +8,17 @@
 // #include <osmium/io/any_input.hpp>
 // #include <osmium/handler.hpp>
 
+#include <absl/container/flat_hash_map.h>
+#include <geos.h>  // NOLINT
+#include <geos/geom/Geometry.h>
+
 #include <cstddef>
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <osmium/handler.hpp>
 #include <string>
 #include <vector>
-
-// #include "absl/strings/match.h"
-// #include "geos/geom/Geometry.h"
-#include <geos.h>  // NOLINT
-#include <geos/geom/Geometry.h>
 
 #include "osmium/osm/node.hpp"
 #include "osmium/osm/way.hpp"
@@ -26,8 +26,26 @@
 using OsmIdType = int64_t;
 
 class OsmNode;
-
+class OsmWay;
 using OsmNodePtr = std::shared_ptr<OsmNode>;
+using OsmWayPtr = std::shared_ptr<OsmWay>;
+
+class OsmHandler : public osmium::handler::Handler {
+ public:
+  explicit OsmHandler(bool POI);
+
+  void node(const osmium::Node& node) noexcept;
+  void way(const osmium::Way& way) noexcept;
+  void relation(const osmium::Relation& /*relation*/) const noexcept;
+
+  const absl::flat_hash_map<OsmIdType, OsmNodePtr>& osmNodeDict();
+  const absl::flat_hash_map<OsmIdType, OsmWayPtr>& osmWayDict();
+
+ private:
+  bool POI_;
+  absl::flat_hash_map<OsmIdType, OsmNodePtr> osm_node_dict_;
+  absl::flat_hash_map<OsmIdType, OsmWayPtr> osm_way_dict_;
+};
 
 class OsmNode {
  public:
@@ -42,9 +60,10 @@ class OsmNode {
   std::string name_;
   Geometry* geometry{};
   double x, y;
-  std::string osm_highway_;
-  std::string ctrl_type{};
+  std::string highway_;
+  std::string signal_;
 
+  bool is_signalized{false};
   bool in_region{true};
   bool is_crossing{false};
 
@@ -55,29 +74,11 @@ class OsmNode {
   int usage_count{0};
 };
 
-class Way {
+class OsmWay {
  public:
-  explicit Way(const osmium::Way& way) : osm_way_id(way.id()) {
-    for (const auto& way_node : way.nodes()) {
-      ref_node_id_vector.push_back(way_node.ref());
-    }
+  explicit OsmWay(const osmium::Way& way);
 
-    const char* highway_ = way.tags()["highway"];
-    highway = highway_ != nullptr ? highway_ : "";
-    const char* railway_ = way.tags()["railway"];
-    railway = railway_ != nullptr ? railway_ : "";
-    const char* aeroway_ = way.tags()["aeroway"];
-    aeroway = aeroway_ != nullptr ? aeroway_ : "";
-
-    const char* building_ = way.tags()["building"];
-    building = building_ != nullptr ? building_ : "";
-    const char* amenity_ = way.tags()["amenity"];
-    amenity = amenity_ != nullptr ? amenity_ : "";
-    const char* leisure_ = way.tags()["leisure"];
-    leisure = leisure_ != nullptr ? leisure_ : "";
-  }
-
-  [[nodiscard]] int64_t getOsmWayId() const;
+  [[nodiscard]] int64_t osmWayId() const;
 
   void getNodeListForSegments() {
     const size_t number_of_ref_nodes = ref_node_vector.size();
@@ -106,33 +107,33 @@ class Way {
   }
 
  private:
-  int64_t osm_way_id;
+  int64_t osm_way_id_;
+  std::string highway_;
+  std::string railway_;
+  std::string aeroway_;
+  std::string building_;
+  std::string amenity_;
+  std::string leisure_;
+
   std::vector<OsmIdType> ref_node_id_vector{};
   std::vector<OsmNode*> ref_node_vector{};
 
-  std::string highway{};
-  std::string railway{};
-  std::string aeroway{};
-
-  bool oneway{};
-
-  std::string building{};
-  std::string amenity{};
-  std::string leisure{};
-
+  bool oneway_{true};
   int number_of_segments{0};
   std::vector<std::vector<OsmNode*>> segment_node_vector{};
 };
 
-class OSMNetwork {
+class OsmNetwork {
  public:
-  OSMNetwork() = default;
+  explicit OsmNetwork(const std::string& osm_filepath, bool POI, bool /*strict_mode*/);
 
  private:
-  std::map<OsmIdType, OsmNode*> osm_node_dict{};
-  std::map<OsmIdType, Way*> osm_way_dict{};
+  void processRawOsmData(const OsmHandler& osm_handler);
 
-  std::vector<Way*> link_way_vector{};
+  std::map<OsmIdType, OsmNode*> osm_node_dict{};
+  std::map<OsmIdType, OsmWay*> osm_way_dict{};
+
+  std::vector<OsmWay*> link_way_vector{};
 
   Geometry* bounds{};
 };

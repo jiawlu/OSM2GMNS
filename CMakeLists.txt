@@ -19,6 +19,10 @@ SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
 
+SET(ABSL_PROPAGATE_CXX_STD ON)
+SET(ABSL_BUILD_TESTING OFF)
+#set(ABSL_ENABLE_INSTALL ON)
+
 FetchContent_Declare(
         absl
         GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
@@ -27,6 +31,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(absl)
 include_directories(SYSTEM ${absl_SOURCE_DIR})
+set(Required_Libraries ${Required_Libraries}
+        absl::base
+        absl::algorithm
+        absl::log
+        absl::hash
+        absl::memory
+        absl::numeric
+        absl::strings
+        absl::raw_hash_map
+)
 
 FetchContent_Declare(
         protozero
@@ -87,6 +101,7 @@ FetchContent_MakeAvailable(geos)
 #set(Required_Libraries ${Required_Libraries} date::date date::date-tz)
 include_directories(SYSTEM ${geos_SOURCE_DIR}/include)
 include_directories(SYSTEM ${geos_BINARY_DIR}/include)
+#add_definitions(-DUSE_UNSTABLE_GEOS_CPP_API)
 
 add_subdirectory(src)
 
