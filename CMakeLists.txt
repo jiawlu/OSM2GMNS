@@ -103,6 +103,13 @@ include_directories(SYSTEM ${geos_SOURCE_DIR}/include)
 include_directories(SYSTEM ${geos_BINARY_DIR}/include)
 #add_definitions(-DUSE_UNSTABLE_GEOS_CPP_API)
 
+find_package(OpenMP REQUIRED)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+set(Required_Libraries ${Required_Libraries} OpenMP::OpenMP_CXX)
+
 add_subdirectory(src)
 
 option(BUILD_EXE "Build osm2gmns executable" ON)
