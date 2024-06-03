@@ -74,7 +74,7 @@ std::unique_ptr<Network> buildNet(std::unique_ptr<OsmNetwork> /*osmnet*/, bool /
 
 std::unique_ptr<Network> getNetFromFile(const std::string& filename, bool POI) {
   std::cout << "loading from OSM\n";
-  std::unique_ptr<OsmNetwork> osmnet = std::make_unique<OsmNetwork>(filename, POI, false);
+  std::unique_ptr<OsmNetwork> osmnet = std::make_unique<OsmNetwork>(filename, POI, true);
 
   std::cout << "building network\n";
   return buildNet(std::move(osmnet), POI);

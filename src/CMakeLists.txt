@@ -2,6 +2,7 @@
 
 add_library(osm2gmns_core STATIC
         osmnetwork.cpp
+        osmconfig.cpp
         networks.cpp
         io.cpp
         util_geo.cpp

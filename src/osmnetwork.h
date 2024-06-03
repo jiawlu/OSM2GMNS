@@ -6,25 +6,21 @@
 #define OSM2GMNS_OSMNETWORK_H
 
 #include <absl/container/flat_hash_map.h>
-#include <geos.h>  // NOLINT
 #include <geos/geom/Geometry.h>
+#include <geos/geom/GeometryFactory.h>
 
 #include <cstddef>
-#include <cstdint>
 #include <memory>
 #include <osmium/handler.hpp>
+#include <osmium/osm/node.hpp>
+#include <osmium/osm/way.hpp>
 #include <string>
 #include <vector>
 
-#include "osmium/osm/node.hpp"
-#include "osmium/osm/way.hpp"
-
-using OsmIdType = int64_t;
+#include "osmconfig.h"
 
 class OsmNode;
 class OsmWay;
-using OsmNodePtr = std::shared_ptr<OsmNode>;
-using OsmWayPtr = std::shared_ptr<OsmWay>;
 
 class OsmHandler : public osmium::handler::Handler {
  public:
@@ -51,12 +47,13 @@ class OsmNode {
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] bool isCrossing() const;
 
+  void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary, bool strict_mode);
   void setIsCrossing(bool is_crossing);
 
  private:
   OsmIdType osm_node_id_;
   std::string name_;
-  Geometry* geometry{};
+  std::unique_ptr<geos::geom::Point> geometry_;
   double x, y;
   std::string highway_;
   std::string signal_;
@@ -77,11 +74,12 @@ class OsmWay {
   explicit OsmWay(const osmium::Way& way);
 
   [[nodiscard]] OsmIdType osmWayId() const;
-  [[nodiscard]] const std::vector<OsmIdType>& refNodeIdVector() const;
 
-  void setIsValid(bool is_valid);
-  void setRefNodeVectorSize();
-  void addRefNode(OsmNode* osm_node);
+  void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
+
+  //  void setIsValid(bool is_valid);
+  //  void setRefNodeVectorSize();
+  //  void addRefNode(OsmNode* osm_node);
 
   void getNodeListForSegments() {
     const size_t number_of_ref_nodes = ref_node_vector_.size();
@@ -110,29 +108,41 @@ class OsmWay {
   }
 
  private:
+  void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
+  void identifyWayType();
+  void configAttributes();
+
   OsmIdType osm_way_id_;
   std::string highway_;
   std::string railway_;
   std::string aeroway_;
+
   std::string building_;
   std::string amenity_;
   std::string leisure_;
-
-  bool is_valid_{true};
+  std::string junction_;
+  std::string area_;
+  std::string motor_vehicle_;
+  std::string motorcar_;
+  std::string service_;
+  std::string foot_;
+  std::string bicycle_;
 
   std::vector<OsmIdType> ref_node_id_vector_;
-  //  std::vector<OsmNodePtr> ref_node_vector_;
   std::vector<OsmNode*> ref_node_vector_;
+  bool contains_unknown_ref_nodes_{false};
 
+  WayType way_type_{WayType::OTHER};
+  HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   bool oneway_{true};
+
   int number_of_segments{0};
-  //  std::vector<std::vector<OsmNodePtr>> segment_node_vector_;
   std::vector<std::vector<OsmNode*>> segment_node_vector_;
 };
 
 class OsmNetwork {
  public:
-  explicit OsmNetwork(const std::string& osm_filepath, bool POI, bool /*strict_mode*/);
+  explicit OsmNetwork(const std::string& osm_filepath, bool POI, bool strict_mode);
   ~OsmNetwork();
   OsmNetwork(const OsmNetwork&) = delete;
   OsmNetwork& operator=(const OsmNetwork&) = delete;
@@ -141,6 +151,12 @@ class OsmNetwork {
 
  private:
   void processRawOsmData();
+
+  bool POI_;
+  bool strict_mode_;
+
+  geos::geom::GeometryFactory::Ptr factory_;
+  std::unique_ptr<geos::geom::Polygon> boundary_;
 
   //  absl::flat_hash_map<OsmIdType, OsmNodePtr> osm_node_dict_;
   //  absl::flat_hash_map<OsmIdType, OsmWayPtr> osm_way_dict_;
@@ -151,7 +167,7 @@ class OsmNetwork {
 
   std::vector<OsmWay*> link_way_vector{};
 
-  Geometry* bounds{};
+  geos::geom::Geometry* bounds{};
 };
 
 #endif  // OSM2GMNS_OSMNETWORK_H

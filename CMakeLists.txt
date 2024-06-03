@@ -98,10 +98,10 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(geos)
-#set(Required_Libraries ${Required_Libraries} date::date date::date-tz)
+set(Required_Libraries ${Required_Libraries} GEOS::geos)
 include_directories(SYSTEM ${geos_SOURCE_DIR}/include)
 include_directories(SYSTEM ${geos_BINARY_DIR}/include)
-#add_definitions(-DUSE_UNSTABLE_GEOS_CPP_API)
+add_definitions(-DUSE_UNSTABLE_GEOS_CPP_API)
 
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)
