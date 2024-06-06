@@ -4,10 +4,10 @@
 
 #include "io.h"
 
+#include <iostream>
 #include <string>
 
 #include "networks.h"
-#include "osmnetwork.h"
 
 // static void geos_message_handler(const char* fmt, ...) {
 //   va_list ap = nullptr;
@@ -16,7 +16,7 @@
 //   va_end(ap);
 // }
 
-void getBounds(OsmNetwork* osmnet, const std::string& filename) {}
+// void getBounds(OsmNetwork* osmnet, const std::string& filename) {}
 /*
 void processNWR(OSMNetwork* osmnet, OsmHandler* handler) {
 
@@ -48,7 +48,8 @@ void processNWR(OSMNetwork* osmnet, OsmHandler* handler) {
 }
 */
 
-void outputNetToCSV(Network& network, const std::string& output_folder) {
+void outputNetToCSV(const Network* /*network*/, const std::string& /*output_folder*/) {
+  std::cout << "writing network to csv files\n";
   //  const std::string node_filepath = output_folder.empty() ? "node.csv" : output_folder + "/node.csv";
   //  std::ofstream node_file(node_filepath);
   //  if (!node_file) {

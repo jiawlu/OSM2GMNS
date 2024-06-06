@@ -9,6 +9,6 @@
 
 #include "networks.h"
 
-void outputNetToCSV(Network& network, const std::string& output_folder);
+void outputNetToCSV(const Network* network, const std::string& output_folder);
 
 #endif  // OSM2GMNS_IO_H

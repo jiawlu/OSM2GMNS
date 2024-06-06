@@ -17,7 +17,9 @@ extern "C" {
 //   return network;
 // };
 
-C_API void outputNetToCSVPy(Network& network, const char* output_folder) { outputNetToCSV(network, output_folder); };
+C_API void outputNetToCSVPy(const Network* network, const char* output_folder) {
+  outputNetToCSV(network, output_folder);
+};
 
 //    C_API unsigned int getNumberOfNodesPy(Network* network)
 //    {

@@ -5,6 +5,7 @@
 #ifndef OSM2GMNS_NETWORKS_H
 #define OSM2GMNS_NETWORKS_H
 
+#include "osmnetwork.h"
 // #include <map>
 // #include <string>
 // #include <vector>
@@ -62,11 +63,18 @@
 //
 class Network {
  public:
-  Network() = default;
+  explicit Network(OsmNetwork* osmnet);
+  ~Network();
+  Network(const Network&) = delete;
+  Network& operator=(const Network&) = delete;
+  Network(Network&&) = delete;
+  Network& operator=(Network&&) = delete;
 
   //  std::map<unsigned int, Node*> node_dict{};
   //  std::map<unsigned int, Link*> link_dict{};
  private:
+  OsmNetwork* osmnet_;
+
   unsigned int max_node_id{0};
   unsigned int max_link_id{0};
 };
