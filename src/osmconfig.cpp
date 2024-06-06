@@ -6,7 +6,6 @@
 
 #include <absl/container/flat_hash_map.h>
 
-#include <iostream>
 #include <set>
 #include <string>
 
@@ -38,7 +37,6 @@ HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str) {
   if (iter != link_type_map.end()) {
     return iter->second;
   }
-  std::cout << "  warning: new highway type " << highway_type_str << " is detected.\n";
   return HighWayLinkType::OTHER;
 }
 

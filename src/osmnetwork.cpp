@@ -11,6 +11,7 @@
 #include <geos/geom/Polygon.h>
 
 #include <chrono>
+#include <cstddef>
 #include <exception>
 #include <iostream>
 #include <osmium/io/any_input.hpp>  // NOLINT
@@ -28,6 +29,7 @@
 
 #include "constants.h"
 #include "osmconfig.h"
+#include "utils.h"
 
 const char* getOSMTagValue(const osmium::TagList& tag_list, const char* tag_key) {
   const char* tag_value = tag_list[tag_key];
@@ -118,6 +120,7 @@ void OsmWay::mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_nod
     }
   }
   if (unknown_ref_node_found) {
+#pragma omp critical
     std::cout << "  warning: ref node " << unknown_ref_node_id << " in way " << osm_way_id_ << " is not defined, way "
               << osm_way_id_ << " will not be imported\n";
     contains_unknown_ref_nodes_ = true;
@@ -133,6 +136,10 @@ void OsmWay::identifyWayType() {
     }
     way_type_ = WayType::HIGHWAY;
     highway_link_type_ = highwayStringToLinkType(highway_);
+    if (highway_link_type_ == HighWayLinkType::OTHER) {
+#pragma omp critical
+      std::cout << "  warning: new highway type " << highway_ << " is detected.\n";
+    }
   } else if (!railway_.empty()) {
     way_type_ = WayType::RAILWAY;
   } else if (!aeroway_.empty()) {
@@ -144,9 +151,31 @@ void OsmWay::identifyWayType() {
 
 void OsmWay::configAttributes() {}
 
-// void OsmWay::setIsValid(bool is_valid) { is_valid_ = is_valid; }
-// void OsmWay::setRefNodeVectorSize() { ref_node_vector_.reserve(ref_node_id_vector_.size()); }
-// void OsmWay::addRefNode(OsmNode* osm_node) { ref_node_vector_.push_back(osm_node); }
+void OsmWay::splitIntoSegments() {
+  const size_t number_of_ref_nodes = ref_node_vector_.size();
+  int last_idx = 0;
+  int idx = 0;
+  OsmNode* osmnode = nullptr;
+
+  while (true) {
+    std::vector<OsmNode*> m_segment_node_vector{ref_node_vector_[last_idx]};
+    for (idx = last_idx + 1; idx < number_of_ref_nodes; idx++) {
+      osmnode = ref_node_vector_[idx];
+      m_segment_node_vector.push_back(osmnode);
+      if (osmnode->isCrossing()) {
+        last_idx = idx;
+        break;
+      }
+    }
+
+    segment_node_vector_.push_back(m_segment_node_vector);
+    number_of_segments++;
+
+    if (idx == number_of_ref_nodes - 1) {
+      break;
+    }
+  }
+}
 
 OsmNetwork::OsmNetwork(const std::string& osm_filepath, bool POI, bool strict_mode)
     : POI_(POI), strict_mode_(strict_mode) {
@@ -159,11 +188,19 @@ OsmNetwork::OsmNetwork(const std::string& osm_filepath, bool POI, bool strict_mo
     osmium::io::Reader reader{input_file};
 
     const osmium::Box& box = reader.header().box();
-    boundary_ = factory_->createPolygon({geos::geom::Coordinate(box.bottom_left().lon(), box.bottom_left().lat()),
-                                         geos::geom::Coordinate(box.top_right().lon(), box.bottom_left().lat()),
-                                         geos::geom::Coordinate(box.top_right().lon(), box.top_right().lat()),
-                                         geos::geom::Coordinate(box.bottom_left().lon(), box.top_right().lat()),
-                                         geos::geom::Coordinate(box.bottom_left().lon(), box.bottom_left().lat())});
+    if (reader.header().box().valid()) {
+      boundary_ = factory_->createPolygon({geos::geom::Coordinate(box.bottom_left().lon(), box.bottom_left().lat()),
+                                           geos::geom::Coordinate(box.top_right().lon(), box.bottom_left().lat()),
+                                           geos::geom::Coordinate(box.top_right().lon(), box.top_right().lat()),
+                                           geos::geom::Coordinate(box.bottom_left().lon(), box.top_right().lat()),
+                                           geos::geom::Coordinate(box.bottom_left().lon(), box.bottom_left().lat())});
+    } else {
+      std::cout << "  warning: no valid boundary information in the osm file\n";
+      boundary_ =
+          factory_->createPolygon({geos::geom::Coordinate(MIN_LON, MIN_LAT), geos::geom::Coordinate(MAX_LON, MIN_LAT),
+                                   geos::geom::Coordinate(MAX_LON, MAX_LAT), geos::geom::Coordinate(MIN_LON, MAX_LAT),
+                                   geos::geom::Coordinate(MIN_LON, MIN_LAT)});
+    }
 
     osmium::apply(reader, handler);
     reader.close();

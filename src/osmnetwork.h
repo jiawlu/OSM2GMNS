@@ -9,7 +9,6 @@
 #include <geos/geom/Geometry.h>
 #include <geos/geom/GeometryFactory.h>
 
-#include <cstddef>
 #include <memory>
 #include <osmium/handler.hpp>
 #include <osmium/osm/node.hpp>
@@ -77,40 +76,11 @@ class OsmWay {
 
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
 
-  //  void setIsValid(bool is_valid);
-  //  void setRefNodeVectorSize();
-  //  void addRefNode(OsmNode* osm_node);
-
-  void getNodeListForSegments() {
-    const size_t number_of_ref_nodes = ref_node_vector_.size();
-    int last_idx = 0;
-    int idx = 0;
-    OsmNode* osmnode = nullptr;
-
-    while (true) {
-      std::vector<OsmNode*> m_segment_node_vector{ref_node_vector_[last_idx]};
-      for (idx = last_idx + 1; idx < number_of_ref_nodes; idx++) {
-        osmnode = ref_node_vector_[idx];
-        m_segment_node_vector.push_back(osmnode);
-        if (osmnode->isCrossing()) {
-          last_idx = idx;
-          break;
-        }
-      }
-
-      segment_node_vector_.push_back(m_segment_node_vector);
-      number_of_segments++;
-
-      if (idx == number_of_ref_nodes - 1) {
-        break;
-      }
-    }
-  }
-
  private:
   void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void identifyWayType();
   void configAttributes();
+  void splitIntoSegments();
 
   OsmIdType osm_way_id_;
   std::string highway_;

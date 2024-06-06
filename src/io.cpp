@@ -32,7 +32,8 @@ void processNWR(OSMNetwork* osmnet, OsmHandler* handler) {
             if (handler->osm_node_dict.find(ref_node_id) == handler->osm_node_dict.end())
             {
                 valid = false;
-                std::cout << "WARNING: ref node " << ref_node_id << " in way " << iter.first << " is not defined, way "
+                std::cout << "  warning: ref node " << ref_node_id << " in way " << iter.first << " is not defined, way
+"
     << iter.first << "will be skipped\n"; break;
             }
             iter.second->ref_node_vector.push_back(handler->osm_node_dict[ref_node_id]);

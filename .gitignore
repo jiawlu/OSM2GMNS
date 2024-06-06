@@ -1,11 +1,12 @@
 .vscode/*
 .idea/*
 .DS_Store
-test_dev/
+test_dev/maps/**/*.csv
 *.pyc
 .pypirc
 cmake-build*/
 [Bb]in/
+compile_commands.json
 
 # Byte-compiled / optimized / DLL files
 *__pycache__/*
