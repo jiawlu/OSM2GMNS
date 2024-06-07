@@ -9,6 +9,7 @@
 #include <geos/geom/Geometry.h>
 #include <geos/geom/GeometryFactory.h>
 
+#include <filesystem>
 #include <memory>
 #include <osmium/handler.hpp>
 #include <osmium/osm/node.hpp>
@@ -112,7 +113,7 @@ class OsmWay {
 
 class OsmNetwork {
  public:
-  explicit OsmNetwork(const std::string& osm_filepath, bool POI, bool strict_mode);
+  explicit OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool strict_mode);
   ~OsmNetwork();
   OsmNetwork(const OsmNetwork&) = delete;
   OsmNetwork& operator=(const OsmNetwork&) = delete;

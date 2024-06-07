@@ -13,6 +13,7 @@
 #include <chrono>
 #include <cstddef>
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <osmium/io/any_input.hpp>  // NOLINT
 #include <osmium/io/file.hpp>       // NOLINT
@@ -177,7 +178,7 @@ void OsmWay::splitIntoSegments() {
   }
 }
 
-OsmNetwork::OsmNetwork(const std::string& osm_filepath, bool POI, bool strict_mode)
+OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool strict_mode)
     : POI_(POI), strict_mode_(strict_mode) {
   factory_ = geos::geom::GeometryFactory::create();
 

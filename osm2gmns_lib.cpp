@@ -2,6 +2,7 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
+#include "src/functions.h"
 #include "src/io.h"
 #include "src/networks.h"
 
@@ -12,10 +13,10 @@
 #endif
 
 extern "C" {
-// C_API Network* getNetFromFilePy(const char* filename, bool POI) {
-//   Network* network = getNetFromFile(filename, POI);
-//   return network;
-// };
+C_API Network* getNetFromFilePy(const char* filename, bool POI) {
+  Network* network = getNetFromFile(filename, POI);
+  return network;
+};
 
 C_API void outputNetToCSVPy(const Network* network, const char* output_folder) {
   outputNetToCSV(network, output_folder);

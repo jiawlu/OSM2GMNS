@@ -5,10 +5,10 @@
 #ifndef OSM2GMNS_FUNCTIONS_H
 #define OSM2GMNS_FUNCTIONS_H
 
-#include <string>
+#include <filesystem>
 
 #include "networks.h"
 
-Network* getNetFromFile(const std::string& filename, bool POI);
+Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI);
 
 #endif  // OSM2GMNS_FUNCTIONS_H

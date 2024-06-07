@@ -4,8 +4,9 @@
 
 #include "io.h"
 
+#include <filesystem>
+#include <fstream>
 #include <iostream>
-#include <string>
 
 #include "networks.h"
 
@@ -48,8 +49,27 @@ void processNWR(OSMNetwork* osmnet, OsmHandler* handler) {
 }
 */
 
-void outputNetToCSV(const Network* /*network*/, const std::string& /*output_folder*/) {
+void outputNetToCSV(const Network* /*network*/, const std::filesystem::path& output_folder) {
   std::cout << "writing network to csv files\n";
+
+  const std::filesystem::path node_filepath = output_folder / "node.csv";
+  std::ofstream node_file(node_filepath);
+  if (!node_file) {
+    std::cout << "\nError: Cannot open file " << node_filepath << '\n';
+    return;
+  }
+  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,notes\n";
+  node_file.close();
+
+  const std::filesystem::path link_filepath = output_folder / "link.csv";
+  std::ofstream link_file(link_filepath);
+  if (!link_file) {
+    std::cout << "\nError: Cannot open file " << link_filepath << '\n';
+    return;
+  }
+  link_file << "link_id,osm_way_id,from_node_id,to_node_id,length,geometry\n";
+  link_file.close();
+
   //  const std::string node_filepath = output_folder.empty() ? "node.csv" : output_folder + "/node.csv";
   //  std::ofstream node_file(node_filepath);
   //  if (!node_file) {

@@ -1,7 +1,7 @@
 #include "functions.h"
 
+#include <filesystem>
 #include <iostream>
-#include <string>
 
 #include "networks.h"
 #include "osmnetwork.h"
@@ -68,9 +68,9 @@ Network* buildNet(OsmNetwork* osmnet, bool /*POI*/) {
   return network;
 }
 
-Network* getNetFromFile(const std::string& filename, bool POI) {
+Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI) {
   std::cout << "loading data from osm file\n";
-  auto* osmnet = new OsmNetwork(filename, POI, true);
+  auto* osmnet = new OsmNetwork(osm_filepath, POI, true);
 
   std::cout << "building network\n";
   return buildNet(osmnet, POI);
