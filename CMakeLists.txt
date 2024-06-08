@@ -122,7 +122,9 @@ option(BUILD_LIB "Build osm2gmns library" ON)
 if (BUILD_LIB)
     add_library(osm2gmnslib osm2gmns_lib.cpp)
     target_link_libraries(osm2gmnslib osm2gmns_core)
-    set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
+    set_target_properties(osm2gmnslib PROPERTIES
+        OUTPUT_NAME osm2gmns
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/osm2gmns")
 endif ()
 
 option(BUILD_TEST_DEV "Build Test For Development" OFF)

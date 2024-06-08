@@ -3,9 +3,21 @@
 # @desc         [script description]
 
 
+import platform
 import ctypes
+import os
 
-oglib = ctypes.CDLL(r"cmake-build-debug/libosm2gmns.dylib")
+current_os = platform.system()
+if current_os == "Darwin":
+    library_name = "libosm2gmns.dylib"
+elif current_os == "Windows":
+    library_name = "libosm2gmns.dll"
+elif current_os == "Linux":
+    library_name = "libosm2gmns.so"
+else:
+    raise OSError("Unsupported operating system")
+
+oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
 
 
 def initlib():
