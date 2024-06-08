@@ -5,22 +5,19 @@
 
 import ctypes
 
-# libfile = r"../osm2gmns_c/cmake-build-release-clang/libosm2gmns.dylib"
-libfile = r"../osm2gmns_c/build/libosm2gmns.dylib"
-# libfile = r"../osm2gmns_c/build/lib.macosx-11.1-arm64-cpython-311/osm2gmns.pyd"
-mylib = ctypes.CDLL(libfile)
+oglib = ctypes.CDLL(r"cmake-build-debug/libosm2gmns.dylib")
 
 
 def initlib():
-    mylib.getNetFromFilePy.argtypes = [ctypes.c_char_p, ctypes.c_bool]
-    mylib.getNetFromFilePy.restype = ctypes.c_void_p
+    oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p, ctypes.c_bool]
+    oglib.getNetFromFilePy.restype = ctypes.c_void_p
 
-    mylib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+    oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 
-    mylib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
-    mylib.getNumberOfNodesPy.restype = ctypes.c_int32
-    mylib.getNumberOfLinksPy.argtypes = [ctypes.c_void_p]
-    mylib.getNumberOfLinksPy.restype = ctypes.c_int32
+    # oglib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
+    # oglib.getNumberOfNodesPy.restype = ctypes.c_int32
+    # oglib.getNumberOfLinksPy.argtypes = [ctypes.c_void_p]
+    # oglib.getNumberOfLinksPy.restype = ctypes.c_int32
 
 
 class Network:
@@ -29,11 +26,11 @@ class Network:
 
     @property
     def number_of_nodes(self):
-        return mylib.getNumberOfNodesPy(self.cnet)
+        return oglib.getNumberOfNodesPy(self.cnet)
 
     @property
     def number_of_links(self):
-        return mylib.getNumberOfLinksPy(self.cnet)
+        return oglib.getNumberOfLinksPy(self.cnet)
 
 
 def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,
@@ -116,7 +113,7 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all'
     #                              start_link_id)
 
     network = Network()
-    network.cnet = mylib.getNetFromFilePy(filename.encode(), POI)
+    network.cnet = oglib.getNetFromFilePy(filename.encode(), POI)
 
     return network
 
@@ -143,7 +140,7 @@ def outputNetToCSV(network, output_folder='', prefix='', projection=False, encod
     None
     """
 
-    mylib.outputNetToCSVPy(network.cnet, output_folder.encode())
+    oglib.outputNetToCSVPy(network.cnet, output_folder.encode())
 
     # if og_settings.verbose:
     #     print('Outputting Network Files')

@@ -13,8 +13,9 @@
 #endif
 
 extern "C" {
-C_API Network* getNetFromFilePy(const char* filename, bool POI) {
-  Network* network = getNetFromFile(filename, POI);
+
+C_API Network* getNetFromFilePy(const char* osm_filepath, bool POI) {
+  Network* network = getNetFromFile(osm_filepath, POI);
   return network;
 };
 
