@@ -2,6 +2,8 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
+#include <cstddef>
+
 #include "src/functions.h"
 #include "src/io.h"
 #include "src/networks.h"
@@ -23,12 +25,6 @@ C_API void outputNetToCSVPy(const Network* network, const char* output_folder) {
   outputNetToCSV(network, output_folder);
 };
 
-//    C_API unsigned int getNumberOfNodesPy(Network* network)
-//    {
-//        return network->node_dict.size();
-//    };
-//    C_API unsigned int getNumberOfLinksPy(Network* network)
-//    {
-//        return network->link_dict.size();
-//    };
+C_API size_t getNumberOfNodesPy(const Network* network) { return network->numberOfNodes(); };
+C_API size_t getNumberOfLinksPy(const Network* network) { return network->numberOfLinks(); };
 }

@@ -26,10 +26,10 @@ def initlib():
 
     oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 
-    # oglib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
-    # oglib.getNumberOfNodesPy.restype = ctypes.c_int32
-    # oglib.getNumberOfLinksPy.argtypes = [ctypes.c_void_p]
-    # oglib.getNumberOfLinksPy.restype = ctypes.c_int32
+    oglib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
+    oglib.getNumberOfNodesPy.restype = ctypes.c_uint64
+    oglib.getNumberOfLinksPy.argtypes = [ctypes.c_void_p]
+    oglib.getNumberOfLinksPy.restype = ctypes.c_uint64
 
 
 class Network:
