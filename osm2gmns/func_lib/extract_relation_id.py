@@ -75,8 +75,10 @@ class OSMRelationIDFinder:
 
     def __get_url_data(self) -> dict:
         # prepare url
-        base_url = 'https://nominatim.openstreetmap.org/search?'
+        base_url = 'https://nominatim.openstreetmap.org/ui/search?'
+
         params = {"q": self.poi_name, "format": "json"}
+
         url = base_url + urllib.parse.urlencode(params)
 
         # Headers to simulate the request
@@ -95,8 +97,17 @@ class OSMRelationIDFinder:
         }
 
         # get data from url using requests
+<<<<<<< HEAD
         url_res = requests.get(url, headers=headers)
         return json.loads(url_res.text)
+=======
+        try:
+            url_res = requests.get(url)
+            url_json = json.loads(url_res.text)
+            return url_json
+        except Exception:
+            return {}
+>>>>>>> 5383e5c3b9e8cf9548780125233a146df0a8bda0
 
     @property
     def rel_id(self) -> Union[float, None]:
@@ -121,7 +132,8 @@ class OSMRelationIDFinder:
             print(f"Detailed info for {self.rel_id_info[0]['osm_id']}: {json.dumps(self.rel_id_info[0], indent=4)}\n")
             return self.rel_id_info[0]["osm_id"]
 
-        print("  Info: Could not find relation id from web: https://nominatim.openstreetmap.org/ui/search.html \n")
+        print("  Info: Could not find relation id from web: https://nominatim.openstreetmap.org/ui/search.html")
+        print("  This might because the server blocked this request for many requests at the same time \n")
         return self.__find_local_rel_id()
 
     @property
@@ -215,7 +227,7 @@ class OSMRelationIDFinder:
 
         print("  Info: Could not load global_rel_id.json locally")
         print("  Please search from https://www.openstreetmap.org/#map=5/40.298/-102.500  \n")
-        return None
+        return {}
 
 
 def getOSMRelationID(poi_name: str) -> Union[float, None]:
