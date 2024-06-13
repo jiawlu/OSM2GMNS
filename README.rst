@@ -5,12 +5,12 @@ osm2gmns
 
 
 osm2gmns is an open-source Python package that enables users to conveniently obtain and
-manipulate any networks from `OpenStreetMap`_ (OSM). With a single line of Python code,
-users can obtian and model drivable, bikeable, walkable, railway, and aeroway networks
-for any region in the world, and output networks to csv files in `GMNS`_ format for seamless
-data sharing and research collaboration. osm2gmns mainly focus on providing researchers and
-practitioners with flexible, standard and ready-to-use multi-module transportation networks,
-as well as a bunch of customized and practical functions to facilitate various reseaches
+manipulate any networks from OpenStreetMap (OSM). With a single line of Python code,
+users can obtain and model drivable, bikeable, walkable, railway, and aeroway networks
+for any region in the world and output networks to CSV files in GMNS format for seamless
+data sharing and research collaboration. osm2gmns mainly focuses on providing researchers and
+practitioners with flexible, standard and ready-to-use multi-modal transportation networks,
+as well as a bunch of customized and practical functions to facilitate various research
 and applications on traffic modeling.
 
 
@@ -119,19 +119,6 @@ You can use the following code to get the relation id of a place of interest and
     >>> og.downloadOSMData(rel_id, 'asu.osm')
 
 
-Visualization
-====================================
-
-You can visualize generated networks using `NeXTA`_ or `QGIS`_.
-
-.. figure:: https://github.com/jiawlu/OSM2GMNS/blob/master/sample%20networks/Arizona%20State%20University%2C%20Tempe%20Campus/net_asu.png
-    :name: case_asu
-    :align: center
-    :width: 80%
-
-    Arizona State Unversity, Tempe Campus
-
-
 User's guide
 ====================================
 You can check the `user's guide`_ for a detailed introduction of osm2gmns.
@@ -140,6 +127,4 @@ You can check the `user's guide`_ for a detailed introduction of osm2gmns.
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
 .. _`paper link`: https://doi.org/10.1016/j.trc.2023.104223
-.. _`NeXTA`: https://github.com/asu-trans-ai-lab/NeXTA4GMNS
-.. _`QGIS`: https://qgis.org
 .. _`user's guide`: https://osm2gmns.readthedocs.io

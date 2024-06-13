@@ -1,4 +1,7 @@
-*.vscode/*
+.vscode/*
+.idea/*
+.DS_Store
+test_dev/*
 *.pyc
 .pypirc
 setup.py
