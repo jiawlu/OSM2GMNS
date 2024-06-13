@@ -79,10 +79,24 @@ class OSMRelationIDFinder:
         params = {"q": self.poi_name, "format": "json"}
         url = base_url + urllib.parse.urlencode(params)
 
+        # Headers to simulate the request
+        headers = {
+            'Accept': '*/*',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://nominatim.openstreetmap.org/ui/search.html?q=arizona+state+university+',
+            'Sec-Ch-Ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
+            'Sec-Ch-Ua-Mobile': '?0',
+            'Sec-Ch-Ua-Platform': '"Linux"',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+        }
+
         # get data from url using requests
-        url_res = requests.get(url)
-        url_json = json.loads(url_res.text)
-        return url_json
+        url_res = requests.get(url, headers=headers)
+        return json.loads(url_res.text)
 
     @property
     def rel_id(self) -> Union[float, None]:
