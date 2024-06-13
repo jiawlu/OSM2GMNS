@@ -75,31 +75,33 @@ class OSMRelationIDFinder:
 
     def __get_url_data(self) -> dict:
         # prepare url
-        base_url = 'https://nominatim.openstreetmap.org/ui/search?'
+        base_url = 'https://nominatim.openstreetmap.org/ui/search.html?'
 
-        params = {"q": self.poi_name, "format": "json"}
+        params = {"q": self.poi_name, "format": "json", "addressdetails": "1", "limit": "10"}
 
-        url = base_url + urllib.parse.urlencode(params)
+        self._url = base_url + urllib.parse.urlencode(params)
 
         # Headers to simulate the request
         headers = {
             'Accept': '*/*',
             'Accept-Encoding': 'gzip, deflate, br, zstd',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Referer': 'https://nominatim.openstreetmap.org/ui/search.html?q=arizona+state+university+',
+            'Referer': f'{self._url}+',
             'Sec-Ch-Ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
             'Sec-Ch-Ua-Mobile': '?0',
             'Sec-Ch-Ua-Platform': '"Linux"',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-origin',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
         }
 
         # get data from url using requests
         try:
-            url_res = requests.get(url, headers=headers)
-            return json.loads(url_res.text)
+            url_res = requests.get(self._url, headers=headers)
+
+            if url_res.status_code == 200:
+                return json.loads(url_res.text)
         except Exception:
             return {}
 
@@ -127,7 +129,8 @@ class OSMRelationIDFinder:
             return self.rel_id_info[0]["osm_id"]
 
         print("  Info: Could not find relation id from web: https://nominatim.openstreetmap.org/ui/search.html")
-        print("  This might because the server blocked this request for many requests at the same time \n")
+        print("  This might because the server blocked this request for many requests at the same time")
+        print("  You can manually search from web use link above\n")
         return self.__find_local_rel_id()
 
     @property
@@ -149,7 +152,7 @@ class OSMRelationIDFinder:
         # Step 0 load the global country, state, and city information from github
         try:
             print("  Info: Try to load global_rel_id.json from GitHub\n")
-            github_url = "https://raw.githubusercontent.com/xyluo25/OSM2GMNS/master/dependencies/global_rel_id.json"
+            github_url = "https://raw.githubusercontent.com/xyluo25/openTN/main/datasets/OSM%20Relation%20ID/global_rel_id.json"
             global_rel_id_dict = json.loads(requests.get(github_url).text)
         except Exception:
             # if user can not access the internet, load the local file instead
@@ -164,13 +167,13 @@ class OSMRelationIDFinder:
                 print("  Error: Can not load global_rel_id.json from local file\n \
                       please make sure the file exists in dependencies/global_rel_id.json \n \
                       Please search from https://www.openstreetmap.org/#map=5/40.298/-102.500  \n")
-                return None
+                return {}
 
         # if we can not load dictionary, return None
         if not isinstance(global_rel_id_dict, dict):
             print("  Info: Could not load global_rel_id.json from GitHub.")
             print("  Please search from https://www.openstreetmap.org/#map=5/40.298/-102.500  \n")
-            return None
+            return {}
 
         search_name = self.poi_name.split(",")[0].strip()
         if search_name == self.poi_name:
