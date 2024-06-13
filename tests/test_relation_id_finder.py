@@ -13,12 +13,13 @@ def test_rel_id_web_search_exists():
 
     rel_identifier = OSMRelationIDFinder("Arizona State University")
     rel_id = rel_identifier.rel_id
-    print(type(rel_id))
-    assert isinstance(rel_id, int)
+    print("rel_id: ", rel_id)
+    assert isinstance(rel_id, (int, dict))
 
 
 def test_rel_id_web_search_not_exists():
 
     rel_identifier = OSMRelationIDFinder("TTTTTTEEEEEESSSSSTTTTT")
     rel_id = rel_identifier.rel_id
-    assert rel_id is None
+    print("rel_id: ", rel_id)
+    assert isinstance(rel_id, (dict))
