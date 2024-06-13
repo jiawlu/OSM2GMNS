@@ -97,8 +97,11 @@ class OSMRelationIDFinder:
         }
 
         # get data from url using requests
-        url_res = requests.get(url, headers=headers)
-        return json.loads(url_res.text)
+        try:
+            url_res = requests.get(url, headers=headers)
+            return json.loads(url_res.text)
+        except Exception:
+            return {}
 
     @property
     def rel_id(self) -> Union[float, None]:
