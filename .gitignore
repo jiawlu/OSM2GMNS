@@ -6,8 +6,10 @@
 cmake-build*/
 [Bb]in/
 compile_commands.json
+
+osm2gmns/
 test_dev/maps/**/*.csv
-*.dylib
+
 
 # Byte-compiled / optimized / DLL files
 *__pycache__/*
