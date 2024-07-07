@@ -21,3 +21,6 @@ jobs:
 
       - name: "Build"
         run: mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -GNinja .. && ninja
+
+      - name: "Create python package"
+        run: cd ${{ github.workspace }} && sh ./create_python_package
