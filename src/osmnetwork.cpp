@@ -95,7 +95,6 @@ OsmWay::OsmWay(const osmium::Way& way)
 }
 
 OsmIdType OsmWay::osmWayId() const { return osm_way_id_; }
-// const std::vector<OsmIdType>& OsmWay::refNodeIdVector() const { return ref_node_id_vector_; }
 
 void OsmWay::initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict) {
   mapRefNodes(osm_node_dict);
@@ -132,7 +131,7 @@ void OsmWay::identifyWayType() {
   if (!(building_.empty() && amenity_.empty() && leisure_.empty())) {
     way_type_ = WayType::POI;
   } else if (!highway_.empty()) {
-    if (highwayPOISet().find(highway_) != highwayPOISet().end()) {
+    if (isHighwayPoiType(highway_)) {
       way_type_ = WayType::POI;
     }
     way_type_ = WayType::HIGHWAY;
@@ -228,7 +227,7 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool
             << (std::chrono::duration_cast<std::chrono::microseconds>(time3 - time2) * MICROSECONDS_TO_SECOND).count()
             << "seconds\n";
 
-  processRawOsmData();
+  processOsmData();
 
   //  getBounds(osmnet, filename);
 
@@ -250,7 +249,7 @@ OsmNetwork::~OsmNetwork() {
   }
 }
 
-void OsmNetwork::processRawOsmData() {
+void OsmNetwork::processOsmData() {
   /*================= OsmNode =================*/
 #pragma omp parallel for schedule(dynamic) default(none) shared(osm_node_vector_, factory_, boundary_, strict_mode_)
   for (OsmNode* osm_node : osm_node_vector_) {

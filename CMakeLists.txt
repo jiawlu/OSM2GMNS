@@ -11,7 +11,16 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/config)
 configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config/config.h)
 
 #set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+# set(CMAKE_MACOSX_RPATH 1)
+# set(BUILD_SHARED_LIBS OFF)
+
+
+option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+set(DEPENDENCY_FOLDER "lib")
 
 find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -122,12 +131,53 @@ option(BUILD_LIB "Build osm2gmns library" ON)
 if (BUILD_LIB)
     add_library(osm2gmnslib osm2gmns_lib.cpp)
     target_link_libraries(osm2gmnslib osm2gmns_core)
-    set_target_properties(osm2gmnslib PROPERTIES
-        OUTPUT_NAME osm2gmns
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/osm2gmns")
+    set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
 endif ()
 
 option(BUILD_TEST_DEV "Build Test For Development" OFF)
 if (BUILD_TEST_DEV)
     add_subdirectory(test_dev)
 endif ()
+
+
+if(UNIX)
+    if(APPLE)
+        set_target_properties(osm2gmns PROPERTIES
+            INSTALL_RPATH "@executable_path/${DEPENDENCY_FOLDER}"
+        )
+        set_target_properties(osm2gmnslib PROPERTIES
+            INSTALL_RPATH "@loader_path/${DEPENDENCY_FOLDER}"
+        )
+    else()
+        set_target_properties(osm2gmns PROPERTIES
+            INSTALL_RPATH "$ORIGIN/${DEPENDENCY_FOLDER}"
+        )
+        set_target_properties(osm2gmnslib PROPERTIES
+            INSTALL_RPATH "$ORIGIN/${DEPENDENCY_FOLDER}"
+        )
+    endif()
+elseif(WIN32)
+    # # Copy dependencies to the same directory as the executable and library
+    # add_custom_command(TARGET YourExecutable POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    #         $<TARGET_FILE:SomeLibrary>
+    #         $<TARGET_FILE_DIR:YourExecutable>
+    # )
+    # add_custom_command(TARGET YourLibrary POST_BUILD
+    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    #         $<TARGET_FILE:SomeLibrary>
+    #         $<TARGET_FILE_DIR:YourLibrary>
+    # )
+    # # Install dependencies alongside the executable and library
+    # install(FILES $<TARGET_FILE:SomeLibrary> DESTINATION ${INSTALL_ROOT_DIR})
+endif()
+
+
+install(TARGETS osm2gmns osm2gmnslib
+    RUNTIME DESTINATION .
+    LIBRARY DESTINATION .
+)
+
+# install(TARGETS some_dependency
+#     LIBRARY DESTINATION lib
+# )

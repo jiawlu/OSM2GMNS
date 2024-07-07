@@ -6,7 +6,6 @@
 #define OSM2GMNS_OSMCONFIG_H
 
 #include <cstdint>
-#include <set>
 #include <string>
 
 using OsmIdType = int64_t;
@@ -31,6 +30,12 @@ enum class HighWayLinkType : uint8_t {
 
 HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str);
 
-const std::set<std::string>& highwayPOISet();
+bool isHighwayPoiType(const std::string& highway);
+bool isRailwayPoiType(const std::string& railway);
+bool isAerowayPoiType(const std::string& aeroway);
+
+bool isNegligibleHighwayType(const std::string& highway);
+bool isNegligibleRailwayType(const std::string& railway);
+bool isNegligibleAerowayType(const std::string& aeroway);
 
 #endif  // OSM2GMNS_OSMCONFIG_H

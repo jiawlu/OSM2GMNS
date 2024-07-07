@@ -1,6 +1,7 @@
 
 
 add_library(osm2gmns_core STATIC
+# add_library(osm2gmns_core
         osmnetwork.cpp
         osmconfig.cpp
         networks.cpp
@@ -25,3 +26,12 @@ add_library(osm2gmns_core STATIC
 #
 #target_link_libraries(osm2gmns bz2 expat z)
 target_link_libraries(osm2gmns_core ${Required_Libraries})
+
+
+# set_target_properties(osm2gmns_core PROPERTIES
+#     INSTALL_RPATH "${RPATH_DIR}"
+# )
+
+# install(TARGETS osm2gmns_core
+#     LIBRARY DESTINATION .
+# )

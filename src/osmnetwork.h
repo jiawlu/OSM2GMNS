@@ -121,7 +121,7 @@ class OsmNetwork {
   OsmNetwork& operator=(OsmNetwork&&) = delete;
 
  private:
-  void processRawOsmData();
+  void processOsmData();
 
   bool POI_;
   bool strict_mode_;
@@ -129,8 +129,6 @@ class OsmNetwork {
   geos::geom::GeometryFactory::Ptr factory_;
   std::unique_ptr<geos::geom::Polygon> boundary_;
 
-  //  absl::flat_hash_map<OsmIdType, OsmNodePtr> osm_node_dict_;
-  //  absl::flat_hash_map<OsmIdType, OsmWayPtr> osm_way_dict_;
   absl::flat_hash_map<OsmIdType, OsmNode*> osm_node_dict_;
   absl::flat_hash_map<OsmIdType, OsmWay*> osm_way_dict_;
   std::vector<OsmNode*> osm_node_vector_;
