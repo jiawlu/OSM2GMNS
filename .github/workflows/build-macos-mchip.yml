@@ -13,11 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: "Update apt get"
-        run: sudo apt-get update && sudo apt-get upgrade -y
+      - name: "Install Homebrew"
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: "Install required packages."
-        run: sudo apt-get install -y build-essential ccache llvm-dev libclang-dev clang cppcheck libboost-all-dev curl libcurl4-openssl-dev doxygen git graphviz libssl-dev make ninja-build libomp-dev python3 python3-pip tar unzip wget iwyu
+        run: |
+          brew update
+          brew install cmake ninja boost curl openssl doxygen graphviz llvm python3 wget
+      
+      - name: "Set up environment"
+        run: |
+          echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
+          echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
+          echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
 
       - name: "Build"
         run: rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -GNinja .. && ninja && ninja install
