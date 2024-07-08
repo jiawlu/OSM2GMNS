@@ -19,8 +19,8 @@ jobs:
       - name: "Install required packages."
         run: |
           brew update
-          brew install cmake ninja boost curl openssl doxygen graphviz llvm python3 wget
-      
+          brew install cmake ninja boost curl openssl doxygen graphviz llvm python3 wget libomp include-what-you-use
+          
       - name: "Set up environment"
         run: |
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
