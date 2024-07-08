@@ -1,7 +1,6 @@
 import setuptools
 
 try:
-    # if have requirements.txt file inside the folder
     with open("requirements.txt", "r", encoding="utf-8") as f:
         modules_needed = [i.strip() for i in f.readlines()]
 except Exception:
@@ -12,7 +11,7 @@ with open("README.rst", "r", encoding="utf-8") as f:
 
 setuptools.setup(
     name='osm2gmns',
-    version='0.7.6',
+    version='1.0.0dev0',
     author='Jiawei Lu, Xuesong Zhou',
     author_email='jiaweil9@asu.edu, xzhou74@asu.edu',
     url='https://github.com/jiawlu/OSM2GMNS',
