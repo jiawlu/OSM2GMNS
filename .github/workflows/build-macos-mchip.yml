@@ -20,15 +20,17 @@ jobs:
         run: |
           brew update
           brew install cmake ninja boost curl openssl doxygen graphviz llvm python3 wget libomp include-what-you-use
-          
+
       - name: "Set up environment"
         run: |
           echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
           echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
+          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
 
       - name: "Build"
-        run: rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -GNinja .. && ninja && ninja install
+        run: rm -rf build && mkdir build && cd build && cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_BUILD_TYPE=Release -GNinja .. && ninja && ninja install
 
       - name: "Create python package"
         run: cd ${{ github.workspace }} && sh ./create_python_package.sh
