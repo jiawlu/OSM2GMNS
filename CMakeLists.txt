@@ -22,7 +22,7 @@ option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
 # set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 set(DEPENDENCY_FOLDER "lib")
 
-find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
+# find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(FetchContent)
