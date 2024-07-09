@@ -38,7 +38,7 @@ wheel.expand-macos-universal-tags = true
 cmake.version = ">=3.25"
 cmake.args = []
 cmake.build-type = "Release"
-
+cmake.verbose = true
 
 # Files to include in the SDist even if they are skipped by default. Supports
 # gitignore syntax.
