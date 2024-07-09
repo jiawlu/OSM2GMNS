@@ -1,50 +1,31 @@
-from setuptools import setup, Extension
+import setuptools
 
-#  https://stackoverflow.com/questions/4529555/building-a-ctypes-based-c-library-with-distutils
-from distutils.command.build_ext import build_ext as build_ext_orig
-import os
+try:
+    with open("requirements.txt", "r", encoding="utf-8") as f:
+        modules_needed = [i.strip() for i in f.readlines()]
+except Exception:
+    modules_needed = []
 
-# os.environ["CXX"] = "/opt/homebrew/Cellar/llvm/15.0.6/bin/clang++"
+with open("README.rst", "r", encoding="utf-8") as f:
+    _long_description = f.read()
 
-
-
-class build_ext(build_ext_orig):
-
-    def build_extension(self, ext):
-        self._ctypes = isinstance(ext, Extension)
-        return super().build_extension(ext)
-
-    def get_export_symbols(self, ext):
-        if self._ctypes:
-            return ext.export_symbols
-        return super().get_export_symbols(ext)
-
-    def get_ext_filename(self, ext_name):
-        if self._ctypes:
-            return ext_name + '.pyd'
-        return super().get_ext_filename(ext_name)
-
-
-setup(
-    py_modules = ["osm2gmns"],
-    ext_modules=[
-        Extension(
-            "osm2gmns",
-            # sources=["osm2gmns.cpp"],
-            sources=["osm2gmns.cpp","networks.cpp","io.cpp","util_geo.cpp"],
-            include_dirs=["/opt/homebrew/Cellar/libosmium/2.19.0/include",
-                          "/opt/homebrew/Cellar/libosmium/2.19.0/libexec/include",
-                          "/opt/homebrew/Cellar/expat/2.5.0/include",
-                          "/opt/homebrew/opt/bzip2/include",
-                          "/opt/homebrew/opt/zlib/include",
-                          "/opt/homebrew/Cellar/geos/3.11.1/include",],
-            library_dirs=["/opt/homebrew/Cellar/bzip2/1.0.8/lib",
-                          "/opt/homebrew/opt/zlib/lib",
-                          "/opt/homebrew/Cellar/expat/2.5.0/lib",
-                          "/opt/homebrew/Cellar/geos/3.11.1/lib",],
-            libraries=["expat", "bz2", "z", "geos_c"],
-            extra_compile_args=['-std=c++17'],
-        ),
-    ],
-    cmdclass={'build_ext': build_ext},
+setuptools.setup(
+    name='osm2gmns',
+    version='1.0.0dev0',
+    author='Jiawei Lu, Xuesong Zhou',
+    author_email='jiaweil9@asu.edu, xzhou74@asu.edu',
+    url='https://github.com/jiawlu/OSM2GMNS',
+    description="convert map data from OpenStreetMap to network files in GMNS format",
+    long_description=_long_description,
+    long_description_content_type="text/x-rst",
+    license='GPLv3+',
+    packages=setuptools.find_packages(),
+    python_requires=">=3.10",
+    classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+                 'Programming Language :: Python :: 3',
+                 'Programming Language :: Python :: 3.10',
+                 'Programming Language :: Python :: 3.11',
+                 'Programming Language :: Python :: 3.12'
+                 ],
+    install_requires=modules_needed,
 )

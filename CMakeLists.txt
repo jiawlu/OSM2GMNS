@@ -19,7 +19,7 @@ configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config/co
 
 
 option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
+# set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install)
 set(DEPENDENCY_FOLDER "lib")
 
 find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
@@ -178,6 +178,3 @@ install(TARGETS osm2gmns osm2gmnslib
     LIBRARY DESTINATION .
 )
 
-# install(TARGETS some_dependency
-#     LIBRARY DESTINATION lib
-# )
