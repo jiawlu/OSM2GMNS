@@ -15,6 +15,7 @@ jobs:
       matrix:
         buildplat:
           - [ubuntu-20.04, manylinux_x86_64]
+        python: ["cp38", "cp39","cp310"]
     steps:
       - uses: actions/checkout@v4
 
