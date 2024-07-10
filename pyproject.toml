@@ -46,17 +46,7 @@ cmake.verbose = true
 sdist.include = [
     "docs",
     "python",
-    "src",
-
-#   "src/highspy/highs.py",
-#   "tests/test_highspy.py",
-#   "Version.txt",
-#   "LICENSE",
-#   "README.md",
-#   "src/HConfig.h.in",
-#   "src",
-#   "external",
-#   "cmake",
+    "src"
 ]
 
 sdist.exclude = [
@@ -64,19 +54,7 @@ sdist.exclude = [
   ".gitattributes",
   ".gitignore",
   "build"
-#   "check",
-#   "docs",
-#   "subprojects",
-#   ".coin-or",
-#   "build_webdemo.sh",
-#   ".clang-format",
-#   "__setup.py",
-#   "BUILD.bazel",
-#   "meson*",
-#   "MODS.md",
-#   "WORKSPACE",
 ]
-
 
 
 # # Verbose printout when building.

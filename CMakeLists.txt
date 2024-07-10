@@ -173,8 +173,9 @@ elseif(WIN32)
 endif()
 
 
-install(TARGETS osm2gmns osm2gmnslib
-    RUNTIME DESTINATION .
-    LIBRARY DESTINATION .
-)
-
+if (BUILD_OSM2GMNS_EXE)
+    install(TARGETS osm2gmns RUNTIME DESTINATION .)
+endif ()
+if (BUILD_OSM2GMNS_LIB)
+    install(TARGETS osm2gmnslib LIBRARY DESTINATION .)
+endif ()
