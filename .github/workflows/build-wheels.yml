@@ -29,7 +29,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
-          CIBW_REPAIR_WHEEL_COMMAND: "auditwheel repair -w {dest_dir} {wheel} --lib-sdir lib"
+          CIBW_REPAIR_WHEEL_COMMAND: "auditwheel repair -w {dest_dir} {wheel} --lib-sdir osm2gmns/lib"
           # CIBW_BEFORE_BUILD: |
           #   yum update -y
           #   yum install -y epel-release
