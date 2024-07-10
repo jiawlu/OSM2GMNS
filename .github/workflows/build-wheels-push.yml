@@ -15,9 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        buildplat:
-          - [ubuntu-20.04, manylinux_x86_64]
-        python: ["cp38", "cp39","cp310"]
+        buildplat: [ubuntu-20.04, manylinux_x86_64]
+        python: ["cp38", "cp39", "cp310", "cp311", "cp312"]
+
     steps:
       - uses: actions/checkout@v4
 
