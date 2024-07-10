@@ -29,6 +29,7 @@ classifiers = [
 
 [tool.scikit-build]
 wheel.packages = ["osm2gmns"]
+wheel.install-dir = "osm2gmns"
 wheel.expand-macos-universal-tags = true
 
 cmake.version = ">=3.25"
