@@ -16,7 +16,7 @@ test_dev/maps/**/*.csv
 
 # Distribution / packaging
 .Python
-build/
+build*/
 develop-eggs/
 dist/
 downloads/
