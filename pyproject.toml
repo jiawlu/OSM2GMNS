@@ -33,7 +33,7 @@ wheel.install-dir = "osm2gmns"
 wheel.expand-macos-universal-tags = true
 
 cmake.version = ">=3.25"
-cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF"]
+cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF", "-DBUILD_SHARED_LIBS=OFF", "-DENABLE_SHARED_LIB=OFF", "-DENABLE_STATIC_LIB=ON"]
 cmake.build-type = "Release"
 cmake.verbose = true
 

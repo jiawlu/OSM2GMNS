@@ -11,7 +11,7 @@ file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/config)
 configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config/config.h)
 
 option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
-set(CMAKE_INSTALL_LIBDIR "lib")
+# set(CMAKE_INSTALL_LIBDIR "lib")
 # set(CMAKE_INSTALL_LIBDIR ".")
 
 # find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
@@ -121,7 +121,7 @@ endif ()
 
 option(BUILD_OSM2GMNS_LIB "Build osm2gmns library" ON)
 if (BUILD_OSM2GMNS_LIB)
-    add_library(osm2gmnslib osm2gmns_lib.cpp)
+    add_library(osm2gmnslib SHARED osm2gmns_lib.cpp)
     target_link_libraries(osm2gmnslib osm2gmns_core)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
 endif ()
