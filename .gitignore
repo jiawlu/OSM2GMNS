@@ -6,8 +6,6 @@
 cmake-build*/
 [Bb]in/
 compile_commands.json
-
-osm2gmns/
 test_dev/maps/**/*.csv
 
 
