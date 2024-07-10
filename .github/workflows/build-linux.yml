@@ -1,10 +1,9 @@
 name: Build Linux
 
 on:
-  # push:
-  #   branches:
-  #     - cpp
-  # pull_request:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -21,6 +20,3 @@ jobs:
 
       - name: "Build"
         run: rm -rf build && mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -GNinja .. && ninja && ninja install
-
-      - name: "Create python package"
-        run: cd ${{ github.workspace }} && sh ./create_python_package.sh
