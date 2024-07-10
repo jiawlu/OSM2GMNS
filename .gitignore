@@ -1,10 +1,13 @@
 .vscode/*
 .idea/*
 .DS_Store
-test_dev/*
 *.pyc
 .pypirc
-setup.py
+cmake-build*/
+[Bb]in/
+compile_commands.json
+test_dev/maps/**/*.csv
+
 
 # Byte-compiled / optimized / DLL files
 *__pycache__/*
@@ -13,7 +16,7 @@ setup.py
 
 # Distribution / packaging
 .Python
-build/
+build*/
 develop-eggs/
 dist/
 downloads/

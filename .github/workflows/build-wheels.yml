@@ -1,0 +1,43 @@
+name: build-wheels
+
+on:
+  push:
+    branches: [main, cpp]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_wheels:
+    name: Build wheel for ${{ matrix.buildplat[1] }}
+    runs-on: ${{ matrix.buildplat[0] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        buildplat:
+          - [ubuntu-20.04, manylinux_x86_64]
+        python: ["cp38", "cp39", "cp310", "cp311", "cp312"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_REPAIR_WHEEL_COMMAND: ""
+          # CIBW_BEFORE_BUILD: |
+          #   yum update -y
+          #   yum install -y epel-release
+          #   yum install -y iwyu
+
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sdist
+        shell: bash -l {0}
+        run: pipx run build --sdist

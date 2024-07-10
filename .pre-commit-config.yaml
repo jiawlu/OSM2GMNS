@@ -1,0 +1,16 @@
+fail_fast: false
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: check-yaml
+        exclude: ".clang-*"
+  - repo: https://github.com/jiawlu/pre-commit-hooks
+    rev: 49cddc161d4fe41ee9f16922f2c0e634b0a115ff
+    hooks:
+      - id: clang-format
+        args: [--style=file, -i]
+      - id: clang-tidy
+        args: [-p=./cmake-build-debug, --fix-errors]
