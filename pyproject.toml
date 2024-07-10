@@ -36,6 +36,7 @@ wheel.packages = ["python"]
 wheel.expand-macos-universal-tags = true
 
 cmake.version = ">=3.25"
+cmake.targets = ["osm2gmnslib"]
 cmake.args = []
 cmake.build-type = "Release"
 cmake.verbose = true
