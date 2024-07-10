@@ -142,19 +142,19 @@ endif ()
 
 if(UNIX)
     if(APPLE)
-        set_target_properties(osm2gmns PROPERTIES
-            INSTALL_RPATH "@executable_path/${DEPENDENCY_FOLDER}"
-        )
-        set_target_properties(osm2gmnslib PROPERTIES
-            INSTALL_RPATH "@loader_path/${DEPENDENCY_FOLDER}"
-        )
+        if (BUILD_OSM2GMNS_EXE)
+            set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "@executable_path/${DEPENDENCY_FOLDER}")
+        endif ()
+        if (BUILD_OSM2GMNS_LIB)
+            set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "@loader_path/${DEPENDENCY_FOLDER}")
+        endif ()
     else()
-        set_target_properties(osm2gmns PROPERTIES
-            INSTALL_RPATH "$ORIGIN/${DEPENDENCY_FOLDER}"
-        )
-        set_target_properties(osm2gmnslib PROPERTIES
-            INSTALL_RPATH "$ORIGIN/${DEPENDENCY_FOLDER}"
-        )
+        if (BUILD_OSM2GMNS_EXE)
+            set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "$ORIGIN/${DEPENDENCY_FOLDER}")
+        endif ()
+        if (BUILD_OSM2GMNS_LIB)
+            set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "$ORIGIN/${DEPENDENCY_FOLDER}")
+        endif ()
     endif()
 elseif(WIN32)
     # # Copy dependencies to the same directory as the executable and library
