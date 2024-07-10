@@ -121,21 +121,21 @@ set(Required_Libraries ${Required_Libraries} OpenMP::OpenMP_CXX)
 
 add_subdirectory(src)
 
-option(BUILD_EXE "Build osm2gmns executable" ON)
-if (BUILD_EXE)
+option(BUILD_OSM2GMNS_EXE "Build osm2gmns executable" ON)
+if (BUILD_OSM2GMNS_EXE)
     add_executable(osm2gmns osm2gmns_main.cpp)
     target_link_libraries(osm2gmns osm2gmns_core)
 endif ()
 
-option(BUILD_LIB "Build osm2gmns library" ON)
-if (BUILD_LIB)
+option(BUILD_OSM2GMNS_LIB "Build osm2gmns library" ON)
+if (BUILD_OSM2GMNS_LIB)
     add_library(osm2gmnslib osm2gmns_lib.cpp)
     target_link_libraries(osm2gmnslib osm2gmns_core)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
 endif ()
 
-option(BUILD_TEST_DEV "Build Test For Development" OFF)
-if (BUILD_TEST_DEV)
+option(BUILD_OSM2GMNS_TEST_DEV "Build Test For Development" OFF)
+if (BUILD_OSM2GMNS_TEST_DEV)
     add_subdirectory(test_dev)
 endif ()
 
