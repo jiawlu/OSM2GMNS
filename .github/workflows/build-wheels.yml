@@ -28,7 +28,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
-          CIBW_REPAIR_WHEEL_COMMAND: ""
+          # CIBW_REPAIR_WHEEL_COMMAND: ""
 
       - uses: actions/upload-artifact@v3
         with:
