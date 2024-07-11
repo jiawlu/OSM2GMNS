@@ -79,7 +79,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(expat)
 set(Required_Libraries ${Required_Libraries} expat)
-#include_directories(${geos_SOURCE_DIR}/include)
+include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
 
 FetchContent_Declare(
         z
