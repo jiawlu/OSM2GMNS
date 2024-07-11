@@ -59,7 +59,7 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(bzip2)
-set(Required_Libraries ${Required_Libraries} bz2)
+set(Required_Libraries ${Required_Libraries} bz2_static)
 include_directories(SYSTEM ${bzip2_SOURCE_DIR})
 
 FetchContent_Declare(
