@@ -1,8 +1,7 @@
 name: build-wheels-push
 
 on:
-  push:
-    branches: [release]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
