@@ -18,13 +18,11 @@ jobs:
       - name: "Install required packages."
         run: |
           brew update
-          brew install cmake ninja boost curl openssl doxygen graphviz llvm python3 wget libomp include-what-you-use
+          brew install cmake ninja llvm libomp
 
       - name: "Set up environment"
         run: |
-          echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
-          # echo "LDFLAGS=-L$(brew --prefix openssl)/lib" >> $GITHUB_ENV
-          # echo "CPPFLAGS=-I$(brew --prefix openssl)/include" >> $GITHUB_ENV
+          # echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
           echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
           echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
           echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
