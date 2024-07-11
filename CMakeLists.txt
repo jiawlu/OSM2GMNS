@@ -14,8 +14,6 @@ option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
 # set(CMAKE_INSTALL_LIBDIR "lib")
 # set(CMAKE_INSTALL_LIBDIR ".")
 set(BUILD_SHARED_LIBS OFF)
-# set(ENABLE_SHARED_LIB OFF)
-# set(ENABLE_STATIC_LIB ON)
 set(ENABLE_SHARED_LIB OFF CACHE BOOL "Build libbz2 as a shared library" FORCE)
 set(ENABLE_STATIC_LIB ON CACHE BOOL "Build libbz2 in static mode also" FORCE)
 
@@ -137,37 +135,37 @@ if (BUILD_OSM2GMNS_TEST_DEV)
 endif ()
 
 
-if(UNIX)
-    if(APPLE)
-        if (BUILD_OSM2GMNS_EXE)
-            set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "@executable_path/lib")
-        endif ()
-        if (BUILD_OSM2GMNS_LIB)
-            set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "@loader_path/lib")
-        endif ()
-    else()
-        if (BUILD_OSM2GMNS_EXE)
-            set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
-        endif ()
-        if (BUILD_OSM2GMNS_LIB)
-            set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
-        endif ()
-    endif()
-elseif(WIN32)
-    # # Copy dependencies to the same directory as the executable and library
-    # add_custom_command(TARGET YourExecutable POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    #         $<TARGET_FILE:SomeLibrary>
-    #         $<TARGET_FILE_DIR:YourExecutable>
-    # )
-    # add_custom_command(TARGET YourLibrary POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    #         $<TARGET_FILE:SomeLibrary>
-    #         $<TARGET_FILE_DIR:YourLibrary>
-    # )
-    # # Install dependencies alongside the executable and library
-    # install(FILES $<TARGET_FILE:SomeLibrary> DESTINATION ${INSTALL_ROOT_DIR})
-endif()
+# if(UNIX)
+#     if(APPLE)
+#         if (BUILD_OSM2GMNS_EXE)
+#             set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "@executable_path/lib")
+#         endif ()
+#         if (BUILD_OSM2GMNS_LIB)
+#             set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "@loader_path/lib")
+#         endif ()
+#     else()
+#         if (BUILD_OSM2GMNS_EXE)
+#             set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
+#         endif ()
+#         if (BUILD_OSM2GMNS_LIB)
+#             set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
+#         endif ()
+#     endif()
+# elseif(WIN32)
+#     # Copy dependencies to the same directory as the executable and library
+#     add_custom_command(TARGET YourExecutable POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#             $<TARGET_FILE:SomeLibrary>
+#             $<TARGET_FILE_DIR:YourExecutable>
+#     )
+#     add_custom_command(TARGET YourLibrary POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#             $<TARGET_FILE:SomeLibrary>
+#             $<TARGET_FILE_DIR:YourLibrary>
+#     )
+#     # Install dependencies alongside the executable and library
+#     install(FILES $<TARGET_FILE:SomeLibrary> DESTINATION ${INSTALL_ROOT_DIR})
+# endif()
 
 
 if (BUILD_OSM2GMNS_EXE)
