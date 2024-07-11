@@ -17,7 +17,7 @@ set(BUILD_SHARED_LIBS OFF)
 # set(ENABLE_SHARED_LIB OFF)
 # set(ENABLE_STATIC_LIB ON)
 set(ENABLE_SHARED_LIB OFF CACHE BOOL "Build libbz2 as a shared library" FORCE)
-set(ENABLE_SHARED_LIB ON CACHE BOOL "Build libbz2 in static mode also" FORCE)
+set(ENABLE_STATIC_LIB ON CACHE BOOL "Build libbz2 in static mode also" FORCE)
 
 # find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
