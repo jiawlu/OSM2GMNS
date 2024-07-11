@@ -79,7 +79,11 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(expat)
-set(Required_Libraries ${Required_Libraries} expat)
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(Required_Libraries ${Required_Libraries} libexpat)
+else ()
+    set(Required_Libraries ${Required_Libraries} expat)
+endif()
 include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
 link_directories(${expat_BINARY_DIR})
 
@@ -90,7 +94,11 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(z)
-set(Required_Libraries ${Required_Libraries} z)
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(Required_Libraries ${Required_Libraries} zlib)
+else ()
+    set(Required_Libraries ${Required_Libraries} z)
+endif()
 include_directories(SYSTEM ${z_SOURCE_DIR})
 include_directories(SYSTEM ${z_BINARY_DIR})
 link_directories(${z_BINARY_DIR})
