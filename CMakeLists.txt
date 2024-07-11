@@ -75,11 +75,13 @@ FetchContent_Declare(
         expat
         GIT_REPOSITORY https://github.com/libexpat/libexpat.git
         GIT_TAG  R_2_6_2
+        SOURCE_SUBDIR  expat
         SYSTEM
 )
 FetchContent_MakeAvailable(expat)
 set(Required_Libraries ${Required_Libraries} expat)
 include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
+link_directories(${expat_BINARY_DIR})
 
 FetchContent_Declare(
         z
@@ -91,6 +93,7 @@ FetchContent_MakeAvailable(z)
 set(Required_Libraries ${Required_Libraries} z)
 include_directories(SYSTEM ${z_SOURCE_DIR})
 include_directories(SYSTEM ${z_BINARY_DIR})
+link_directories(${z_BINARY_DIR})
 
 FetchContent_Declare(
         osmium
