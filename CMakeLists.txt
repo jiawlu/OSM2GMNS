@@ -89,7 +89,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(z)
 set(Required_Libraries ${Required_Libraries} z)
-#include_directories(${geos_SOURCE_DIR}/include)
+include_directories(SYSTEM ${z_SOURCE_DIR})
 
 FetchContent_Declare(
         osmium
