@@ -20,7 +20,8 @@ jobs:
 
       - name: Install Chocolatey packages
         run: |
-          choco install -y cmake ninja llvm
+          choco install -y cmake ninja
+          choco install -y llvm --version=17.0.2
 
       - name: Add packages to PATH
         run: |
