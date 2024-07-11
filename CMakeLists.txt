@@ -13,6 +13,9 @@ configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config/co
 option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
 # set(CMAKE_INSTALL_LIBDIR "lib")
 # set(CMAKE_INSTALL_LIBDIR ".")
+set(BUILD_SHARED_LIBS OFF)
+set(ENABLE_SHARED_LIB OFF)
+set(ENABLE_STATIC_LIB ON)
 
 # find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
