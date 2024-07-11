@@ -3,6 +3,9 @@ name: build-wheels
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main, release]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -25,11 +28,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
-          CIBW_REPAIR_WHEEL_COMMAND: ""
-          # CIBW_BEFORE_BUILD: |
-          #   yum update -y
-          #   yum install -y epel-release
-          #   yum install -y iwyu
+          # CIBW_REPAIR_WHEEL_COMMAND: ""
 
       - uses: actions/upload-artifact@v3
         with:
