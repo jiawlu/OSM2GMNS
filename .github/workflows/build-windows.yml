@@ -37,3 +37,10 @@ jobs:
       - name: Build
         working-directory: build
         run: ninja
+
+      - name: Upload build directory as artifact
+        if: failure() # Upload only if the build fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-directory
+          path: build/
