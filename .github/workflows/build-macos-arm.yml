@@ -1,4 +1,4 @@
-name: Build macOS
+name: Build macOS-ARM
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v3
 
@@ -23,8 +23,6 @@ jobs:
       - name: "Set up environment"
         run: |
           # echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
-          echo "LDFLAGS=-L$(brew --prefix llvm)/lib" >> $GITHUB_ENV
-          echo "CPPFLAGS=-I$(brew --prefix llvm)/include" >> $GITHUB_ENV
           echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
           echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
           echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
