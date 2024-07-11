@@ -85,6 +85,7 @@ else ()
     set(Required_Libraries ${Required_Libraries} expat)
 endif()
 include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
+include_directories(SYSTEM ${expat_BINARY_DIR})
 link_directories(${expat_BINARY_DIR})
 
 FetchContent_Declare(
