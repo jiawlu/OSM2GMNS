@@ -90,6 +90,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(z)
 set(Required_Libraries ${Required_Libraries} z)
 include_directories(SYSTEM ${z_SOURCE_DIR})
+include_directories(SYSTEM ${z_BINARY_DIR})
 
 FetchContent_Declare(
         osmium
