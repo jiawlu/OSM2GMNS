@@ -27,6 +27,12 @@ SET(ABSL_PROPAGATE_CXX_STD ON)
 SET(ABSL_BUILD_TESTING OFF)
 #set(ABSL_ENABLE_INSTALL ON)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if(APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+    endif()
+endif()
+
 FetchContent_Declare(
         absl
         GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
