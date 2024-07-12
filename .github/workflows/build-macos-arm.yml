@@ -1,9 +1,9 @@
 name: Build macOS-ARM
 
 on:
-  # push:
-  #   branches: [main]
-  # pull_request:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -18,21 +18,20 @@ jobs:
       - name: "Install required packages."
         run: |
           brew update
-          brew install cmake ninja llvm libomp
+          brew install cmake ninja gcc libomp
 
       - name: "Set up environment"
         run: |
-          echo "LDFLAGS=-L$(brew --prefix llvm)/lib/c++" >> $GITHUB_ENV
-          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
-          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
-          echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
+          # echo "LDFLAGS=-L$(brew --prefix llvm)/lib/c++" >> $GITHUB_ENV
+          echo "CC=$(brew --prefix gcc)/bin/gcc-14" >> $GITHUB_ENV
+          echo "CXX=$(brew --prefix gcc)/bin/g++-14" >> $GITHUB_ENV
+          # echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
 
       - name: "Build"
         run: |
           rm -rf build && mkdir build && cd build
           cmake -DCMAKE_C_COMPILER=$CC \
                 -DCMAKE_CXX_COMPILER=$CXX \
-                -DCMAKE_AR=$AR \
                 -DCMAKE_BUILD_TYPE=Release \
                 -GNinja .. 
           ninja
