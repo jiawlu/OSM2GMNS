@@ -27,10 +27,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Select Xcode for macosx_x86_64
+        if: matrix.buildplat[1] == 'macosx_x86_64'
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+      
+      - name: Select Xcode for macosx_arm64
+        if: matrix.buildplat[1] == 'macosx_arm64'
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      
+      - name: Install Homebrew and packages
+        if: ${{ contains(matrix.buildplat[1], 'macosx') }}
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew update
+          brew install ninja libomp
+
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_ENVIRONMENT_MACOS: >
+            CMAKE_C_COMPILER=gcc-14
+            CMAKE_CXX_COMPILER=g++-14
 
       - uses: actions/upload-artifact@v3
         with:
