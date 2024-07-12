@@ -33,8 +33,8 @@ jobs:
       - name: "Build"
         run: |
           rm -rf build && mkdir build && cd build
-          cmake -DCMAKE_C_COMPILER=$CC \
-                -DCMAKE_CXX_COMPILER=$CXX \
+          cmake -DCMAKE_C_COMPILER=gcc-14 \
+                -DCMAKE_CXX_COMPILER=g++-14 \
                 -DCMAKE_BUILD_TYPE=Release \
                 -GNinja .. 
           ninja
