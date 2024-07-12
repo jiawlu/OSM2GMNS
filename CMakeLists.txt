@@ -95,9 +95,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
 else ()
     set(Required_Libraries ${Required_Libraries} z)
 endif()
-include_directories(SYSTEM ${z_SOURCE_DIR})
-include_directories(SYSTEM ${z_BINARY_DIR})
-link_directories(${z_BINARY_DIR})
+include_directories(BEFORE SYSTEM ${z_SOURCE_DIR})
+include_directories(BEFORE SYSTEM ${z_BINARY_DIR})
+link_directories(BEFORE ${z_BINARY_DIR})
 
 FetchContent_Declare(
         osmium
