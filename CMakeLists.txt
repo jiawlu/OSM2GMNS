@@ -90,14 +90,16 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(z)
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(Required_Libraries ${Required_Libraries} zlib)
-else ()
-    set(Required_Libraries ${Required_Libraries} z)
-endif()
 include_directories(BEFORE SYSTEM ${z_SOURCE_DIR})
 include_directories(BEFORE SYSTEM ${z_BINARY_DIR})
-link_directories(BEFORE ${z_BINARY_DIR})
+if (WIN32)
+    set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/zlib.lib)
+elseif (UNIX)
+    set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/libz.a)
+else ()
+    message(FATAL_ERROR "Unsupported operating system")
+endif ()
+# link_directories(BEFORE ${z_BINARY_DIR})
 
 FetchContent_Declare(
         osmium
