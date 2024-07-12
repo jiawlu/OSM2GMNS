@@ -47,11 +47,11 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
           CIBW_ENVIRONMENT_MACOS: >
-            C_COMPILER=gcc-14
-            CXX_COMPILER=g++-14
-          CIBW_ENVIRONMENT_LINUX: >
-            C_COMPILER=gcc
-            CXX_COMPILER=g++
+            CC=gcc-14
+            CXX=g++-14
+          # CIBW_ENVIRONMENT_LINUX: >
+          #   C_COMPILER=gcc
+          #   CXX_COMPILER=g++
 
       - uses: actions/upload-artifact@v3
         with:
