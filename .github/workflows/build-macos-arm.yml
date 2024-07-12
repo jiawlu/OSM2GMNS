@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Select Xcode 15.4
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+
       - name: "Install Homebrew"
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -33,7 +36,5 @@ jobs:
           cmake -DCMAKE_C_COMPILER=$CC \
                 -DCMAKE_CXX_COMPILER=$CXX \
                 -DCMAKE_BUILD_TYPE=Release \
-                -DCMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -Wl,-ld_classic" \
-                -DCMAKE_SHARED_LINKER_FLAGS="${DCMAKE_SHARED_LINKER_FLAGS} -Wl,-ld_classic" \
                 -GNinja .. 
           ninja
