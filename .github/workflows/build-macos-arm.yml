@@ -21,14 +21,14 @@ jobs:
       - name: "Install required packages."
         run: |
           brew update
-          brew install cmake ninja gcc libomp
+          brew install ninja libomp
 
-      - name: "Set up environment"
-        run: |
-          # echo "LDFLAGS=-L$(brew --prefix llvm)/lib/c++" >> $GITHUB_ENV
-          echo "CC=$(brew --prefix gcc)/bin/gcc-14" >> $GITHUB_ENV
-          echo "CXX=$(brew --prefix gcc)/bin/g++-14" >> $GITHUB_ENV
-          # echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
+      # - name: "Set up environment"
+      #   run: |
+      #     echo "LDFLAGS=-L$(brew --prefix llvm)/lib/c++" >> $GITHUB_ENV
+      #     echo "CC=$(brew --prefix gcc)/bin/gcc-14" >> $GITHUB_ENV
+      #     echo "CXX=$(brew --prefix gcc)/bin/g++-14" >> $GITHUB_ENV
+      #     echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
 
       - name: "Build"
         run: |
