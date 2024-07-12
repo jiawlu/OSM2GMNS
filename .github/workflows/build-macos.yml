@@ -12,27 +12,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Select Xcode 15.2
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+
       - name: "Install Homebrew"
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
       - name: "Install required packages."
         run: |
           brew update
-          brew install cmake ninja llvm libomp
+          brew install ninja libomp
 
-      - name: "Set up environment"
-        run: |
-          echo "LDFLAGS=-L$(brew --prefix llvm)/lib/c++" >> $GITHUB_ENV
-          echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
-          echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
-          echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
+      # - name: "Set up environment"
+      #   run: |
+      #     echo "LDFLAGS=-L$(brew --prefix llvm)/lib/c++" >> $GITHUB_ENV
+      #     echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+      #     echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
+      #     echo "AR=$(brew --prefix llvm)/bin/llvm-ar" >> $GITHUB_ENV
 
       - name: "Build"
         run: |
           rm -rf build && mkdir build && cd build
-          cmake -DCMAKE_C_COMPILER=$CC \
-                -DCMAKE_CXX_COMPILER=$CXX \
-                -DCMAKE_AR=$AR \
+          cmake -DCMAKE_C_COMPILER=gcc-14 \
+                -DCMAKE_CXX_COMPILER=g++-14 \
                 -DCMAKE_BUILD_TYPE=Release \
                 -GNinja .. 
           ninja
