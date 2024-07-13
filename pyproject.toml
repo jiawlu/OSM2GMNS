@@ -26,6 +26,8 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 
+# [tool.scikit-build.cmake.define]
+# CMAKE_SYSTEM_PROCESSOR = {env="SOME_DEFINE", default="$CMAKE_SYSTEM_PROCESSOR"}
 
 [tool.scikit-build]
 wheel.packages = ["osm2gmns"]
@@ -33,7 +35,7 @@ wheel.install-dir = "osm2gmns"
 wheel.expand-macos-universal-tags = true
 
 cmake.version = ">=3.25"
-cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF"]
+cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF", "-DCMAKE_SYSTEM_PROCESSOR=arm64"]
 cmake.build-type = "Release"
 cmake.verbose = true
 
