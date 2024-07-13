@@ -50,7 +50,6 @@ jobs:
             CC=gcc-14
             CXX=g++-14
             MACOSX_DEPLOYMENT_TARGET=13.0
-          CIBW_ARCHS_MACOS: "arm64"
           # CIBW_ENVIRONMENT_LINUX: >
           #   C_COMPILER=gcc
           #   CXX_COMPILER=g++

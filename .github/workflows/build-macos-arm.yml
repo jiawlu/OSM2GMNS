@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build macos-ARM
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v3
