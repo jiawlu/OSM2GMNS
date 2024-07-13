@@ -47,21 +47,36 @@ jobs:
           python-version: 3.8
         if: ${{ matrix.python }} == 'cp38' && runner.os == 'macOS' && runner.arch == 'ARM64'
 
-      - name: Build wheels
+      - name: Build wheels for manylinux_x86_64
+        if: matrix.buildplat[1] == 'manylinux_x86_64'
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+
+      - name: Build wheels for macosx_x86_64
+        if: matrix.buildplat[1] == 'macosx_x86_64'
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
           CIBW_ENVIRONMENT_MACOS: >
-            CC=gcc-12
-            CXX=g++-12
+            CC=gcc-14
+            CXX=g++-14
             MACOSX_DEPLOYMENT_TARGET=13.0
-          # CIBW_ENVIRONMENT_LINUX: >
-          #   C_COMPILER=gcc
-          #   CXX_COMPILER=g++
+
+      - name: Build wheels for macosx_arm64
+        if: matrix.buildplat[1] == 'macosx_arm64'
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_ENVIRONMENT_MACOS: >
+            CC=gcc-14
+            CXX=g++-14
+            MACOSX_DEPLOYMENT_TARGET=14.0
 
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
+
 
   build_sdist:
     name: Build source distribution
