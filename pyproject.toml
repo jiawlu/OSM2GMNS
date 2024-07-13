@@ -26,8 +26,6 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
 ]
 
-# [tool.scikit-build.cmake.define]
-# CMAKE_SYSTEM_PROCESSOR = {env="SOME_DEFINE", default="$CMAKE_SYSTEM_PROCESSOR"}
 
 [tool.scikit-build]
 wheel.packages = ["osm2gmns"]
