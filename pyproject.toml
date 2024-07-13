@@ -35,7 +35,7 @@ wheel.install-dir = "osm2gmns"
 wheel.expand-macos-universal-tags = true
 
 cmake.version = ">=3.25"
-cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF", "-DCMAKE_SYSTEM_PROCESSOR=arm64"]
+cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF"]
 cmake.build-type = "Release"
 cmake.verbose = true
 
