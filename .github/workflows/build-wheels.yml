@@ -52,9 +52,9 @@ jobs:
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
           CIBW_ENVIRONMENT_MACOS: >
-            CC=gcc-11
-            CXX=g++-11
-            # MACOSX_DEPLOYMENT_TARGET=13.0
+            CC=gcc-12
+            CXX=g++-12
+            MACOSX_DEPLOYMENT_TARGET=13.0
           # CIBW_ENVIRONMENT_LINUX: >
           #   C_COMPILER=gcc
           #   CXX_COMPILER=g++
