@@ -75,14 +75,21 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(expat)
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(Required_Libraries ${Required_Libraries} libexpat)
-else ()
-    set(Required_Libraries ${Required_Libraries} expat)
-endif()
 include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
 include_directories(SYSTEM ${expat_BINARY_DIR})
-link_directories(${expat_BINARY_DIR})
+if (WIN32)
+    set(Required_Libraries ${Required_Libraries} ${expat_BINARY_DIR}/libexpat.lib)
+elseif (UNIX)
+    set(Required_Libraries ${Required_Libraries} ${expat_BINARY_DIR}/libexpat.a)
+else ()
+    message(FATAL_ERROR "Unsupported operating system")
+endif ()
+# if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+#     set(Required_Libraries ${Required_Libraries} libexpat)
+# else ()
+#     set(Required_Libraries ${Required_Libraries} expat)
+# endif()
+# link_directories(${expat_BINARY_DIR})
 
 FetchContent_Declare(
         z
