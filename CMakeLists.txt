@@ -14,8 +14,6 @@ option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
 # set(CMAKE_INSTALL_LIBDIR "lib")
 # set(CMAKE_INSTALL_LIBDIR ".")
 set(BUILD_SHARED_LIBS OFF)
-# set(ENABLE_SHARED_LIB OFF)
-# set(ENABLE_STATIC_LIB ON)
 set(ENABLE_SHARED_LIB OFF CACHE BOOL "Build libbz2 as a shared library" FORCE)
 set(ENABLE_STATIC_LIB ON CACHE BOOL "Build libbz2 in static mode also" FORCE)
 
@@ -28,6 +26,8 @@ set(FETCHCONTENT_QUIET OFF)
 SET(ABSL_PROPAGATE_CXX_STD ON)
 SET(ABSL_BUILD_TESTING OFF)
 #set(ABSL_ENABLE_INSTALL ON)
+
+message("CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 
 FetchContent_Declare(
         absl
@@ -71,11 +71,18 @@ FetchContent_Declare(
         expat
         GIT_REPOSITORY https://github.com/libexpat/libexpat.git
         GIT_TAG  R_2_6_2
+        SOURCE_SUBDIR  expat
         SYSTEM
 )
 FetchContent_MakeAvailable(expat)
-set(Required_Libraries ${Required_Libraries} expat)
-#include_directories(${geos_SOURCE_DIR}/include)
+if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(Required_Libraries ${Required_Libraries} libexpat)
+else ()
+    set(Required_Libraries ${Required_Libraries} expat)
+endif()
+include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
+include_directories(SYSTEM ${expat_BINARY_DIR})
+link_directories(${expat_BINARY_DIR})
 
 FetchContent_Declare(
         z
@@ -84,8 +91,16 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(z)
-set(Required_Libraries ${Required_Libraries} z)
-#include_directories(${geos_SOURCE_DIR}/include)
+include_directories(BEFORE SYSTEM ${z_SOURCE_DIR})
+include_directories(BEFORE SYSTEM ${z_BINARY_DIR})
+if (WIN32)
+    set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/zlib.lib)
+elseif (UNIX)
+    set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/libz.a)
+else ()
+    message(FATAL_ERROR "Unsupported operating system")
+endif ()
+# link_directories(BEFORE ${z_BINARY_DIR})
 
 FetchContent_Declare(
         osmium
@@ -137,37 +152,37 @@ if (BUILD_OSM2GMNS_TEST_DEV)
 endif ()
 
 
-if(UNIX)
-    if(APPLE)
-        if (BUILD_OSM2GMNS_EXE)
-            set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "@executable_path/lib")
-        endif ()
-        if (BUILD_OSM2GMNS_LIB)
-            set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "@loader_path/lib")
-        endif ()
-    else()
-        if (BUILD_OSM2GMNS_EXE)
-            set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
-        endif ()
-        if (BUILD_OSM2GMNS_LIB)
-            set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
-        endif ()
-    endif()
-elseif(WIN32)
-    # # Copy dependencies to the same directory as the executable and library
-    # add_custom_command(TARGET YourExecutable POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    #         $<TARGET_FILE:SomeLibrary>
-    #         $<TARGET_FILE_DIR:YourExecutable>
-    # )
-    # add_custom_command(TARGET YourLibrary POST_BUILD
-    #     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    #         $<TARGET_FILE:SomeLibrary>
-    #         $<TARGET_FILE_DIR:YourLibrary>
-    # )
-    # # Install dependencies alongside the executable and library
-    # install(FILES $<TARGET_FILE:SomeLibrary> DESTINATION ${INSTALL_ROOT_DIR})
-endif()
+# if(UNIX)
+#     if(APPLE)
+#         if (BUILD_OSM2GMNS_EXE)
+#             set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "@executable_path/lib")
+#         endif ()
+#         if (BUILD_OSM2GMNS_LIB)
+#             set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "@loader_path/lib")
+#         endif ()
+#     else()
+#         if (BUILD_OSM2GMNS_EXE)
+#             set_target_properties(osm2gmns PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
+#         endif ()
+#         if (BUILD_OSM2GMNS_LIB)
+#             set_target_properties(osm2gmnslib PROPERTIES INSTALL_RPATH "$ORIGIN/lib")
+#         endif ()
+#     endif()
+# elseif(WIN32)
+#     # Copy dependencies to the same directory as the executable and library
+#     add_custom_command(TARGET YourExecutable POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#             $<TARGET_FILE:SomeLibrary>
+#             $<TARGET_FILE_DIR:YourExecutable>
+#     )
+#     add_custom_command(TARGET YourLibrary POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#             $<TARGET_FILE:SomeLibrary>
+#             $<TARGET_FILE_DIR:YourLibrary>
+#     )
+#     # Install dependencies alongside the executable and library
+#     install(FILES $<TARGET_FILE:SomeLibrary> DESTINATION ${INSTALL_ROOT_DIR})
+# endif()
 
 
 if (BUILD_OSM2GMNS_EXE)

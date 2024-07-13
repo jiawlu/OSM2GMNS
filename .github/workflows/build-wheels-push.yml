@@ -16,29 +16,68 @@ jobs:
       matrix:
         buildplat:
           - [ubuntu-20.04, manylinux_x86_64]
+          - [macos-13, macosx_x86_64]
+          - [macos-14, macosx_arm64]
         python: ["cp38", "cp39", "cp310", "cp311", "cp312"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Build wheels
+      - name: Select Xcode for macosx_x86_64
+        if: matrix.buildplat[1] == 'macosx_x86_64'
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+      
+      - name: Select Xcode for macosx_arm64
+        if: matrix.buildplat[1] == 'macosx_arm64'
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      
+      - name: Install Homebrew and packages
+        if: ${{ contains(matrix.buildplat[1], 'macosx') }}
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew update
+          brew install ninja libomp
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+        if: ${{ matrix.python }} == 'cp38' && runner.os == 'macOS' && runner.arch == 'ARM64'
+
+      - name: Build wheels for manylinux_x86_64
+        if: matrix.buildplat[1] == 'manylinux_x86_64'
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
-          # CIBW_REPAIR_WHEEL_COMMAND: ""
-          # CIBW_BEFORE_BUILD: |
-          #   yum update -y
-          #   yum install -y epel-release
-          #   yum install -y iwyu
+
+      - name: Build wheels for macosx_x86_64
+        if: matrix.buildplat[1] == 'macosx_x86_64'
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_ENVIRONMENT_MACOS: >
+            CC=gcc-14
+            CXX=g++-14
+            MACOSX_DEPLOYMENT_TARGET=13.0
+
+      - name: Build wheels for macosx_arm64
+        if: matrix.buildplat[1] == 'macosx_arm64'
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
+          CIBW_ENVIRONMENT_MACOS: >
+            CC=gcc-14
+            CXX=g++-14
+            MACOSX_DEPLOYMENT_TARGET=14.0
 
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
 
+
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
       - name: Build sdist
         shell: bash -l {0}
@@ -47,6 +86,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
+
 
   upload_pypi:
     name: Publish osm2gmns to PyPI

@@ -184,7 +184,7 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool
   const auto time1 = std::chrono::high_resolution_clock::now();
   OsmHandler handler(POI);
   try {
-    const osmium::io::File input_file{osm_filepath};
+    const osmium::io::File input_file{osm_filepath.string()};
     osmium::io::Reader reader{input_file};
 
     const osmium::Box& box = reader.header().box();

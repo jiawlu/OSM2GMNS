@@ -1,0 +1,48 @@
+name: Build Windows
+
+on:
+  # push:
+  #   branches: [main]
+  # pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Windows
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Setup Visual Studio Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Chocolatey packages
+        run: |
+          choco install -y cmake ninja llvm
+          # choco install -y llvm --version=17.0.2 --force
+
+      - name: Add packages to PATH
+        run: |
+          echo "C:\Program Files\CMake\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "C:\Program Files\LLVM\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Create build directory
+        run: mkdir build
+
+      - name: Configure CMake
+        working-directory: build
+        run: cmake -DCMAKE_BUILD_TYPE=Release -GNinja ..
+
+      - name: Build
+        working-directory: build
+        run: ninja
+
+      - name: Upload build directory as artifact
+        if: failure() # Upload only if the build fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-directory
+          path: build/
