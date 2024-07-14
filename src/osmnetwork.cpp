@@ -239,11 +239,13 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool
 }
 
 OsmNetwork::~OsmNetwork() {
-#pragma omp parallel for schedule(dynamic) default(none) shared(osm_node_vector_)
+// #pragma omp parallel for schedule(dynamic) default(none) shared(osm_node_vector_)
+#pragma omp parallel for schedule(dynamic) default(none)
   for (OsmNode* osm_node : osm_node_vector_) {
     delete osm_node;
   }
-#pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector_)
+// #pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector_)
+#pragma omp parallel for schedule(dynamic) default(none)
   for (OsmWay* osm_way : osm_way_vector_) {
     delete osm_way;
   }
@@ -251,13 +253,15 @@ OsmNetwork::~OsmNetwork() {
 
 void OsmNetwork::processOsmData() {
   /*================= OsmNode =================*/
-#pragma omp parallel for schedule(dynamic) default(none) shared(osm_node_vector_, factory_, boundary_, strict_mode_)
+// #pragma omp parallel for schedule(dynamic) default(none) shared(osm_node_vector_, factory_, boundary_, strict_mode_)
+#pragma omp parallel for schedule(dynamic) default(none)
   for (OsmNode* osm_node : osm_node_vector_) {
     osm_node->initOsmNode(factory_.get(), boundary_.get(), strict_mode_);
   }
 
   /*================= OsmWay =================*/
-#pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector_, osm_node_dict_)
+// #pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector_, osm_node_dict_)
+#pragma omp parallel for schedule(dynamic) default(none)
   for (OsmWay* osm_way : osm_way_vector_) {
     osm_way->initOsmWay(osm_node_dict_);
   }
