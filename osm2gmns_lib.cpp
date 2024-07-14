@@ -7,6 +7,7 @@
 #include "src/functions.h"
 #include "src/io.h"
 #include "src/networks.h"
+#include "src/utils.h"
 
 #ifdef _WIN32
 #define C_API __declspec(dllexport)
@@ -15,6 +16,8 @@
 #endif
 
 extern "C" {
+
+C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
 
 C_API Network* getNetFromFilePy(const char* osm_filepath, bool POI) {
   Network* network = getNetFromFile(osm_filepath, POI);

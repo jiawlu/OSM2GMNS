@@ -42,6 +42,7 @@ set(Required_Libraries ${Required_Libraries}
         absl::base
         absl::algorithm
         absl::log
+        absl::log_initialize
         absl::hash
         absl::memory
         absl::numeric
@@ -154,9 +155,9 @@ if (BUILD_OSM2GMNS_LIB)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
 endif ()
 
-option(BUILD_OSM2GMNS_TEST_DEV "Build Test For Development" OFF)
-if (BUILD_OSM2GMNS_TEST_DEV)
-    add_subdirectory(test_dev)
+option(BUILD_OSM2GMNS_DEV "Build executable for development" OFF)
+if (BUILD_OSM2GMNS_DEV)
+    add_subdirectory(dev)
 endif ()
 
 

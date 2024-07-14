@@ -5,6 +5,7 @@
 #include "osmnetwork.h"
 
 #include <absl/container/flat_hash_map.h>
+#include <absl/log/log.h>
 #include <absl/strings/match.h>
 #include <geos/geom/Coordinate.h>
 #include <geos/geom/GeometryFactory.h>
@@ -179,6 +180,11 @@ void OsmWay::splitIntoSegments() {
 
 OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool strict_mode)
     : POI_(POI), strict_mode_(strict_mode) {
+  if (!std::filesystem::exists(osm_filepath)) {
+    LOG(ERROR) << "osm file " << osm_filepath << " does not exist";
+    return;
+  }
+
   factory_ = geos::geom::GeometryFactory::create();
 
   const auto time1 = std::chrono::high_resolution_clock::now();
