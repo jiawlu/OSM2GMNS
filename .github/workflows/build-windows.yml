@@ -13,16 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-    - name: Configure CMake
-      run: |
-        mkdir build
-        cd build
-        cmake .. -DCMAKE_CXX_FLAGS="/openmp"
+      - name: Configure CMake
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_CXX_FLAGS="/openmp"
 
-    - name: Build
-      run: |
-        cd build
-        cmake --build . --config Release
+      - name: Build
+        run: |
+          cd build
+          cmake --build . --config Release
 
       - name: Upload build directory as artifact
         if: failure() # Upload only if the build fails
