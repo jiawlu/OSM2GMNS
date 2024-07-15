@@ -15,7 +15,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
   try {
     initializeAbslLogging();
 
-    const auto map_folder = std::filesystem::path("test_dev/maps/yuba");
+    const auto map_folder = std::filesystem::path("dev/maps/yuba");
     // const auto map_folder = std::filesystem::path("dev/maps/imperial");
 
     Network* network = getNetFromFile(map_folder / "map.osm.pbf", false);

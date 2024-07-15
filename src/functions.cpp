@@ -60,16 +60,15 @@
 // }
 //
 
-Network* buildNet(OsmNetwork* osmnet, bool /*POI*/) {
-  auto* network = new Network(osmnet);
-  //   creatNLPs(osmnet, network, POI);
-  return network;
-}
+// Network* buildNet(OsmNetwork* osmnet, bool /*POI*/) {
+//   auto* network = new Network(osmnet);
+//   return network;
+// }
 
 Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI) {
   LOG(INFO) << "loading data from osm file";
   auto* osmnet = new OsmNetwork(osm_filepath, POI, true);
 
   LOG(INFO) << "building network";
-  return buildNet(osmnet, POI);
+  return new Network(osmnet);
 };

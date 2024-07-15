@@ -52,6 +52,7 @@ class OsmNode {
   void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary, bool strict_mode);
   void changeUsageCount(int32_t usage_count_changes);
   void setIsEndingNode(bool is_ending_node);
+  void setIsTypologyNode();
 
  private:
   OsmIdType osm_node_id_;
@@ -78,14 +79,18 @@ class OsmWay {
   explicit OsmWay(const osmium::Way& way);
 
   [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] WayType wayType() const;
+  [[nodiscard]] const std::vector<OsmNode*>& refNodeVector() const;
 
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
+  void splitIntoSegments();
+
+  const std::vector<std::vector<OsmNode*>>& segmentNodesVector();
 
  private:
   void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void identifyWayType();
   void configAttributes();
-  void splitIntoSegments();
 
   OsmIdType osm_way_id_;
   std::string highway_;
@@ -111,8 +116,8 @@ class OsmWay {
   HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   bool oneway_{true};
 
-  int number_of_segments{0};
-  std::vector<std::vector<OsmNode*>> segment_node_vector_;
+  int number_of_segments_{0};
+  std::vector<std::vector<OsmNode*>> segment_nodes_vector_;
 };
 
 class OsmNetwork {
@@ -124,9 +129,12 @@ class OsmNetwork {
   OsmNetwork(OsmNetwork&&) = delete;
   OsmNetwork& operator=(OsmNetwork&&) = delete;
 
+  [[nodiscard]] const std::vector<OsmWay*>& osmWayVector() const;
+
  private:
   void processOsmData();
   void identifyTypologyNodes();
+  void createWaySegments();
 
   bool POI_;
   bool strict_mode_;
