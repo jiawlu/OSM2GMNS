@@ -9,6 +9,7 @@
 #include <geos/geom/Geometry.h>
 #include <geos/geom/GeometryFactory.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <memory>
 #include <osmium/handler.hpp>
@@ -45,10 +46,12 @@ class OsmNode {
 
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
-  [[nodiscard]] bool isCrossing() const;
+  [[nodiscard]] int32_t usageCount() const;
+  [[nodiscard]] bool isTypologyNode() const;
 
   void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary, bool strict_mode);
-  void setIsCrossing(bool is_crossing);
+  void changeUsageCount(int32_t usage_count_changes);
+  void setIsEndingNode(bool is_ending_node);
 
  private:
   OsmIdType osm_node_id_;
@@ -60,13 +63,14 @@ class OsmNode {
 
   bool is_signalized_{false};
   bool in_region_{true};
-  bool is_crossing_{false};
+
+  int32_t usage_count_{0};
+  bool is_ending_node_{false};
+  bool is_typology_node_{false};
 
   std::string notes{};
   //    Node* node;
   bool node_assigned{false};
-
-  int usage_count{0};
 };
 
 class OsmWay {
@@ -122,6 +126,7 @@ class OsmNetwork {
 
  private:
   void processOsmData();
+  void identifyTypologyNodes();
 
   bool POI_;
   bool strict_mode_;
