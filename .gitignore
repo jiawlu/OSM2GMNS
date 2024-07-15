@@ -7,6 +7,8 @@ cmake-build*/
 [Bb]in/
 compile_commands.json
 dev/maps/**/*.csv
+osm2gmns/*
+!osm2gmns/*.py
 
 
 # Byte-compiled / optimized / DLL files

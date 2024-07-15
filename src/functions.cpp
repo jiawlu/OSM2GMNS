@@ -3,8 +3,11 @@
 #include <absl/log/log.h>
 
 #include <filesystem>
+#include <unordered_set>
+#include <utility>
 
 #include "networks.h"
+#include "osmconfig.h"
 #include "osmnetwork.h"
 
 // void processWays(OSMNetwork* osmnet) {
@@ -65,9 +68,10 @@
 //   return network;
 // }
 
-Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI) {
+Network* getNetFromFile(const std::filesystem::path& osm_filepath, std::unordered_set<HighWayLinkType> link_types,
+                        bool POI) {
   LOG(INFO) << "loading data from osm file";
-  auto* osmnet = new OsmNetwork(osm_filepath, POI, true);
+  auto* osmnet = new OsmNetwork(osm_filepath, std::move(link_types), POI, true);
 
   LOG(INFO) << "building network";
   return new Network(osmnet);

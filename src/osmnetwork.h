@@ -16,6 +16,7 @@
 #include <osmium/osm/node.hpp>
 #include <osmium/osm/way.hpp>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include "osmconfig.h"
@@ -122,7 +123,8 @@ class OsmWay {
 
 class OsmNetwork {
  public:
-  explicit OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool strict_mode);
+  explicit OsmNetwork(const std::filesystem::path& osm_filepath, std::unordered_set<HighWayLinkType> link_types,
+                      bool POI, bool strict_mode);
   ~OsmNetwork();
   OsmNetwork(const OsmNetwork&) = delete;
   OsmNetwork& operator=(const OsmNetwork&) = delete;
@@ -136,6 +138,7 @@ class OsmNetwork {
   void identifyTypologyNodes();
   void createWaySegments();
 
+  std::unordered_set<HighWayLinkType> link_types_;
   bool POI_;
   bool strict_mode_;
 

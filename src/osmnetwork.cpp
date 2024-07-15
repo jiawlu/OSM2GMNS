@@ -27,6 +27,7 @@
 #include <osmium/osm/way.hpp>
 #include <osmium/visitor.hpp>  // NOLINT
 #include <string>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -200,8 +201,9 @@ void OsmWay::splitIntoSegments() {
 
 const std::vector<std::vector<OsmNode*>>& OsmWay::segmentNodesVector() { return segment_nodes_vector_; }
 
-OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, bool POI, bool strict_mode)
-    : POI_(POI), strict_mode_(strict_mode) {
+OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, std::unordered_set<HighWayLinkType> link_types,
+                       bool POI, bool strict_mode)
+    : link_types_(std::move(link_types)), POI_(POI), strict_mode_(strict_mode) {
   if (!std::filesystem::exists(osm_filepath)) {
     LOG(ERROR) << "osm file " << osm_filepath << " does not exist";
     return;

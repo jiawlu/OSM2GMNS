@@ -6,9 +6,12 @@
 #define OSM2GMNS_FUNCTIONS_H
 
 #include <filesystem>
+#include <unordered_set>
 
 #include "networks.h"
+#include "osmconfig.h"
 
-Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI);
+Network* getNetFromFile(const std::filesystem::path& osm_filepath, std::unordered_set<HighWayLinkType> link_types,
+                        bool POI);
 
 #endif  // OSM2GMNS_FUNCTIONS_H

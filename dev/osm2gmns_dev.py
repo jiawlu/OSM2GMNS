@@ -5,7 +5,7 @@ sys.path.append(parent_dir)
 
 import osm2gmns as og
 
-map_folder = r'test_dev/maps/yuba'
-net = og.getNetFromFile(os.path.join(map_folder, 'map.osm.pbf'))
+map_folder = r'dev/maps/yuba'
+net = og.getNetFromFile(os.path.join(map_folder, 'map.osm.pbf'), link_types=['primary', 'secondary'])
 og.outputNetToCSV(net, map_folder)
 

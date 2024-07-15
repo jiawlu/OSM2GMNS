@@ -9,6 +9,7 @@
 #include "functions.h"
 #include "io.h"
 #include "networks.h"
+#include "osmconfig.h"
 #include "utils.h"
 
 int main(int /*argc*/, char* /*argv*/[]) {
@@ -18,7 +19,8 @@ int main(int /*argc*/, char* /*argv*/[]) {
     const auto map_folder = std::filesystem::path("dev/maps/yuba");
     // const auto map_folder = std::filesystem::path("dev/maps/imperial");
 
-    Network* network = getNetFromFile(map_folder / "map.osm.pbf", false);
+    Network* network =
+        getNetFromFile(map_folder / "map.osm.pbf", {HighWayLinkType::PRIMARY, HighWayLinkType::SECONDARY}, false);
 
     outputNetToCSV(network, map_folder);
 
