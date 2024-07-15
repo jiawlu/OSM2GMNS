@@ -9,6 +9,7 @@
 #include <geos/geom/Geometry.h>
 #include <geos/geom/GeometryFactory.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <memory>
 #include <osmium/handler.hpp>
@@ -45,10 +46,13 @@ class OsmNode {
 
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
-  [[nodiscard]] bool isCrossing() const;
+  [[nodiscard]] int32_t usageCount() const;
+  [[nodiscard]] bool isTypologyNode() const;
 
   void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary, bool strict_mode);
-  void setIsCrossing(bool is_crossing);
+  void changeUsageCount(int32_t usage_count_changes);
+  void setIsEndingNode(bool is_ending_node);
+  void setIsTypologyNode();
 
  private:
   OsmIdType osm_node_id_;
@@ -60,13 +64,14 @@ class OsmNode {
 
   bool is_signalized_{false};
   bool in_region_{true};
-  bool is_crossing_{false};
+
+  int32_t usage_count_{0};
+  bool is_ending_node_{false};
+  bool is_typology_node_{false};
 
   std::string notes{};
   //    Node* node;
   bool node_assigned{false};
-
-  int usage_count{0};
 };
 
 class OsmWay {
@@ -74,14 +79,18 @@ class OsmWay {
   explicit OsmWay(const osmium::Way& way);
 
   [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] WayType wayType() const;
+  [[nodiscard]] const std::vector<OsmNode*>& refNodeVector() const;
 
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
+  void splitIntoSegments();
+
+  const std::vector<std::vector<OsmNode*>>& segmentNodesVector();
 
  private:
   void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void identifyWayType();
   void configAttributes();
-  void splitIntoSegments();
 
   OsmIdType osm_way_id_;
   std::string highway_;
@@ -107,8 +116,8 @@ class OsmWay {
   HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   bool oneway_{true};
 
-  int number_of_segments{0};
-  std::vector<std::vector<OsmNode*>> segment_node_vector_;
+  int number_of_segments_{0};
+  std::vector<std::vector<OsmNode*>> segment_nodes_vector_;
 };
 
 class OsmNetwork {
@@ -120,8 +129,12 @@ class OsmNetwork {
   OsmNetwork(OsmNetwork&&) = delete;
   OsmNetwork& operator=(OsmNetwork&&) = delete;
 
+  [[nodiscard]] const std::vector<OsmWay*>& osmWayVector() const;
+
  private:
   void processOsmData();
+  void identifyTypologyNodes();
+  void createWaySegments();
 
   bool POI_;
   bool strict_mode_;

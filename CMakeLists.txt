@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 project(osm2gmns VERSION 1.0.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 #include(cmake/StandardSettings.cmake)
@@ -16,6 +17,8 @@ option(CMAKE_INSTALL_LOCAL_ONLY "Install only locally" ON)
 set(BUILD_SHARED_LIBS OFF)
 set(ENABLE_SHARED_LIB OFF CACHE BOOL "Build libbz2 as a shared library" FORCE)
 set(ENABLE_STATIC_LIB ON CACHE BOOL "Build libbz2 in static mode also" FORCE)
+set(EXPAT_SHARED_LIBS OFF)
+set(EXPAT_MSVC_STATIC_CRT ON)
 
 # find_program(iwyu_path NAMES include-what-you-use iwyu REQUIRED)
 SET(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -41,6 +44,7 @@ set(Required_Libraries ${Required_Libraries}
         absl::base
         absl::algorithm
         absl::log
+        absl::log_initialize
         absl::hash
         absl::memory
         absl::numeric
@@ -75,14 +79,21 @@ FetchContent_Declare(
         SYSTEM
 )
 FetchContent_MakeAvailable(expat)
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(Required_Libraries ${Required_Libraries} libexpat)
-else ()
-    set(Required_Libraries ${Required_Libraries} expat)
-endif()
 include_directories(SYSTEM ${expat_SOURCE_DIR}/expat/lib)
 include_directories(SYSTEM ${expat_BINARY_DIR})
-link_directories(${expat_BINARY_DIR})
+if (WIN32)
+    set(Required_Libraries ${Required_Libraries} ${expat_BINARY_DIR}/Release/libexpatMT.lib)
+elseif (UNIX)
+    set(Required_Libraries ${Required_Libraries} ${expat_BINARY_DIR}/libexpat.a)
+else ()
+    message(FATAL_ERROR "Unsupported operating system")
+endif ()
+# if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
+#     set(Required_Libraries ${Required_Libraries} libexpat)
+# else ()
+#     set(Required_Libraries ${Required_Libraries} expat)
+# endif()
+# link_directories(${expat_BINARY_DIR})
 
 FetchContent_Declare(
         z
@@ -94,7 +105,7 @@ FetchContent_MakeAvailable(z)
 include_directories(BEFORE SYSTEM ${z_SOURCE_DIR})
 include_directories(BEFORE SYSTEM ${z_BINARY_DIR})
 if (WIN32)
-    set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/zlib.lib)
+    set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/Release/zlib.lib)
 elseif (UNIX)
     set(Required_Libraries ${Required_Libraries} ${z_BINARY_DIR}/libz.a)
 else ()
@@ -146,9 +157,9 @@ if (BUILD_OSM2GMNS_LIB)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
 endif ()
 
-option(BUILD_OSM2GMNS_TEST_DEV "Build Test For Development" OFF)
-if (BUILD_OSM2GMNS_TEST_DEV)
-    add_subdirectory(test_dev)
+option(BUILD_OSM2GMNS_DEV "Build executable for development" OFF)
+if (BUILD_OSM2GMNS_DEV)
+    add_subdirectory(dev)
 endif ()
 
 

@@ -1,7 +1,8 @@
 #include "functions.h"
 
+#include <absl/log/log.h>
+
 #include <filesystem>
-#include <iostream>
 
 #include "networks.h"
 #include "osmnetwork.h"
@@ -20,11 +21,7 @@
 //   }
 // }
 //
-// void identifyCrossingOSMNodes(OSMNetwork* osmnet) {
-//   for (auto& [osm_node_id, osmnode] : osmnet->osm_node_dict) {
-//     if (osmnode->usage_count >= 2 || osmnode->ctrl_type == "signal") osmnode->is_crossing = true;
-//   }
-// }
+
 //
 // void createNodeFromOSMNode(Network* network, OSMNode* osmnode) {
 //   if (!osmnode->node_assigned) {
@@ -62,16 +59,16 @@
 //   createNodesAndLinks(osmnet, network);
 // }
 //
-Network* buildNet(OsmNetwork* osmnet, bool /*POI*/) {
-  auto* network = new Network(osmnet);
-  //   creatNLPs(osmnet, network, POI);
-  return network;
-}
+
+// Network* buildNet(OsmNetwork* osmnet, bool /*POI*/) {
+//   auto* network = new Network(osmnet);
+//   return network;
+// }
 
 Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI) {
-  std::cout << "loading data from osm file\n";
+  LOG(INFO) << "loading data from osm file";
   auto* osmnet = new OsmNetwork(osm_filepath, POI, true);
 
-  std::cout << "building network\n";
-  return buildNet(osmnet, POI);
+  LOG(INFO) << "building network";
+  return new Network(osmnet);
 };

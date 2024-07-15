@@ -25,7 +25,7 @@ add_library(osm2gmns_core STATIC
 #
 #
 #target_link_libraries(osm2gmns bz2 expat z)
-target_link_libraries(osm2gmns_core ${Required_Libraries})
+target_link_libraries(osm2gmns_core PUBLIC ${Required_Libraries})
 
 
 # set_target_properties(osm2gmns_core PROPERTIES

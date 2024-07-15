@@ -6,7 +6,7 @@
 cmake-build*/
 [Bb]in/
 compile_commands.json
-test_dev/maps/**/*.csv
+dev/maps/**/*.csv
 
 
 # Byte-compiled / optimized / DLL files

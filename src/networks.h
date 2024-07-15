@@ -5,8 +5,6 @@
 #ifndef OSM2GMNS_NETWORKS_H
 #define OSM2GMNS_NETWORKS_H
 
-#include <absl/container/flat_hash_map.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <string>
@@ -27,10 +25,15 @@ class Link;
 
 class Node {
  public:
-  explicit Node(NetIdType node_id);
+  explicit Node(const OsmNode* osm_node);
+
+  void setNodeId(NetIdType node_id);
+
+  [[nodiscard]] NetIdType nodeId() const;
 
  private:
-  NetIdType node_id_;
+  const OsmNode* osm_node_;
+  NetIdType node_id_{-1};
   std::string name_;
   //  unsigned long osm_node_id{};
   //  std::string osm_highway{};
@@ -56,10 +59,16 @@ class Node {
 
 class Link {
  public:
-  explicit Link(NetIdType link_id);
+  explicit Link(Node* from_node, Node* to_node);
+
+  void setLinkId(NetIdType link_id);
+
+  [[nodiscard]] NetIdType linkId() const;
+  [[nodiscard]] Node* fromNode() const;
+  [[nodiscard]] Node* toNode() const;
 
  private:
-  NetIdType link_id_;
+  NetIdType link_id_{-1};
   //  unsigned long osm_way_id{};
 
   Node* from_node_{nullptr};
@@ -86,12 +95,18 @@ class Network {
 
   [[nodiscard]] size_t numberOfNodes() const;
   [[nodiscard]] size_t numberOfLinks() const;
+  [[nodiscard]] const std::vector<Node*>& nodeVector() const;
+  [[nodiscard]] const std::vector<Link*>& linkVector() const;
 
  private:
+  void createNodesAndLinksFromOsmNetwork();
+
   OsmNetwork* osmnet_;
 
-  absl::flat_hash_map<NetIdType, Node*> node_dict_;
-  absl::flat_hash_map<NetIdType, Link*> link_dict_;
+  // absl::flat_hash_map<NetIdType, Node*> node_dict_;
+  // absl::flat_hash_map<NetIdType, Link*> link_dict_;
+  std::vector<Node*> node_vector_;
+  std::vector<Link*> link_vector_;
 
   NetIdType max_node_id_{0};
   NetIdType max_link_id_{0};

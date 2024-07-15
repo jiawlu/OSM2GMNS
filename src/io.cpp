@@ -4,6 +4,8 @@
 
 #include "io.h"
 
+#include <absl/log/log.h>
+
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -49,25 +51,31 @@ void processNWR(OSMNetwork* osmnet, OsmHandler* handler) {
 }
 */
 
-void outputNetToCSV(const Network* /*network*/, const std::filesystem::path& output_folder) {
-  std::cout << "writing network to csv files\n";
+void outputNetToCSV(const Network* network, const std::filesystem::path& output_folder) {
+  LOG(INFO) << "writing network to csv files";
 
   const std::filesystem::path node_filepath = output_folder / "node.csv";
   std::ofstream node_file(node_filepath);
   if (!node_file) {
-    std::cout << "\nError: Cannot open file " << node_filepath << '\n';
+    LOG(ERROR) << "Cannot open file " << node_filepath;
     return;
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,notes\n";
+  for (const Node* node : network->nodeVector()) {
+    node_file << "," << node->nodeId() << ",,,,,1\n";
+  }
   node_file.close();
 
   const std::filesystem::path link_filepath = output_folder / "link.csv";
   std::ofstream link_file(link_filepath);
   if (!link_file) {
-    std::cout << "\nError: Cannot open file " << link_filepath << '\n';
+    std::cout << "Cannot open file " << link_filepath;
     return;
   }
   link_file << "link_id,osm_way_id,from_node_id,to_node_id,length,geometry\n";
+  for (const Link* link : network->linkVector()) {
+    link_file << link->linkId() << ",," << link->fromNode()->nodeId() << "," << link->toNode()->nodeId() << ",,1\n";
+  }
   link_file.close();
 
   //  const std::string node_filepath = output_folder.empty() ? "node.csv" : output_folder + "/node.csv";
