@@ -264,12 +264,12 @@ OsmNetwork::~OsmNetwork() {
   //   }
   const size_t number_of_osm_nodes = osm_node_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
-  for (size_t idx = 0; idx < number_of_osm_nodes; ++idx) {
+  for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
     delete osm_node_vector_[idx];
   }
   const size_t number_of_osm_ways = osm_way_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_ways)
-  for (size_t idx = 0; idx < number_of_osm_ways; ++idx) {
+  for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
     delete osm_way_vector_[idx];
   }
 }
@@ -288,14 +288,14 @@ void OsmNetwork::processOsmData() {
   /*================= OsmNode =================*/
   const size_t number_of_osm_nodes = osm_node_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
-  for (size_t idx = 0; idx < number_of_osm_nodes; ++idx) {
+  for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
     osm_node_vector_[idx]->initOsmNode(factory_.get(), boundary_.get(), strict_mode_);
   }
 
   /*================= OsmWay =================*/
   const size_t number_of_osm_ways = osm_way_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_ways)
-  for (size_t idx = 0; idx < number_of_osm_ways; ++idx) {
+  for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
     osm_way_vector_[idx]->initOsmWay(osm_node_dict_);
   }
 
