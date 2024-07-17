@@ -101,6 +101,7 @@ OsmWay::OsmWay(const osmium::Way& way)
       backward_lanes_raw_(getOSMTagValue(way.tags(), "lanes:backward")),
       oneway_raw_(getOSMTagValue(way.tags(), "oneway")),
       max_speed_raw_(getOSMTagValue(way.tags(), "maxspeed")),
+      toll_(getOSMTagValue(way.tags(), "toll")),
       building_(getOSMTagValue(way.tags(), "building")),
       amenity_(getOSMTagValue(way.tags(), "amenity")),
       leisure_(getOSMTagValue(way.tags(), "leisure")),
@@ -128,7 +129,9 @@ WayType OsmWay::wayType() const { return way_type_; };
 HighWayLinkType OsmWay::highwayLinkType() const { return highway_link_type_; }
 bool OsmWay::isTargetLinkType() const { return is_target_link_type_; }
 bool OsmWay::isOneway() const { return is_oneway_; }
-bool OsmWay::isrReversed() const { return is_reversed_; }
+bool OsmWay::isReversed() const { return is_reversed_; }
+std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
+const std::string& OsmWay::toll() const { return toll_; }
 const std::vector<std::vector<OsmNode*>>& OsmWay::segmentNodesVector() const { return segment_nodes_vector_; }
 
 void OsmWay::initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict,
@@ -199,7 +202,7 @@ void OsmWay::identifyWayType(const absl::flat_hash_set<HighWayLinkType>& link_ty
   }
 }
 
-const std::regex& getLaneMatchingPattern() {
+const std::regex& getFloatNumMatchingPattern() {
   static const std::regex pattern(R"(\d+\.?\d*)");
   return pattern;
 }
@@ -208,28 +211,34 @@ void OsmWay::configAttributes() {
   // lane info
   if (!lanes_raw_.empty()) {
     std::smatch match;
-    if (std::regex_search(lanes_raw_, match, getLaneMatchingPattern())) {
+    if (std::regex_search(lanes_raw_, match, getFloatNumMatchingPattern())) {
       lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
     }
   }
   if (!forward_lanes_raw_.empty()) {
     std::smatch match;
-    if (std::regex_search(forward_lanes_raw_, match, getLaneMatchingPattern())) {
+    if (std::regex_search(forward_lanes_raw_, match, getFloatNumMatchingPattern())) {
       forward_lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
     }
   }
   if (!backward_lanes_raw_.empty()) {
     std::smatch match;
-    if (std::regex_search(backward_lanes_raw_, match, getLaneMatchingPattern())) {
+    if (std::regex_search(backward_lanes_raw_, match, getFloatNumMatchingPattern())) {
       backward_lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
     }
   }
 
   // speed info
+  if (!max_speed_raw_.empty()) {
+    std::smatch match;
+    if (std::regex_search(max_speed_raw_, match, getFloatNumMatchingPattern())) {
+      max_speed_ = std::stof(match.str());
+    }
+  }
 
   // oneway info
   if (!oneway_raw_.empty()) {
-    if (oneway_raw_ == "yes" && oneway_raw_ == "1") {
+    if (oneway_raw_ == "yes" || oneway_raw_ == "1") {
       is_oneway_ = true;
     } else if (oneway_raw_ == "no" || oneway_raw_ == "0") {
       is_oneway_ = false;

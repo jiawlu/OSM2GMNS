@@ -41,7 +41,10 @@ const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geomet
 Link::Link(Node* from_node, Node* to_node) : from_node_(from_node), to_node_(to_node) {}
 Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
            const geos::geom::GeometryFactory* factory)
-    : osm_way_id_(osm_way->osmWayId()), name_(osm_way->name()) {
+    : osm_way_id_(osm_way->osmWayId()),
+      name_(osm_way->name()),
+      free_speed_(osm_way->maxSpeed()),
+      toll_(osm_way->toll()) {
   if (osm_nodes.size() < 2) {
     return;
   }
@@ -91,6 +94,8 @@ Node* Link::toNode() const { return to_node_; }
 HighWayLinkType Link::highwayLinkType() const { return highway_link_type_; }
 const std::unique_ptr<geos::geom::LineString>& Link::geometry() const { return geometry_; }
 std::optional<int32_t> Link::lanes() const { return lanes_; }
+std::optional<float> Link::freeSpeed() const { return free_speed_; }
+const std::string& Link::toll() const { return toll_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
 void Link::setFromNode(Node* from_node) { from_node_ = from_node; }

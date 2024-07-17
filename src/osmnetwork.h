@@ -99,7 +99,9 @@ class OsmWay {
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] bool isTargetLinkType() const;
   [[nodiscard]] bool isOneway() const;
-  [[nodiscard]] bool isrReversed() const;
+  [[nodiscard]] bool isReversed() const;
+  [[nodiscard]] std::optional<float> maxSpeed() const;
+  [[nodiscard]] const std::string& toll() const;
   [[nodiscard]] const std::vector<std::vector<OsmNode*>>& segmentNodesVector() const;
 
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict,
@@ -127,6 +129,7 @@ class OsmWay {
   bool is_oneway_{true};
   bool is_reversed_{false};  // ToDo: use when generating segments
   std::optional<float> max_speed_;
+  std::string toll_;
 
   std::string building_;
   std::string amenity_;

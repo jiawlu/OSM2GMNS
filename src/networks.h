@@ -85,6 +85,8 @@ class Link {
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::LineString>& geometry() const;
   [[nodiscard]] std::optional<int32_t> lanes() const;
+  [[nodiscard]] std::optional<float> freeSpeed() const;
+  [[nodiscard]] const std::string& toll() const;
 
   void setLinkId(NetIdType link_id);
   void setFromNode(Node* from_node);
@@ -101,6 +103,8 @@ class Link {
   HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   std::unique_ptr<geos::geom::LineString> geometry_;
   std::optional<int32_t> lanes_;
+  std::optional<float> free_speed_;
+  std::string toll_;
 
   //  void buildFromOSMWay(Way* way, std::vector<OSMNode*>& /*ref_node_vector*/) {
   //    osm_way_id = way->getOsmWayId();

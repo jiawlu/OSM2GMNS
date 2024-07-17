@@ -10,13 +10,17 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <ios>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 #include "networks.h"
 #include "osmconfig.h"
+#include "utils.h"
 
 constexpr int COORDINATE_OUTPUT_PRECISION = 6;
+constexpr int LENGTH_OUTPUT_PRECISION = 2;
 
 std::string getHighWayLinkTypeStr(const HighWayLinkType& highway_link_type) {
   static const absl::flat_hash_map<HighWayLinkType, std::string> highway_link_type_dict = {
@@ -102,9 +106,17 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
                "speed,lanes,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
+    std::string free_speed;
+    if (link->freeSpeed().has_value()) {
+      std::ostringstream oss;
+      oss << std::fixed << std::setprecision(0) << link->freeSpeed().value();  // NOLINT
+      free_speed = oss.str();
+    }
     link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
-              << "," << link->toNode()->nodeId() << ",,\"" << link->geometry()->toString() << "\",,,"
-              << getHighWayLinkTypeStr(link->highwayLinkType()) << ",," << lanes << ",,,\n";
+              << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
+              << std::setprecision(LENGTH_OUTPUT_PRECISION) << calculateLineStringLength(link->geometry().get()) << ","
+              << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << lanes << ",,"
+              << link->toll() << ",\n";
   }
   link_file.close();
 
