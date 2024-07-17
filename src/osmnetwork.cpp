@@ -14,12 +14,14 @@
 #include <geos/geom/Polygon.h>
 
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <exception>
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <osmium/io/any_input.hpp>  // NOLINT
 #include <osmium/io/file.hpp>       // NOLINT
 #include <osmium/io/reader.hpp>     // NOLINT
@@ -29,6 +31,7 @@
 #include <osmium/osm/tag.hpp>
 #include <osmium/osm/way.hpp>
 #include <osmium/visitor.hpp>  // NOLINT
+#include <regex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -92,6 +95,11 @@ OsmWay::OsmWay(const osmium::Way& way)
       highway_(getOSMTagValue(way.tags(), "highway")),
       railway_(getOSMTagValue(way.tags(), "railway")),
       aeroway_(getOSMTagValue(way.tags(), "aeroway")),
+      name_(getOSMTagValue(way.tags(), "name")),
+      lanes_raw_(getOSMTagValue(way.tags(), "lanes")),
+      forward_lanes_raw_(getOSMTagValue(way.tags(), "lanes:forward")),
+      backward_lanes_raw_(getOSMTagValue(way.tags(), "lanes:backward")),
+      max_speed_raw_(getOSMTagValue(way.tags(), "maxspeed")),
       building_(getOSMTagValue(way.tags(), "building")),
       amenity_(getOSMTagValue(way.tags(), "amenity")),
       leisure_(getOSMTagValue(way.tags(), "leisure")),
@@ -108,6 +116,8 @@ OsmWay::OsmWay(const osmium::Way& way)
 }
 
 OsmIdType OsmWay::osmWayId() const { return osm_way_id_; }
+const std::string& OsmWay::name() const { return name_; }
+std::optional<int32_t> OsmWay::lanes() const { return lanes_; }
 const std::vector<OsmNode*>& OsmWay::refNodeVector() const { return ref_node_vector_; }
 OsmNode* OsmWay::fromNode() const { return from_node_; }
 OsmNode* OsmWay::toNode() const { return to_node_; }
@@ -185,7 +195,19 @@ void OsmWay::identifyWayType(const absl::flat_hash_set<HighWayLinkType>& link_ty
   }
 }
 
-void OsmWay::configAttributes() {}
+const std::regex& getLaneMatchingPattern() {
+  static const std::regex pattern(R"(\d+\.?\d*)");
+  return pattern;
+}
+
+void OsmWay::configAttributes() {
+  if (!lanes_raw_.empty()) {
+    std::smatch match;
+    if (std::regex_search(lanes_raw_, match, getLaneMatchingPattern())) {
+      lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
+    }
+  }
+}
 
 void OsmWay::splitIntoSegments() {
   const size_t number_of_ref_nodes = ref_node_vector_.size();

@@ -12,6 +12,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -36,10 +37,13 @@ class Node {
   void setNodeId(NetIdType node_id);
 
   [[nodiscard]] NetIdType nodeId() const;
+  [[nodiscard]] OsmIdType osmNodeId() const;
+  [[nodiscard]] const std::string& name() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
 
  private:
   NetIdType node_id_{-1};
+  OsmIdType osm_node_id_{-1};
   const OsmNode* osm_node_;
   std::string name_;
   std::unique_ptr<geos::geom::Point> geometry_;
@@ -68,15 +72,19 @@ class Node {
 class Link {
  public:
   explicit Link(Node* from_node, Node* to_node);
-  explicit Link(const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
+  explicit Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
                 const geos::geom::GeometryFactory* factory);
 
   [[nodiscard]] NetIdType linkId() const;
+  [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] const std::string& name() const;
   [[nodiscard]] OsmNode* fromOsmNode() const;
   [[nodiscard]] OsmNode* toOsmNode() const;
   [[nodiscard]] Node* fromNode() const;
   [[nodiscard]] Node* toNode() const;
+  [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::LineString>& geometry() const;
+  [[nodiscard]] std::optional<int32_t> lanes() const;
 
   void setLinkId(NetIdType link_id);
   void setFromNode(Node* from_node);
@@ -84,13 +92,15 @@ class Link {
 
  private:
   NetIdType link_id_{-1};
-  //  unsigned long osm_way_id{};
-
+  OsmIdType osm_way_id_{-1};
+  std::string name_;
   OsmNode* from_osm_node_{nullptr};
   OsmNode* to_osm_node_{nullptr};
   Node* from_node_{nullptr};
   Node* to_node_{nullptr};
+  HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   std::unique_ptr<geos::geom::LineString> geometry_;
+  std::optional<int32_t> lanes_;
 
   //  void buildFromOSMWay(Way* way, std::vector<OSMNode*>& /*ref_node_vector*/) {
   //    osm_way_id = way->getOsmWayId();

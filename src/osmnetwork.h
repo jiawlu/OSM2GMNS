@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <osmium/handler.hpp>
 #include <osmium/osm/node.hpp>
 #include <osmium/osm/way.hpp>
@@ -87,6 +88,8 @@ class OsmWay {
   explicit OsmWay(const osmium::Way& way);
 
   [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] const std::string& name() const;
+  [[nodiscard]] std::optional<int32_t> lanes() const;
   [[nodiscard]] const std::vector<OsmNode*>& refNodeVector() const;
   [[nodiscard]] OsmNode* fromNode() const;
   [[nodiscard]] OsmNode* toNode() const;
@@ -109,6 +112,15 @@ class OsmWay {
   std::string highway_;
   std::string railway_;
   std::string aeroway_;
+  std::string name_;
+  std::string lanes_raw_;
+  std::string forward_lanes_raw_;
+  std::string backward_lanes_raw_;
+  std::string max_speed_raw_;
+  std::optional<int32_t> lanes_;
+  std::optional<int32_t> forward_lanes_;
+  std::optional<int32_t> backward_lanes_;
+  std::optional<float> max_speed_;
 
   std::string building_;
   std::string amenity_;

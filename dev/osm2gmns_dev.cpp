@@ -19,8 +19,10 @@ int main(int /*argc*/, char* /*argv*/[]) {
     const auto map_folder = std::filesystem::path("dev/maps/yuba");
     // const auto map_folder = std::filesystem::path("dev/maps/imperial");
 
-    Network* network =
-        getNetFromFile(map_folder / "map.osm.pbf", {HighWayLinkType::PRIMARY, HighWayLinkType::SECONDARY}, {}, false);
+    Network* network = getNetFromFile(map_folder / "map.osm.pbf",
+                                      {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
+                                       HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
+                                      {HighWayLinkType::RESIDENTIAL}, false);
 
     outputNetToCSV(network, map_folder);
 
