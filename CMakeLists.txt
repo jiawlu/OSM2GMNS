@@ -126,7 +126,7 @@ include_directories(SYSTEM ${osmium_SOURCE_DIR}/include)
 FetchContent_Declare(
         geos
         GIT_REPOSITORY https://github.com/libgeos/geos.git
-        GIT_TAG  3.12.1
+        GIT_TAG  3.12.2
         SYSTEM
 )
 FetchContent_MakeAvailable(geos)

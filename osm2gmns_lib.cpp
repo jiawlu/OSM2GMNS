@@ -2,11 +2,11 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
+#include <absl/container/flat_hash_set.h>
 #include <absl/log/log.h>
 
 #include <cstddef>
 #include <string>
-#include <unordered_set>
 
 #include "src/functions.h"
 #include "src/io.h"
@@ -20,13 +20,8 @@
 #define C_API
 #endif
 
-extern "C" {
-
-C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
-
-C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_types_val, size_t link_types_len,
-                                bool POI) {
-  std::unordered_set<HighWayLinkType> link_types;
+absl::flat_hash_set<HighWayLinkType> parseLinkTypes(const char** link_types_val, size_t link_types_len) {
+  absl::flat_hash_set<HighWayLinkType> link_types;
   link_types.reserve(link_types_len);
   for (size_t idx = 0; idx < link_types_len; ++idx) {
     const std::string link_type_str = link_types_val[idx];  // NOLINT
@@ -37,8 +32,19 @@ C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_type
       LOG(WARNING) << "unrecogonized link_type " << link_type_str;
     }
   }
+  return link_types;
+}
 
-  Network* network = getNetFromFile(osm_filepath, link_types, POI);
+extern "C" {
+
+C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
+
+C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_types_val, size_t link_types_len,
+                                const char** connector_link_types_val, size_t connector_link_types_len, bool POI) {
+  const absl::flat_hash_set<HighWayLinkType> link_types = parseLinkTypes(link_types_val, link_types_len);
+  const absl::flat_hash_set<HighWayLinkType> connector_link_types =
+      parseLinkTypes(connector_link_types_val, connector_link_types_len);
+  Network* network = getNetFromFile(osm_filepath, link_types, connector_link_types, POI);
   return network;
 };
 

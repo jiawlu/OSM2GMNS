@@ -20,7 +20,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
     // const auto map_folder = std::filesystem::path("dev/maps/imperial");
 
     Network* network =
-        getNetFromFile(map_folder / "map.osm.pbf", {HighWayLinkType::PRIMARY, HighWayLinkType::SECONDARY}, false);
+        getNetFromFile(map_folder / "map.osm.pbf", {HighWayLinkType::PRIMARY, HighWayLinkType::SECONDARY}, {}, false);
 
     outputNetToCSV(network, map_folder);
 
