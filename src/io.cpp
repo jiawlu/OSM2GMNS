@@ -8,10 +8,12 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 #include "networks.h"
 
+constexpr int COORDINATE_OUTPUT_PRECISION = 6;
 // static void geos_message_handler(const char* fmt, ...) {
 //   va_list ap = nullptr;
 //   va_start(ap, fmt);
@@ -62,7 +64,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,notes\n";
   for (const Node* node : network->nodeVector()) {
-    node_file << "," << node->nodeId() << ",,,,,1\n";
+    node_file << "," << node->nodeId() << ",,," << std::fixed << std::setprecision(COORDINATE_OUTPUT_PRECISION)
+              << node->geometry()->getX() << "," << node->geometry()->getY() << std::defaultfloat << ",\n";
   }
   node_file.close();
 
@@ -74,7 +77,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   link_file << "link_id,osm_way_id,from_node_id,to_node_id,length,geometry\n";
   for (const Link* link : network->linkVector()) {
-    link_file << link->linkId() << ",," << link->fromNode()->nodeId() << "," << link->toNode()->nodeId() << ",,1\n";
+    link_file << link->linkId() << ",," << link->fromNode()->nodeId() << "," << link->toNode()->nodeId() << ",,\""
+              << link->geometry()->toString() << "\"\n";
   }
   link_file.close();
 

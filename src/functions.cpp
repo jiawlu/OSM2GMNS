@@ -1,10 +1,12 @@
 #include "functions.h"
 
+#include <absl/container/flat_hash_set.h>
 #include <absl/log/log.h>
 
 #include <filesystem>
 
 #include "networks.h"
+#include "osmconfig.h"
 #include "osmnetwork.h"
 
 // void processWays(OSMNetwork* osmnet) {
@@ -65,10 +67,12 @@
 //   return network;
 // }
 
-Network* getNetFromFile(const std::filesystem::path& osm_filepath, bool POI) {
+Network* getNetFromFile(const std::filesystem::path& osm_filepath,
+                        const absl::flat_hash_set<HighWayLinkType>& link_types,
+                        const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI) {
   LOG(INFO) << "loading data from osm file";
-  auto* osmnet = new OsmNetwork(osm_filepath, POI, true);
+  auto* osmnet = new OsmNetwork(osm_filepath, link_types, connector_link_types, POI, true);
 
   LOG(INFO) << "building network";
-  return new Network(osmnet);
+  return new Network(osmnet, link_types, connector_link_types);
 };

@@ -21,7 +21,9 @@ oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
 
 
 def initlib():
-    oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p, ctypes.c_bool]
+    oglib.initializeAbslLoggingPy.argtypes = []
+
+    oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t, ctypes.c_bool]
     oglib.getNetFromFilePy.restype = ctypes.c_void_p
 
     oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
@@ -30,6 +32,8 @@ def initlib():
     oglib.getNumberOfNodesPy.restype = ctypes.c_uint64
     oglib.getNumberOfLinksPy.argtypes = [ctypes.c_void_p]
     oglib.getNumberOfLinksPy.restype = ctypes.c_uint64
+
+    oglib.initializeAbslLoggingPy()
 
 
 class Network:
@@ -45,7 +49,7 @@ class Network:
         return oglib.getNumberOfLinksPy(self.cnet)
 
 
-def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all', POI=False, POI_sampling_ratio=1.0,
+def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), POI=False, POI_sampling_ratio=1.0,
                    strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,
                    default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):
     """
@@ -125,7 +129,10 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types='all'
     #                              start_link_id)
 
     network = Network()
-    network.cnet = oglib.getNetFromFilePy(filename.encode(), POI)
+
+    link_types_byte_string = [link_type.encode() for link_type in link_types]
+    link_types_arr = (ctypes.c_char_p * len(link_types_byte_string))(*link_types_byte_string)
+    network.cnet = oglib.getNetFromFilePy(filename.encode(), link_types_arr, len(link_types_arr), POI)
 
     return network
 

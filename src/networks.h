@@ -5,11 +5,17 @@
 #ifndef OSM2GMNS_NETWORKS_H
 #define OSM2GMNS_NETWORKS_H
 
+#include <absl/container/flat_hash_set.h>
+#include <geos/geom/Geometry.h>
+#include <geos/geom/LineString.h>
+
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
+#include "osmconfig.h"
 #include "osmnetwork.h"
 // #include <map>
 // #include <string>
@@ -25,16 +31,18 @@ class Link;
 
 class Node {
  public:
-  explicit Node(const OsmNode* osm_node);
+  explicit Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory);
 
   void setNodeId(NetIdType node_id);
 
   [[nodiscard]] NetIdType nodeId() const;
+  [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
 
  private:
-  const OsmNode* osm_node_;
   NetIdType node_id_{-1};
+  const OsmNode* osm_node_;
   std::string name_;
+  std::unique_ptr<geos::geom::Point> geometry_;
   //  unsigned long osm_node_id{};
   //  std::string osm_highway{};
   //  std::string ctrl_type{};
@@ -60,20 +68,29 @@ class Node {
 class Link {
  public:
   explicit Link(Node* from_node, Node* to_node);
-
-  void setLinkId(NetIdType link_id);
+  explicit Link(const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
+                const geos::geom::GeometryFactory* factory);
 
   [[nodiscard]] NetIdType linkId() const;
+  [[nodiscard]] OsmNode* fromOsmNode() const;
+  [[nodiscard]] OsmNode* toOsmNode() const;
   [[nodiscard]] Node* fromNode() const;
   [[nodiscard]] Node* toNode() const;
+  [[nodiscard]] const std::unique_ptr<geos::geom::LineString>& geometry() const;
+
+  void setLinkId(NetIdType link_id);
+  void setFromNode(Node* from_node);
+  void setToNode(Node* to_node);
 
  private:
   NetIdType link_id_{-1};
   //  unsigned long osm_way_id{};
 
+  OsmNode* from_osm_node_{nullptr};
+  OsmNode* to_osm_node_{nullptr};
   Node* from_node_{nullptr};
   Node* to_node_{nullptr};
-  //  Geometry* geometry{};
+  std::unique_ptr<geos::geom::LineString> geometry_;
 
   //  void buildFromOSMWay(Way* way, std::vector<OSMNode*>& /*ref_node_vector*/) {
   //    osm_way_id = way->getOsmWayId();
@@ -86,7 +103,8 @@ class Link {
 
 class Network {
  public:
-  explicit Network(OsmNetwork* osmnet);
+  explicit Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
+                   absl::flat_hash_set<HighWayLinkType> connector_link_types);
   ~Network();
   Network(const Network&) = delete;
   Network& operator=(const Network&) = delete;
@@ -100,8 +118,13 @@ class Network {
 
  private:
   void createNodesAndLinksFromOsmNetwork();
+  void createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<std::vector<Link*>>& m_link_vector);
+  [[nodiscard]] std::vector<OsmWay*> identifyConnectorWays() const;
 
   OsmNetwork* osmnet_;
+  geos::geom::GeometryFactory::Ptr factory_;
+  absl::flat_hash_set<HighWayLinkType> link_types_;
+  absl::flat_hash_set<HighWayLinkType> connector_link_types_;
 
   // absl::flat_hash_map<NetIdType, Node*> node_dict_;
   // absl::flat_hash_map<NetIdType, Link*> link_dict_;
