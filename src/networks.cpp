@@ -12,6 +12,7 @@
 #include <omp.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
@@ -59,8 +60,24 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
   highway_link_type_ = osm_way->highwayLinkType();
   geometry_ = factory->createLineString(coord_seq);
 
-  if (osm_way->lanes().has_value()) {
-    lanes_ = osm_way->lanes();
+  if (osm_way->isOneway()) {
+    if (osm_way->lanes().has_value()) {
+      lanes_ = osm_way->lanes().value();  // NOLINT
+    }
+  } else {
+    if (forward_direction) {
+      if (osm_way->forward_lanes().has_value()) {
+        lanes_ = osm_way->forward_lanes().value();  // NOLINT
+      } else if (osm_way->lanes().has_value()) {
+        lanes_ = static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0));  // NOLINT
+      }
+    } else {
+      if (osm_way->backward_lanes().has_value()) {
+        lanes_ = osm_way->backward_lanes().value();  // NOLINT
+      } else if (osm_way->lanes().has_value()) {
+        lanes_ = static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0));  // NOLINT
+      }
+    }
   }
 }
 
