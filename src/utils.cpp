@@ -5,15 +5,20 @@
 #include "utils.h"
 
 #include <geos/geom/CoordinateSequence.h>
+#include <geos/geom/GeometryFactory.h>
 #include <geos/geom/LineString.h>
+#include <geos/geom/Polygon.h>
 
 #include <cmath>
 #include <cstddef>
 #include <memory>
+#include <utility>
+#include <vector>
 
 #include "absl/base/log_severity.h"
 #include "absl/log/globals.h"
 #include "absl/log/initialize.h"
+#include "osmnetwork.h"
 
 constexpr double EARTH_RADIUS = 6371000.0;
 
@@ -45,4 +50,19 @@ double calculateLineStringLength(const geos::geom::LineString* lineString) {
     totalLength += haversineDistance(point_1.x, point_1.y, point_2.x, point_2.y);
   }
   return totalLength;
+}
+
+std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<OsmNode*>& osm_nodes,
+                                                            const geos::geom::GeometryFactory* factory) {
+  geos::geom::CoordinateSequence coord_seq;
+  if (osm_nodes.size() < 3) {
+    return nullptr;
+  }
+  for (const OsmNode* osm_node : osm_nodes) {
+    coord_seq.add(*(osm_node->geometry()->getCoordinate()));
+  }
+  if (osm_nodes.at(0)->osmNodeId() != osm_nodes.back()->osmNodeId()) {
+    coord_seq.add(*(osm_nodes.at(0)->geometry()->getCoordinate()));
+  }
+  return factory->createPolygon(std::move(coord_seq));
 }

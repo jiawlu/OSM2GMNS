@@ -50,7 +50,7 @@ class Network:
 
 
 def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), POI=False, POI_sampling_ratio=1.0,
-                   strict_mode=True, offset='no', min_nodes=1, combine=False, bbox=None,
+                   strict_boundary=True, offset='no', min_nodes=1, combine=False, bbox=None,
                    default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):
     """
     Get an osm2gmns Network object from an osm file
@@ -69,7 +69,7 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), P
         if extract point of interest information
     POI_sampling_ratio: float
         prcentage of POIs to be extracted if POI is set as True. this value should be a float number between 0.0 and 1.0.
-    strict_mode: bool
+    strict_boundary: bool
         if True, network elements (node, link, poi) outside the boundary will be discarded
     offset: str
         offset overlapping links. the value of this argument can be 'left', 'right', or 'no'
@@ -109,7 +109,7 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), P
     #     print(f'  link_types: {link_types}')
     #     print(f'  POI: {POI}')
     #     print(f'  POI_sampling_ratio: {POI_sampling_ratio}')
-    #     print(f'  strict_mode: {strict_mode}')
+    #     print(f'  strict_boundary: {strict_boundary}')
     #     print(f'  offset: {offset}')
     #     print(f'  min_nodes: {min_nodes}')
     #     print(f'  combine: {combine}')
@@ -122,9 +122,9 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), P
     #
     #     print('Building Network from OSM file')
 
-    # network_types_, link_types_, POI_, POI_sampling_ratio_, strict_mode_, offset_, min_nodes_, combine_, \
+    # network_types_, link_types_, POI_, POI_sampling_ratio_, strict_boundary_, offset_, min_nodes_, combine_, \
     #     bbox_, default_lanes_, default_speed_, default_capacity_, start_node_id_, start_link_id_ = \
-    #     checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampling_ratio, strict_mode, offset,
+    #     checkArgs_getNetFromFile(filename, network_types, link_types, POI, POI_sampling_ratio, strict_boundary, offset,
     #                              min_nodes, combine, bbox, default_lanes, default_speed, default_capacity, start_node_id,
     #                              start_link_id)
 

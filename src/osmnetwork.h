@@ -15,7 +15,9 @@
 #include <memory>
 #include <optional>
 #include <osmium/handler.hpp>
+#include <osmium/osm/item_type.hpp>
 #include <osmium/osm/node.hpp>
+#include <osmium/osm/relation.hpp>
 #include <osmium/osm/way.hpp>
 #include <string>
 #include <vector>
@@ -24,6 +26,7 @@
 
 class OsmNode;
 class OsmWay;
+class OsmRelation;
 
 class OsmHandler : public osmium::handler::Handler {
  public:
@@ -31,15 +34,17 @@ class OsmHandler : public osmium::handler::Handler {
 
   void node(const osmium::Node& node);
   void way(const osmium::Way& way);
-  void relation(const osmium::Relation& /*relation*/) const;
+  void relation(const osmium::Relation& relation);
 
   std::vector<OsmNode*>& osmNodeVector();
   std::vector<OsmWay*>& osmWayVector();
+  std::vector<OsmRelation*>& osmRelationVector();
 
  private:
   bool POI_;
   std::vector<OsmNode*> osm_node_vector_;
   std::vector<OsmWay*> osm_way_vector_;
+  std::vector<OsmRelation*> osm_relation_vector_;
 };
 
 class OsmNode {
@@ -54,7 +59,8 @@ class OsmNode {
   [[nodiscard]] std::vector<OsmWay*> incomingWayVector() const;
   [[nodiscard]] std::vector<OsmWay*> outgoingWayVector() const;
 
-  void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary, bool strict_mode);
+  void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary,
+                   bool strict_boundary);
   void changeUsageCount(int32_t usage_count_changes);
   void setIsEndingNode(bool is_ending_node);
   void setIsTypologyNode();
@@ -102,6 +108,9 @@ class OsmWay {
   [[nodiscard]] bool isReversed() const;
   [[nodiscard]] std::optional<float> maxSpeed() const;
   [[nodiscard]] const std::string& toll() const;
+  [[nodiscard]] const std::string& building() const;
+  [[nodiscard]] const std::string& amenity() const;
+  [[nodiscard]] const std::string& leisure() const;
   [[nodiscard]] const std::vector<std::vector<OsmNode*>>& segmentNodesVector() const;
 
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict,
@@ -156,17 +165,46 @@ class OsmWay {
   std::vector<std::vector<OsmNode*>> segment_nodes_vector_;
 };
 
+class OsmRelation {
+ public:
+  explicit OsmRelation(const osmium::Relation& relation);
+
+  void initOsmRelation(const absl::flat_hash_map<OsmIdType, OsmWay*>& osm_way_dict);
+
+  [[nodiscard]] OsmIdType osmRelationId() const;
+  [[nodiscard]] const std::string& name() const;
+  [[nodiscard]] const std::vector<OsmWay*>& memberWayVector() const;
+  [[nodiscard]] const std::vector<std::string>& memberWayRoleVector() const;
+  [[nodiscard]] const std::string& building() const;
+  [[nodiscard]] const std::string& amenity() const;
+  [[nodiscard]] const std::string& leisure() const;
+
+ private:
+  OsmIdType osm_relation_id_;
+  std::string name_;
+  std::vector<OsmIdType> member_id_vector_;
+  std::vector<osmium::item_type> member_type_vector_;
+  std::vector<std::string> member_role_vector_;
+  std::vector<OsmWay*> member_way_vector_;
+  std::vector<std::string> member_way_role_vector_;
+  std::string building_;
+  std::string amenity_;
+  std::string leisure_;
+};
+
 class OsmNetwork {
  public:
   explicit OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_hash_set<HighWayLinkType> link_types,
-                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_mode);
+                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_boundary);
   ~OsmNetwork();
   OsmNetwork(const OsmNetwork&) = delete;
   OsmNetwork& operator=(const OsmNetwork&) = delete;
   OsmNetwork(OsmNetwork&&) = delete;
   OsmNetwork& operator=(OsmNetwork&&) = delete;
 
+  [[nodiscard]] const std::unique_ptr<geos::geom::Polygon>& boundary() const;
   [[nodiscard]] const std::vector<OsmWay*>& osmWayVector() const;
+  [[nodiscard]] const std::vector<OsmRelation*>& osmRelationVector() const;
 
  private:
   void processOsmData();
@@ -176,7 +214,7 @@ class OsmNetwork {
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_;
-  bool strict_mode_;
+  bool strict_boundary_;
 
   geos::geom::GeometryFactory::Ptr factory_;
   std::unique_ptr<geos::geom::Polygon> boundary_;
@@ -185,6 +223,7 @@ class OsmNetwork {
   absl::flat_hash_map<OsmIdType, OsmWay*> osm_way_dict_;
   std::vector<OsmNode*> osm_node_vector_;
   std::vector<OsmWay*> osm_way_vector_;
+  std::vector<OsmRelation*> osm_relation_vector_;
 
   std::vector<OsmWay*> link_way_vector{};
 
