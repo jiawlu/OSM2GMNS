@@ -12,28 +12,39 @@
 #include <omp.h>
 
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
 #include <memory>
 #include <numeric>
+#include <optional>
+#include <string>
 #include <utility>
 #include <vector>
 
 #include "osmconfig.h"
 #include "osmnetwork.h"
 
-Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory) : osm_node_(osm_node) {
+Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory)
+    : osm_node_(osm_node), name_(osm_node->name()), osm_node_id_(osm_node->osmNodeId()) {
   geometry_ = factory->createPoint(*osm_node_->geometry()->getCoordinate());
 }
 
 void Node::setNodeId(NetIdType node_id) { node_id_ = node_id; }
 
 NetIdType Node::nodeId() const { return node_id_; };
+OsmIdType Node::osmNodeId() const { return osm_node_id_; }
+const std::string& Node::name() const { return name_; }
 const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geometry_; }
 
 Link::Link(Node* from_node, Node* to_node) : from_node_(from_node), to_node_(to_node) {}
-Link::Link(const std::vector<OsmNode*>& osm_nodes, bool forward_direction, const geos::geom::GeometryFactory* factory) {
+Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
+           const geos::geom::GeometryFactory* factory)
+    : osm_way_id_(osm_way->osmWayId()),
+      name_(osm_way->name()),
+      free_speed_(osm_way->maxSpeed()),
+      toll_(osm_way->toll()) {
   if (osm_nodes.size() < 2) {
     return;
   }
@@ -49,15 +60,42 @@ Link::Link(const std::vector<OsmNode*>& osm_nodes, bool forward_direction, const
       coord_seq.add(*(*rit)->geometry()->getCoordinate());
     }
   }
+  highway_link_type_ = osm_way->highwayLinkType();
   geometry_ = factory->createLineString(coord_seq);
+
+  if (osm_way->isOneway()) {
+    if (osm_way->lanes().has_value()) {
+      lanes_ = osm_way->lanes().value();  // NOLINT
+    }
+  } else {
+    if (forward_direction) {
+      if (osm_way->forward_lanes().has_value()) {
+        lanes_ = osm_way->forward_lanes().value();  // NOLINT
+      } else if (osm_way->lanes().has_value()) {
+        lanes_ = static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0));  // NOLINT
+      }
+    } else {
+      if (osm_way->backward_lanes().has_value()) {
+        lanes_ = osm_way->backward_lanes().value();  // NOLINT
+      } else if (osm_way->lanes().has_value()) {
+        lanes_ = static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0));  // NOLINT
+      }
+    }
+  }
 }
 
 NetIdType Link::linkId() const { return link_id_; }
+OsmIdType Link::osmWayId() const { return osm_way_id_; }
+const std::string& Link::name() const { return name_; }
 OsmNode* Link::fromOsmNode() const { return from_osm_node_; }
 OsmNode* Link::toOsmNode() const { return to_osm_node_; }
 Node* Link::fromNode() const { return from_node_; }
 Node* Link::toNode() const { return to_node_; }
+HighWayLinkType Link::highwayLinkType() const { return highway_link_type_; }
 const std::unique_ptr<geos::geom::LineString>& Link::geometry() const { return geometry_; }
+std::optional<int32_t> Link::lanes() const { return lanes_; }
+std::optional<float> Link::freeSpeed() const { return free_speed_; }
+const std::string& Link::toll() const { return toll_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
 void Link::setFromNode(Node* from_node) { from_node_ = from_node; }
@@ -156,10 +194,10 @@ void Network::createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<s
     if (segment_nodes.size() < 2) {
       continue;
     }
-    Link* link = new Link(segment_nodes, false, factory_.get());
+    Link* link = new Link(osm_way, segment_nodes, false, factory_.get());
     m_link_vector[omp_get_thread_num()].push_back(link);
     if (!osm_way->isOneway()) {
-      link = new Link(segment_nodes, true, factory_.get());
+      link = new Link(osm_way, segment_nodes, true, factory_.get());
       m_link_vector[omp_get_thread_num()].push_back(link);
     }
   }
@@ -182,6 +220,12 @@ std::vector<OsmWay*> Network::identifyConnectorWays() const {
   }
 
   for (OsmWay* osm_way : osmnet_->osmWayVector()) {
+    if (connector_link_types_.find(osm_way->highwayLinkType()) == connector_link_types_.end()) {
+      continue;
+    }
+    if (osm_way->refNodeVector().empty()) {
+      continue;
+    }
     if (osm_way->wayType() != WayType::HIGHWAY) {
       continue;
     }

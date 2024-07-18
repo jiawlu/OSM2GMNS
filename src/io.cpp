@@ -4,16 +4,42 @@
 
 #include "io.h"
 
+#include <absl/container/flat_hash_map.h>
 #include <absl/log/log.h>
 
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <ios>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 #include "networks.h"
+#include "osmconfig.h"
+#include "utils.h"
 
 constexpr int COORDINATE_OUTPUT_PRECISION = 6;
+constexpr int LENGTH_OUTPUT_PRECISION = 2;
+
+std::string getHighWayLinkTypeStr(const HighWayLinkType& highway_link_type) {
+  static const absl::flat_hash_map<HighWayLinkType, std::string> highway_link_type_dict = {
+      {HighWayLinkType::MOTORWAY, "motorway"},
+      {HighWayLinkType::TRUNK, "trunk"},
+      {HighWayLinkType::PRIMARY, "primary"},
+      {HighWayLinkType::SECONDARY, "secondary"},
+      {HighWayLinkType::TERTIARY, "tertiary"},
+      {HighWayLinkType::RESIDENTIAL, "residential"},
+      {HighWayLinkType::LIVING_STREET, "living_street"},
+      {HighWayLinkType::SERVICE, "service"},
+      {HighWayLinkType::CYCLEWAY, "cycleway"},
+      {HighWayLinkType::FOOTWAY, "footway"},
+      {HighWayLinkType::TRACK, "track"},
+      {HighWayLinkType::UNCLASSIFIED, "unclassified"},
+      {HighWayLinkType::OTHER, "other"}};
+  auto iter = highway_link_type_dict.find(highway_link_type);
+  return iter != highway_link_type_dict.end() ? iter->second : "";
+}
 // static void geos_message_handler(const char* fmt, ...) {
 //   va_list ap = nullptr;
 //   va_start(ap, fmt);
@@ -64,8 +90,9 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,notes\n";
   for (const Node* node : network->nodeVector()) {
-    node_file << "," << node->nodeId() << ",,," << std::fixed << std::setprecision(COORDINATE_OUTPUT_PRECISION)
-              << node->geometry()->getX() << "," << node->geometry()->getY() << std::defaultfloat << ",\n";
+    node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << ",," << std::fixed
+              << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
+              << node->geometry()->getY() << std::defaultfloat << ",\n";
   }
   node_file.close();
 
@@ -75,10 +102,21 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     std::cout << "Cannot open file " << link_filepath;
     return;
   }
-  link_file << "link_id,osm_way_id,from_node_id,to_node_id,length,geometry\n";
+  link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
+               "speed,lanes,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
-    link_file << link->linkId() << ",," << link->fromNode()->nodeId() << "," << link->toNode()->nodeId() << ",,\""
-              << link->geometry()->toString() << "\"\n";
+    const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
+    std::string free_speed;
+    if (link->freeSpeed().has_value()) {
+      std::ostringstream oss;
+      oss << std::fixed << std::setprecision(0) << link->freeSpeed().value();  // NOLINT
+      free_speed = oss.str();
+    }
+    link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
+              << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
+              << std::setprecision(LENGTH_OUTPUT_PRECISION) << calculateLineStringLength(link->geometry().get()) << ","
+              << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << lanes << ",,"
+              << link->toll() << ",\n";
   }
   link_file.close();
 

@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <osmium/handler.hpp>
 #include <osmium/osm/node.hpp>
 #include <osmium/osm/way.hpp>
@@ -87,6 +88,10 @@ class OsmWay {
   explicit OsmWay(const osmium::Way& way);
 
   [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] const std::string& name() const;
+  [[nodiscard]] std::optional<int32_t> lanes() const;
+  [[nodiscard]] std::optional<int32_t> forward_lanes() const;
+  [[nodiscard]] std::optional<int32_t> backward_lanes() const;
   [[nodiscard]] const std::vector<OsmNode*>& refNodeVector() const;
   [[nodiscard]] OsmNode* fromNode() const;
   [[nodiscard]] OsmNode* toNode() const;
@@ -94,6 +99,9 @@ class OsmWay {
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] bool isTargetLinkType() const;
   [[nodiscard]] bool isOneway() const;
+  [[nodiscard]] bool isReversed() const;
+  [[nodiscard]] std::optional<float> maxSpeed() const;
+  [[nodiscard]] const std::string& toll() const;
   [[nodiscard]] const std::vector<std::vector<OsmNode*>>& segmentNodesVector() const;
 
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict,
@@ -109,6 +117,19 @@ class OsmWay {
   std::string highway_;
   std::string railway_;
   std::string aeroway_;
+  std::string name_;
+  std::string lanes_raw_;
+  std::string forward_lanes_raw_;
+  std::string backward_lanes_raw_;
+  std::string oneway_raw_;
+  std::string max_speed_raw_;
+  std::optional<int32_t> lanes_;
+  std::optional<int32_t> forward_lanes_;
+  std::optional<int32_t> backward_lanes_;
+  bool is_oneway_{true};
+  bool is_reversed_{false};  // ToDo: use when generating segments
+  std::optional<float> max_speed_;
+  std::string toll_;
 
   std::string building_;
   std::string amenity_;
@@ -130,7 +151,6 @@ class OsmWay {
   WayType way_type_{WayType::OTHER};
   HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   bool is_target_link_type_{false};
-  bool is_oneway_{true};
 
   int number_of_segments_{0};
   std::vector<std::vector<OsmNode*>> segment_nodes_vector_;

@@ -14,12 +14,14 @@
 #include <geos/geom/Polygon.h>
 
 #include <chrono>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <exception>
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <osmium/io/any_input.hpp>  // NOLINT
 #include <osmium/io/file.hpp>       // NOLINT
 #include <osmium/io/reader.hpp>     // NOLINT
@@ -29,6 +31,7 @@
 #include <osmium/osm/tag.hpp>
 #include <osmium/osm/way.hpp>
 #include <osmium/visitor.hpp>  // NOLINT
+#include <regex>
 #include <string>
 #include <utility>
 #include <vector>
@@ -92,6 +95,13 @@ OsmWay::OsmWay(const osmium::Way& way)
       highway_(getOSMTagValue(way.tags(), "highway")),
       railway_(getOSMTagValue(way.tags(), "railway")),
       aeroway_(getOSMTagValue(way.tags(), "aeroway")),
+      name_(getOSMTagValue(way.tags(), "name")),
+      lanes_raw_(getOSMTagValue(way.tags(), "lanes")),
+      forward_lanes_raw_(getOSMTagValue(way.tags(), "lanes:forward")),
+      backward_lanes_raw_(getOSMTagValue(way.tags(), "lanes:backward")),
+      oneway_raw_(getOSMTagValue(way.tags(), "oneway")),
+      max_speed_raw_(getOSMTagValue(way.tags(), "maxspeed")),
+      toll_(getOSMTagValue(way.tags(), "toll")),
       building_(getOSMTagValue(way.tags(), "building")),
       amenity_(getOSMTagValue(way.tags(), "amenity")),
       leisure_(getOSMTagValue(way.tags(), "leisure")),
@@ -108,6 +118,10 @@ OsmWay::OsmWay(const osmium::Way& way)
 }
 
 OsmIdType OsmWay::osmWayId() const { return osm_way_id_; }
+const std::string& OsmWay::name() const { return name_; }
+std::optional<int32_t> OsmWay::lanes() const { return lanes_; }
+std::optional<int32_t> OsmWay::forward_lanes() const { return forward_lanes_; }
+std::optional<int32_t> OsmWay::backward_lanes() const { return backward_lanes_; }
 const std::vector<OsmNode*>& OsmWay::refNodeVector() const { return ref_node_vector_; }
 OsmNode* OsmWay::fromNode() const { return from_node_; }
 OsmNode* OsmWay::toNode() const { return to_node_; }
@@ -115,6 +129,9 @@ WayType OsmWay::wayType() const { return way_type_; };
 HighWayLinkType OsmWay::highwayLinkType() const { return highway_link_type_; }
 bool OsmWay::isTargetLinkType() const { return is_target_link_type_; }
 bool OsmWay::isOneway() const { return is_oneway_; }
+bool OsmWay::isReversed() const { return is_reversed_; }
+std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
+const std::string& OsmWay::toll() const { return toll_; }
 const std::vector<std::vector<OsmNode*>>& OsmWay::segmentNodesVector() const { return segment_nodes_vector_; }
 
 void OsmWay::initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict,
@@ -185,7 +202,57 @@ void OsmWay::identifyWayType(const absl::flat_hash_set<HighWayLinkType>& link_ty
   }
 }
 
-void OsmWay::configAttributes() {}
+const std::regex& getFloatNumMatchingPattern() {
+  static const std::regex pattern(R"(\d+\.?\d*)");
+  return pattern;
+}
+
+void OsmWay::configAttributes() {
+  // lane info
+  if (!lanes_raw_.empty()) {
+    std::smatch match;
+    if (std::regex_search(lanes_raw_, match, getFloatNumMatchingPattern())) {
+      lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
+    }
+  }
+  if (!forward_lanes_raw_.empty()) {
+    std::smatch match;
+    if (std::regex_search(forward_lanes_raw_, match, getFloatNumMatchingPattern())) {
+      forward_lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
+    }
+  }
+  if (!backward_lanes_raw_.empty()) {
+    std::smatch match;
+    if (std::regex_search(backward_lanes_raw_, match, getFloatNumMatchingPattern())) {
+      backward_lanes_ = static_cast<int32_t>(std::round(std::stof(match.str())));
+    }
+  }
+
+  // speed info
+  if (!max_speed_raw_.empty()) {
+    std::smatch match;
+    if (std::regex_search(max_speed_raw_, match, getFloatNumMatchingPattern())) {
+      max_speed_ = std::stof(match.str());
+    }
+  }
+
+  // oneway info
+  if (!oneway_raw_.empty()) {
+    if (oneway_raw_ == "yes" || oneway_raw_ == "1") {
+      is_oneway_ = true;
+    } else if (oneway_raw_ == "no" || oneway_raw_ == "0") {
+      is_oneway_ = false;
+    } else if (oneway_raw_ == "-1") {
+      is_oneway_ = true;
+      is_reversed_ = true;
+    } else if (oneway_raw_ == "reversible" || oneway_raw_ == "alternating") {
+      // todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
+      is_oneway_ = false;
+    } else {
+      DLOG(WARNING) << "new oneway type detected at way " << osm_way_id_ << " " << oneway_raw_;
+    }
+  }
+}
 
 void OsmWay::splitIntoSegments() {
   const size_t number_of_ref_nodes = ref_node_vector_.size();
