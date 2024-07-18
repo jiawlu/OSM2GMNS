@@ -8,6 +8,9 @@
 #include <absl/container/flat_hash_set.h>
 #include <geos/geom/Geometry.h>
 #include <geos/geom/LineString.h>
+#include <geos/geom/MultiPolygon.h>
+#include <geos/geom/Point.h>
+#include <geos/geom/Polygon.h>
 
 #include <cstddef>
 #include <cstdint>
@@ -105,20 +108,42 @@ class Link {
   std::optional<int32_t> lanes_;
   std::optional<float> free_speed_;
   std::string toll_;
+};
 
-  //  void buildFromOSMWay(Way* way, std::vector<OSMNode*>& /*ref_node_vector*/) {
-  //    osm_way_id = way->getOsmWayId();
-  //           from_node = ref_node_vector[0]->node;
-  //           to_node = ref_node_vector[ref_node_vector.size()-1]->node;
-  //    from_node->outgoing_link_vector.push_back(this);
-  //    to_node->incoming_link_vector.push_back(this);
-  //  }
+class POI {
+ public:
+  explicit POI(const OsmWay* osm_way, std::unique_ptr<geos::geom::Polygon> geometry);
+  explicit POI(const OsmRelation* osm_relation, std::unique_ptr<geos::geom::MultiPolygon> geometry);
+
+  [[nodiscard]] NetIdType poiId() const;
+  [[nodiscard]] const std::string& name() const;
+  [[nodiscard]] std::optional<OsmIdType> osmWayId() const;
+  [[nodiscard]] std::optional<OsmIdType> osmRelationId() const;
+  [[nodiscard]] const std::string& building() const;
+  [[nodiscard]] const std::string& amenity() const;
+  [[nodiscard]] const std::string& leisure() const;
+  [[nodiscard]] const std::unique_ptr<geos::geom::Geometry>& geometry() const;
+  [[nodiscard]] const std::unique_ptr<geos::geom::Point>& centroidGeometry() const;
+
+  void setPOIId(NetIdType poi_id);
+
+ private:
+  NetIdType poi_id_{-1};
+  std::string name_;
+  std::optional<OsmIdType> osm_way_id_;
+  std::optional<OsmIdType> osm_relation_id_;
+  std::string building_;
+  std::string amenity_;
+  std::string leisure_;
+
+  std::unique_ptr<geos::geom::Geometry> geometry_;
+  std::unique_ptr<geos::geom::Point> centroid_geometry_;
 };
 
 class Network {
  public:
   explicit Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
-                   absl::flat_hash_set<HighWayLinkType> connector_link_types);
+                   absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI);
   ~Network();
   Network(const Network&) = delete;
   Network& operator=(const Network&) = delete;
@@ -129,21 +154,29 @@ class Network {
   [[nodiscard]] size_t numberOfLinks() const;
   [[nodiscard]] const std::vector<Node*>& nodeVector() const;
   [[nodiscard]] const std::vector<Link*>& linkVector() const;
+  [[nodiscard]] const std::vector<POI*>& poiVector() const;
 
  private:
   void createNodesAndLinksFromOsmNetwork();
   void createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<std::vector<Link*>>& m_link_vector);
   [[nodiscard]] std::vector<OsmWay*> identifyConnectorWays() const;
+  void createPOIsFromOsmNetwork();
+  void createPOIsFromOsmWays(std::vector<std::vector<POI*>>& m_poi_vector);
+  void createPOIsFromOneOsmWay(const OsmWay* osm_way, std::vector<std::vector<POI*>>& m_poi_vector);
+  void createPOIsFromOsmRelations(std::vector<std::vector<POI*>>& m_poi_vector);
+  void createPOIsFromOneOsmRelation(const OsmRelation* osm_relation, std::vector<std::vector<POI*>>& m_poi_vector);
 
   OsmNetwork* osmnet_;
   geos::geom::GeometryFactory::Ptr factory_;
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
+  bool POI_;
 
   // absl::flat_hash_map<NetIdType, Node*> node_dict_;
   // absl::flat_hash_map<NetIdType, Link*> link_dict_;
   std::vector<Node*> node_vector_;
   std::vector<Link*> link_vector_;
+  std::vector<POI*> poi_vector_;
 
   NetIdType max_node_id_{0};
   NetIdType max_link_id_{0};

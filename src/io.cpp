@@ -120,6 +120,24 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   link_file.close();
 
+  const std::filesystem::path poi_filepath = output_folder / "poi.csv";
+  std::ofstream poi_file(poi_filepath);
+  if (!poi_file) {
+    std::cout << "Cannot open file " << poi_filepath;
+    return;
+  }
+  poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2\n";
+  for (const POI* poi : network->poiVector()) {
+    const std::string osm_way_id =
+        poi->osmWayId().has_value() ? std::to_string(poi->osmWayId().value()) : "";  // NOLINT
+    const std::string osm_relation_id =
+        poi->osmRelationId().has_value() ? std::to_string(poi->osmRelationId().value()) : "";  // NOLINT
+    poi_file << poi->name() << "," << poi->poiId() << "," << osm_way_id << "," << osm_relation_id << ","
+             << poi->building() << "," << poi->amenity() << "," << poi->leisure() << ",,\""
+             << poi->geometry()->toString() << "\",\"" << poi->centroidGeometry()->toString() << "\",,1\n";
+  }
+  poi_file.close();
+
   //  const std::string node_filepath = output_folder.empty() ? "node.csv" : output_folder + "/node.csv";
   //  std::ofstream node_file(node_filepath);
   //  if (!node_file) {

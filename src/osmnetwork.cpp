@@ -26,6 +26,7 @@
 #include <osmium/io/file.hpp>       // NOLINT
 #include <osmium/io/reader.hpp>     // NOLINT
 #include <osmium/osm/box.hpp>
+#include <osmium/osm/item_type.hpp>
 #include <osmium/osm/node.hpp>
 #include <osmium/osm/relation.hpp>
 #include <osmium/osm/tag.hpp>
@@ -48,14 +49,15 @@ const char* getOSMTagValue(const osmium::TagList& tag_list, const char* tag_key)
 OsmHandler::OsmHandler(bool POI) : POI_(POI) {}
 void OsmHandler::node(const osmium::Node& node) { osm_node_vector_.push_back(new OsmNode(node)); }
 void OsmHandler::way(const osmium::Way& way) { osm_way_vector_.push_back(new OsmWay(way)); }
-void OsmHandler::relation(const osmium::Relation& /*unused*/) const {
-  if (!POI_) {
-    return;
+void OsmHandler::relation(const osmium::Relation& relation) {
+  if (POI_) {
+    osm_relation_vector_.push_back(new OsmRelation(relation));
   }
 }
 
 std::vector<OsmNode*>& OsmHandler::osmNodeVector() { return osm_node_vector_; }
 std::vector<OsmWay*>& OsmHandler::osmWayVector() { return osm_way_vector_; }
+std::vector<OsmRelation*>& OsmHandler::osmRelationVector() { return osm_relation_vector_; }
 
 OsmNode::OsmNode(const osmium::Node& node)
     : osm_node_id_(node.id()),
@@ -78,9 +80,9 @@ std::vector<OsmWay*> OsmNode::incomingWayVector() const { return incoming_way_ve
 std::vector<OsmWay*> OsmNode::outgoingWayVector() const { return outgoing_way_vector_; }
 
 void OsmNode::initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary,
-                          bool strict_mode) {
+                          bool strict_boundary) {
   geometry_ = factory->createPoint(geos::geom::Coordinate(x, y));
-  if (strict_mode && !boundary->covers(geometry_.get())) {
+  if (strict_boundary && !boundary->covers(geometry_.get())) {
     in_region_ = false;
   }
 }
@@ -132,6 +134,9 @@ bool OsmWay::isOneway() const { return is_oneway_; }
 bool OsmWay::isReversed() const { return is_reversed_; }
 std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
 const std::string& OsmWay::toll() const { return toll_; }
+const std::string& OsmWay::building() const { return building_; }
+const std::string& OsmWay::amenity() const { return amenity_; }
+const std::string& OsmWay::leisure() const { return leisure_; }
 const std::vector<std::vector<OsmNode*>>& OsmWay::segmentNodesVector() const { return segment_nodes_vector_; }
 
 void OsmWay::initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict,
@@ -147,26 +152,15 @@ void OsmWay::mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_nod
   }
   const size_t number_of_ref_nodes = ref_node_id_vector_.size();
   ref_node_vector_.reserve(number_of_ref_nodes);
-
-  bool unknown_ref_node_found = false;
-  OsmIdType unknown_ref_node_id = 0;
   for (const OsmIdType ref_node_id : ref_node_id_vector_) {
     auto iter = osm_node_dict.find(ref_node_id);
-    if (iter != osm_node_dict.end()) {
-      ref_node_vector_.push_back(iter->second);
-    } else {
-      unknown_ref_node_found = true;
-      unknown_ref_node_id = ref_node_id;
-      break;
+    if (iter == osm_node_dict.end()) {
+      LOG(WARNING) << "unkown ref node " << ref_node_id << " in way " << osm_way_id_
+                   << ", the way will not be imported";
+      ref_node_vector_.clear();
+      return;
     }
-  }
-  if (unknown_ref_node_found) {
-#pragma omp critical
-    LOG(WARNING) << "unkown ref node " << unknown_ref_node_id << " in way " << osm_way_id_
-                 << ", the way will not be imported";
-    contains_unknown_ref_nodes_ = true;
-    ref_node_vector_.clear();
-    return;
+    ref_node_vector_.push_back(iter->second);
   }
   from_node_ = ref_node_vector_.at(0);
   to_node_ = ref_node_vector_.back();
@@ -283,12 +277,60 @@ void OsmWay::splitIntoSegments() {
   }
 }
 
+OsmRelation::OsmRelation(const osmium::Relation& relation)
+    : osm_relation_id_(relation.id()),
+      building_(getOSMTagValue(relation.tags(), "building")),
+      amenity_(getOSMTagValue(relation.tags(), "amenity")),
+      leisure_(getOSMTagValue(relation.tags(), "leisure")) {
+  for (const osmium::RelationMember& member : relation.members()) {
+    member_id_vector_.push_back(member.ref());
+    member_type_vector_.push_back(member.type());
+    member_role_vector_.emplace_back(member.role());
+  }
+}
+
+void OsmRelation::initOsmRelation(const absl::flat_hash_map<OsmIdType, OsmWay*>& osm_way_dict) {
+  if (member_id_vector_.empty()) {
+    return;
+  }
+  const size_t number_of_members = member_id_vector_.size();
+  member_way_vector_.reserve(number_of_members);
+  for (size_t idx = 0; idx < number_of_members; ++idx) {
+    if (member_type_vector_[idx] != osmium::item_type::way) {
+      continue;
+    }
+    auto iter = osm_way_dict.find(member_id_vector_[idx]);
+    if (iter == osm_way_dict.end()) {
+      LOG(WARNING) << "unkown way member " << member_id_vector_[idx] << " in relation " << osm_relation_id_
+                   << ", the relation will not be imported";
+      member_way_vector_.clear();
+      return;
+    }
+    if (iter->second->refNodeVector().empty()) {
+      LOG(WARNING) << "way member " << member_id_vector_[idx] << " in relation " << osm_relation_id_
+                   << "is not valid, the relation will not be imported";
+      member_way_vector_.clear();
+      return;
+    }
+    member_way_vector_.push_back(iter->second);
+    member_way_role_vector_.push_back(member_role_vector_[idx]);
+  }
+}
+
+OsmIdType OsmRelation::osmRelationId() const { return osm_relation_id_; }
+const std::string& OsmRelation::name() const { return name_; }
+const std::vector<OsmWay*>& OsmRelation::memberWayVector() const { return member_way_vector_; }
+const std::vector<std::string>& OsmRelation::memberWayRoleVector() const { return member_way_role_vector_; }
+const std::string& OsmRelation::building() const { return building_; }
+const std::string& OsmRelation::amenity() const { return amenity_; }
+const std::string& OsmRelation::leisure() const { return leisure_; }
+
 OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_hash_set<HighWayLinkType> link_types,
-                       absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_mode)
+                       absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_boundary)
     : link_types_(std::move(link_types)),
       connector_link_types_(std::move(connector_link_types)),
       POI_(POI),
-      strict_mode_(strict_mode) {
+      strict_boundary_(strict_boundary) {
   if (!std::filesystem::exists(osm_filepath)) {
     LOG(ERROR) << "osm file " << osm_filepath << " does not exist";
     return;
@@ -329,7 +371,9 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
 
   osm_node_vector_ = std::move(handler.osmNodeVector());
   osm_way_vector_ = std::move(handler.osmWayVector());
-  LOG(INFO) << "nodes: " << osm_node_vector_.size() << " ways: " << osm_way_vector_.size();
+  osm_relation_vector_ = std::move(handler.osmRelationVector());
+  LOG(INFO) << "nodes: " << osm_node_vector_.size() << " ways: " << osm_way_vector_.size()
+            << " relations: " << osm_relation_vector_.size();
   for (OsmNode* osm_node : osm_node_vector_) {
     osm_node_dict_[osm_node->osmNodeId()] = osm_node;
   }
@@ -363,7 +407,9 @@ OsmNetwork::~OsmNetwork() {
   }
 }
 
+const std::unique_ptr<geos::geom::Polygon>& OsmNetwork::boundary() const { return boundary_; }
 const std::vector<OsmWay*>& OsmNetwork::osmWayVector() const { return osm_way_vector_; }
+const std::vector<OsmRelation*>& OsmNetwork::osmRelationVector() const { return osm_relation_vector_; }
 
 void OsmNetwork::processOsmData() {
   initializeElements();
@@ -375,7 +421,7 @@ void OsmNetwork::initializeElements() {
   const size_t number_of_osm_nodes = osm_node_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
   for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
-    osm_node_vector_[idx]->initOsmNode(factory_.get(), boundary_.get(), strict_mode_);
+    osm_node_vector_[idx]->initOsmNode(factory_.get(), boundary_.get(), strict_boundary_);
   }
 
   /*================= OsmWay =================*/
@@ -392,6 +438,13 @@ void OsmNetwork::initializeElements() {
     if (osm_way->toNode() != nullptr) {
       osm_way->toNode()->addIncomingWay(osm_way);
     }
+  }
+
+  /*================= OsmRelation =================*/
+  const size_t number_of_osm_relations = osm_relation_vector_.size();
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_relations)
+  for (int64_t idx = 0; idx < number_of_osm_relations; ++idx) {
+    osm_relation_vector_[idx]->initOsmRelation(osm_way_dict_);
   }
 }
 

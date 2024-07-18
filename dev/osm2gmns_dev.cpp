@@ -27,7 +27,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
     Network* network = getNetFromFile(map_folder / map_filename,
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
-                                      {HighWayLinkType::RESIDENTIAL}, false);
+                                      {HighWayLinkType::RESIDENTIAL}, true, true);
 
     outputNetToCSV(network, map_folder);
 

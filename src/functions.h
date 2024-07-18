@@ -14,6 +14,7 @@
 
 Network* getNetFromFile(const std::filesystem::path& osm_filepath,
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
-                        const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI);
+                        const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI = false,
+                        bool strict_boundary = true);
 
 #endif  // OSM2GMNS_FUNCTIONS_H
