@@ -36,6 +36,7 @@ Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory)
 }
 
 void Node::setNodeId(NetIdType node_id) { node_id_ = node_id; }
+void Node::setZoneId(NetIdType zone_id) { zone_id_ = zone_id; }
 
 NetIdType Node::nodeId() const { return node_id_; };
 OsmIdType Node::osmNodeId() const { return osm_node_id_; }
@@ -154,6 +155,9 @@ const std::unique_ptr<geos::geom::Point>& POI::centroidGeometry() const { return
 
 void POI::setPOIId(NetIdType poi_id) { poi_id_ = poi_id; }
 
+Zone::Zone(NetIdType zone_id, std::unique_ptr<geos::geom::Geometry> geometry)
+    : zone_id_(zone_id), geometry_(std::move(geometry)) {}
+
 Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
                  absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI)
     : osmnet_(osmnet),
@@ -181,6 +185,15 @@ size_t Network::numberOfLinks() const { return link_vector_.size(); }
 const std::vector<Node*>& Network::nodeVector() const { return node_vector_; }
 const std::vector<Link*>& Network::linkVector() const { return link_vector_; }
 const std::vector<POI*>& Network::poiVector() const { return poi_vector_; }
+
+void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
+  for (Node* node : node_vector_) {
+    if (zone_vector.empty()) {
+      node->setZoneId(node->nodeId());
+      continue;
+    }
+  }
+}
 
 void Network::createNodesAndLinksFromOsmNetwork() {
   const size_t num_threads = omp_get_max_threads();

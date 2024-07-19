@@ -38,6 +38,7 @@ class Node {
   explicit Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory);
 
   void setNodeId(NetIdType node_id);
+  void setZoneId(NetIdType zone_id);
 
   [[nodiscard]] NetIdType nodeId() const;
   [[nodiscard]] OsmIdType osmNodeId() const;
@@ -50,6 +51,7 @@ class Node {
   const OsmNode* osm_node_;
   std::string name_;
   std::unique_ptr<geos::geom::Point> geometry_;
+  std::optional<NetIdType> zone_id_;
   //  unsigned long osm_node_id{};
   //  std::string osm_highway{};
   //  std::string ctrl_type{};
@@ -140,6 +142,15 @@ class POI {
   std::unique_ptr<geos::geom::Point> centroid_geometry_;
 };
 
+class Zone {
+ public:
+  explicit Zone(NetIdType zone_id, std::unique_ptr<geos::geom::Geometry> geometry);
+
+ private:
+  NetIdType zone_id_;
+  std::unique_ptr<geos::geom::Geometry> geometry_;
+};
+
 class Network {
  public:
   explicit Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
@@ -155,6 +166,8 @@ class Network {
   [[nodiscard]] const std::vector<Node*>& nodeVector() const;
   [[nodiscard]] const std::vector<Link*>& linkVector() const;
   [[nodiscard]] const std::vector<POI*>& poiVector() const;
+
+  void generateNodeActivityInfo(const std::vector<Zone*>& zone_vector = {});
 
  private:
   void createNodesAndLinksFromOsmNetwork();

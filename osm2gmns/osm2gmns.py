@@ -28,6 +28,8 @@ def initlib():
 
     oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 
+    oglib.generateNodeActivityInfoPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
     oglib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
     oglib.getNumberOfNodesPy.restype = ctypes.c_uint64
     oglib.getNumberOfLinksPy.argtypes = [ctypes.c_void_p]
@@ -135,6 +137,27 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), P
     network.cnet = oglib.getNetFromFilePy(filename.encode(), link_types_arr, len(link_types_arr), POI)
 
     return network
+
+def generateNodeActivityInfo(network, zone_file=''):
+    """
+    Generate activity information, including activity_type, is_boundary, zone_id for nodes. activity_type includes
+    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links,
+    If a zone_file is provided, zone_id of boundary nodes will be determined by zones defined in the zone_file.
+    Otherwise, for each boundary node, its node_id will be used as zone_id.
+
+    Parameters
+    ----------
+    network: Network
+        osm2gmns Network object
+    zone_file: str
+        filename of the zone file. optional
+
+    Returns
+    -------
+    None
+    """
+
+    oglib.generateNodeActivityInfoPy(network.cnet, zone_file.encode())
 
 
 def outputNetToCSV(network, output_folder='', prefix='', projection=False, encoding=None):

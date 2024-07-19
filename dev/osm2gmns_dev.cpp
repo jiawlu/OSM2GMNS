@@ -20,14 +20,17 @@ int main(int /*argc*/, char* /*argv*/[]) {
     // const auto map_folder = std::filesystem::path("dev/maps/yuba");
     // const auto map_folder = std::filesystem::path("dev/maps/imperial");
     const auto map_folder =
-        std::filesystem::path("/Users/jlu486/GaTech Dropbox/Jiawei Lu/Work/CAVLite/OSM2GMNS/maps/debug");
+        std::filesystem::path("/Users/jlu486/GaTech Dropbox/Jiawei Lu/OSM_GMNS_GD_test/GMNS_test/1_Sioux Falls");
+
     // const std::string map_filename = "map.osm.pbf";
-    const std::string map_filename = "toll.osm";
+    const std::string map_filename = "map.pbf";
 
     Network* network = getNetFromFile(map_folder / map_filename,
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, true);
+
+    generateNodeActivityInfo(network, map_folder / "zone copy.csv");
 
     outputNetToCSV(network, map_folder);
 

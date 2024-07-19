@@ -135,6 +135,16 @@ include_directories(SYSTEM ${geos_SOURCE_DIR}/include)
 include_directories(SYSTEM ${geos_BINARY_DIR}/include)
 add_definitions(-DUSE_UNSTABLE_GEOS_CPP_API)
 
+FetchContent_Declare(
+        fast-cpp-csv-parser
+        GIT_REPOSITORY https://github.com/ben-strasser/fast-cpp-csv-parser.git
+        GIT_TAG        master
+        SYSTEM
+        OVERRIDE_FIND_PACKAGE
+)
+FetchContent_Populate(fast-cpp-csv-parser)
+include_directories(SYSTEM ${fast-cpp-csv-parser_SOURCE_DIR})
+
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")

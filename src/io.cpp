@@ -6,15 +6,22 @@
 
 #include <absl/container/flat_hash_map.h>
 #include <absl/log/log.h>
+#include <geos/geom/Geometry.h>
+#include <geos/io/WKTReader.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <ios>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
 
+#include "csv.h"
 #include "networks.h"
 #include "osmconfig.h"
 #include "utils.h"
@@ -172,4 +179,45 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   //              << ",," << link_geo << "\n";
   //  }
   //  link_file.close();
+}
+
+std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
+  if (!std::filesystem::exists(zone_file)) {
+    LOG(ERROR) << "zone file " << zone_file << " does not exist";
+    return {};
+  }
+
+  constexpr int16_t number_of_columns = 4;
+  io::CSVReader<number_of_columns, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in_file(zone_file);
+  bool has_geometry_info = false;
+  bool has_coord_info = false;
+  in_file.read_header(io::ignore_missing_column, "zone_id", "x_coord", "y_coord", "geometry");
+  if (in_file.has_column("geometry")) {
+    has_geometry_info = true;
+  }
+  if (in_file.has_column("x_coord") && in_file.has_column("y_coord")) {
+    has_coord_info = true;
+  }
+  if (!has_geometry_info && !has_coord_info) {
+    LOG(ERROR) << "zone file should have either x_coord y_coord or geometry information. zone file will not be loaded";
+    return {};
+  }
+
+  std::vector<Zone*> zone_vector;
+  NetIdType zone_id = 0;
+  double x_coord = 0.0;
+  double y_coord = 0.0;
+  std::string geometry_str;
+  geos::geom::GeometryFactory::Ptr factory = geos::geom::GeometryFactory::create();
+  const geos::io::WKTReader reader(factory.get());
+  while (in_file.read_row(zone_id, x_coord, y_coord, geometry_str)) {
+    std::unique_ptr<geos::geom::Geometry> geometry;
+    if (has_geometry_info) {
+      geometry = reader.read(geometry_str);
+    } else if (has_coord_info) {
+      geometry = factory->createPoint(geos::geom::Coordinate(x_coord, y_coord));
+    }
+    zone_vector.push_back(new Zone(zone_id, std::move(geometry)));
+  }
+  return zone_vector;
 }

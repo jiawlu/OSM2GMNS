@@ -48,6 +48,10 @@ C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_type
   return network;
 };
 
+C_API void generateNodeActivityInfoPy(Network* network, const char* zone_file) {
+  generateNodeActivityInfo(network, zone_file);
+};
+
 C_API void outputNetToCSVPy(const Network* network, const char* output_folder) {
   outputNetToCSV(network, output_folder);
 };
