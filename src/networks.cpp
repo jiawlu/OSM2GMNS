@@ -6,6 +6,7 @@
 
 #include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
+#include <absl/log/log.h>
 #include <geos/geom/CoordinateSequence.h>
 #include <geos/geom/Geometry.h>
 #include <geos/geom/GeometryFactory.h>
@@ -19,6 +20,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
+#include <limits>
 #include <memory>
 #include <numeric>
 #include <optional>
@@ -37,11 +39,18 @@ Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory)
 
 void Node::setNodeId(NetIdType node_id) { node_id_ = node_id; }
 void Node::setZoneId(NetIdType zone_id) { zone_id_ = zone_id; }
+void Node::setBoundary(int16_t boundary) { boundary_ = boundary; }
+void Node::addIncomingLink(Link* link) { incoming_link_vector_.push_back(link); }
+void Node::addOutgoingLink(Link* link) { outgoing_link_vector_.push_back(link); }
 
 NetIdType Node::nodeId() const { return node_id_; };
 OsmIdType Node::osmNodeId() const { return osm_node_id_; }
 const std::string& Node::name() const { return name_; }
 const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geometry_; }
+std::optional<NetIdType> Node::zoneId() const { return zone_id_; }
+int16_t Node::boundary() const { return boundary_; }
+const std::vector<Link*>& Node::incomingLinkVector() const { return incoming_link_vector_; }
+const std::vector<Link*>& Node::outgoingLinkVector() const { return outgoing_link_vector_; }
 
 Link::Link(Node* from_node, Node* to_node) : from_node_(from_node), to_node_(to_node) {}
 Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
@@ -158,6 +167,9 @@ void POI::setPOIId(NetIdType poi_id) { poi_id_ = poi_id; }
 Zone::Zone(NetIdType zone_id, std::unique_ptr<geos::geom::Geometry> geometry)
     : zone_id_(zone_id), geometry_(std::move(geometry)) {}
 
+NetIdType Zone::zoneId() const { return zone_id_; }
+const std::unique_ptr<geos::geom::Geometry>& Zone::geometry() const { return geometry_; }
+
 Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
                  absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI)
     : osmnet_(osmnet),
@@ -188,9 +200,60 @@ const std::vector<POI*>& Network::poiVector() const { return poi_vector_; }
 
 void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
   for (Node* node : node_vector_) {
+    if (node->outgoingLinkVector().empty() && !node->incomingLinkVector().empty()) {
+      node->setBoundary(-1);
+    } else if (node->incomingLinkVector().empty() && !node->outgoingLinkVector().empty()) {
+      node->setBoundary(1);
+    } else if (node->incomingLinkVector().size() == 1 && node->outgoingLinkVector().size() == 1) {
+      if (node->incomingLinkVector().at(0)->fromNode() == node->outgoingLinkVector().at(0)->toNode()) {
+        node->setBoundary(2);
+      }
+    }
+  }
+
+  absl::flat_hash_map<geos::geom::Geometry*, NetIdType> point_zone_dict;
+  absl::flat_hash_map<geos::geom::Geometry*, NetIdType> polygon_zone_dict;
+  for (const Zone* zone : zone_vector) {
+    if (zone->geometry()->getGeometryTypeId() == geos::geom::GEOS_POINT) {
+      point_zone_dict[zone->geometry().get()] = zone->zoneId();
+    } else if (zone->geometry()->getGeometryTypeId() == geos::geom::GEOS_POLYGON ||
+               zone->geometry()->getGeometryTypeId() == geos::geom::GEOS_MULTIPOLYGON) {
+      polygon_zone_dict[zone->geometry().get()] = zone->zoneId();
+    } else {
+      LOG(WARNING) << "unsupported geometry type";
+    }
+  }
+
+  for (Node* node : node_vector_) {
+    if (node->boundary() == 0) {
+      continue;
+    }
     if (zone_vector.empty()) {
       node->setZoneId(node->nodeId());
       continue;
+    }
+    bool polygon_zone_found = false;
+    for (const auto& [polygon_geometry, zone_id] : polygon_zone_dict) {
+      if (polygon_geometry->covers(node->geometry().get())) {
+        polygon_zone_found = true;
+        node->setZoneId(zone_id);
+        break;
+      }
+    }
+    if (polygon_zone_found) {
+      continue;
+    }
+    double min_distance = std::numeric_limits<double>::max();
+    std::optional<NetIdType> nearest_zone_id;
+    for (const auto& [point_geometry, zone_id] : point_zone_dict) {
+      const double distance = point_geometry->distance(node->geometry().get());
+      if (distance < min_distance) {
+        min_distance = distance;
+        nearest_zone_id = zone_id;
+      }
+    }
+    if (nearest_zone_id.has_value()) {
+      node->setZoneId(nearest_zone_id.value());
     }
   }
 }
@@ -237,6 +300,7 @@ void Network::createNodesAndLinksFromOsmNetwork() {
       from_node = iter_from->second;
     }
     link->setFromNode(from_node);
+    from_node->addOutgoingLink(link);
 
     Node* to_node = nullptr;
     auto iter_to = osm_node_to_node_dict.find(link->toOsmNode());
@@ -248,6 +312,7 @@ void Network::createNodesAndLinksFromOsmNetwork() {
       to_node = iter_to->second;
     }
     link->setToNode(to_node);
+    to_node->addIncomingLink(link);
   }
 
   NetIdType node_id = 0;

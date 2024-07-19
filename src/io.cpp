@@ -95,11 +95,12 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     LOG(ERROR) << "Cannot open file " << node_filepath;
     return;
   }
-  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,notes\n";
+  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
+    const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
     node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << ",," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
-              << node->geometry()->getY() << std::defaultfloat << ",\n";
+              << node->geometry()->getY() << std::defaultfloat << "," << node->boundary() << "," << zone_id << ",\n";
   }
   node_file.close();
 
@@ -214,6 +215,13 @@ std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
     std::unique_ptr<geos::geom::Geometry> geometry;
     if (has_geometry_info) {
       geometry = reader.read(geometry_str);
+      if (geometry->getGeometryTypeId() != geos::geom::GEOS_POINT &&
+          geometry->getGeometryTypeId() != geos::geom::GEOS_POLYGON &&
+          geometry->getGeometryTypeId() != geos::geom::GEOS_MULTIPOLYGON) {
+        LOG(WARNING) << "unsupported geometry type in the zone file. values in the geometry column should have a type "
+                        "of POINT, POLYGON, or MULTIPOLYGON";
+        continue;
+      }
     } else if (has_coord_info) {
       geometry = factory->createPoint(geos::geom::Coordinate(x_coord, y_coord));
     }

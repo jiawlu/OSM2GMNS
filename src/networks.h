@@ -39,11 +39,18 @@ class Node {
 
   void setNodeId(NetIdType node_id);
   void setZoneId(NetIdType zone_id);
+  void setBoundary(int16_t boundary);
+  void addIncomingLink(Link* link);
+  void addOutgoingLink(Link* link);
 
   [[nodiscard]] NetIdType nodeId() const;
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] std::optional<NetIdType> zoneId() const;
+  [[nodiscard]] int16_t boundary() const;
+  [[nodiscard]] const std::vector<Link*>& incomingLinkVector() const;
+  [[nodiscard]] const std::vector<Link*>& outgoingLinkVector() const;
 
  private:
   NetIdType node_id_{-1};
@@ -52,6 +59,8 @@ class Node {
   std::string name_;
   std::unique_ptr<geos::geom::Point> geometry_;
   std::optional<NetIdType> zone_id_;
+  int16_t boundary_{
+      0};  // 0 - not a boundary node; -1 - incoming only; 1 - outgoing only; 2 - both incoming and outgoing
   //  unsigned long osm_node_id{};
   //  std::string osm_highway{};
   //  std::string ctrl_type{};
@@ -59,8 +68,8 @@ class Node {
   //  double x{}, y{};
   //  std::string notes{};
 
-  std::vector<Link*> outgoing_link_vector_;
   std::vector<Link*> incoming_link_vector_;
+  std::vector<Link*> outgoing_link_vector_;
 
   //  void buildFromOSMNode(OSMNode* osmnode) {
   //    name = osmnode->name();
@@ -145,6 +154,9 @@ class POI {
 class Zone {
  public:
   explicit Zone(NetIdType zone_id, std::unique_ptr<geos::geom::Geometry> geometry);
+
+  [[nodiscard]] NetIdType zoneId() const;
+  [[nodiscard]] const std::unique_ptr<geos::geom::Geometry>& geometry() const;
 
  private:
   NetIdType zone_id_;

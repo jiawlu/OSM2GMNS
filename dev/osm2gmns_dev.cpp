@@ -30,7 +30,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, true);
 
-    generateNodeActivityInfo(network, map_folder / "zone copy.csv");
+    generateNodeActivityInfo(network, map_folder / "zone.csv");
 
     outputNetToCSV(network, map_folder);
 
