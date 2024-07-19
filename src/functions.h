@@ -15,6 +15,8 @@
 Network* getNetFromFile(const std::filesystem::path& osm_filepath,
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI = false,
-                        bool strict_boundary = true);
+                        float POI_sampling_ratio = 1.0, bool strict_boundary = true);
+
+void generateNodeActivityInfo(Network* network, const std::filesystem::path& zone_file = "");
 
 #endif  // OSM2GMNS_FUNCTIONS_H

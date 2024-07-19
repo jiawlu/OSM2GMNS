@@ -6,15 +6,22 @@
 
 #include <absl/container/flat_hash_map.h>
 #include <absl/log/log.h>
+#include <geos/geom/Geometry.h>
+#include <geos/io/WKTReader.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <ios>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <vector>
 
+#include "csv.h"
 #include "networks.h"
 #include "osmconfig.h"
 #include "utils.h"
@@ -88,11 +95,12 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     LOG(ERROR) << "Cannot open file " << node_filepath;
     return;
   }
-  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,notes\n";
+  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
+    const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
     node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << ",," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
-              << node->geometry()->getY() << std::defaultfloat << ",\n";
+              << node->geometry()->getY() << std::defaultfloat << "," << node->boundary() << "," << zone_id << ",\n";
   }
   node_file.close();
 
@@ -172,4 +180,52 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   //              << ",," << link_geo << "\n";
   //  }
   //  link_file.close();
+}
+
+std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
+  if (!std::filesystem::exists(zone_file)) {
+    LOG(ERROR) << "zone file " << zone_file << " does not exist";
+    return {};
+  }
+
+  constexpr int16_t number_of_columns = 4;
+  io::CSVReader<number_of_columns, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in_file(zone_file);
+  bool has_geometry_info = false;
+  bool has_coord_info = false;
+  in_file.read_header(io::ignore_missing_column, "zone_id", "x_coord", "y_coord", "geometry");
+  if (in_file.has_column("geometry")) {
+    has_geometry_info = true;
+  }
+  if (in_file.has_column("x_coord") && in_file.has_column("y_coord")) {
+    has_coord_info = true;
+  }
+  if (!has_geometry_info && !has_coord_info) {
+    LOG(ERROR) << "zone file should have either x_coord y_coord or geometry information. zone file will not be loaded";
+    return {};
+  }
+
+  std::vector<Zone*> zone_vector;
+  NetIdType zone_id = 0;
+  double x_coord = 0.0;
+  double y_coord = 0.0;
+  std::string geometry_str;
+  geos::geom::GeometryFactory::Ptr factory = geos::geom::GeometryFactory::create();
+  const geos::io::WKTReader reader(factory.get());
+  while (in_file.read_row(zone_id, x_coord, y_coord, geometry_str)) {
+    std::unique_ptr<geos::geom::Geometry> geometry;
+    if (has_geometry_info) {
+      geometry = reader.read(geometry_str);
+      if (geometry->getGeometryTypeId() != geos::geom::GEOS_POINT &&
+          geometry->getGeometryTypeId() != geos::geom::GEOS_POLYGON &&
+          geometry->getGeometryTypeId() != geos::geom::GEOS_MULTIPOLYGON) {
+        LOG(WARNING) << "unsupported geometry type in the zone file. values in the geometry column should have a type "
+                        "of POINT, POLYGON, or MULTIPOLYGON";
+        continue;
+      }
+    } else if (has_coord_info) {
+      geometry = factory->createPoint(geos::geom::Coordinate(x_coord, y_coord));
+    }
+    zone_vector.push_back(new Zone(zone_id, std::move(geometry)));
+  }
+  return zone_vector;
 }

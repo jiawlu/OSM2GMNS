@@ -23,10 +23,16 @@ oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
 def initlib():
     oglib.initializeAbslLoggingPy.argtypes = []
 
-    oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t, ctypes.c_bool]
+    oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p,
+                                       ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
+                                       ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
+                                       ctypes.c_bool, ctypes.c_float,
+                                       ctypes.c_bool]
     oglib.getNetFromFilePy.restype = ctypes.c_void_p
 
     oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
+    oglib.generateNodeActivityInfoPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 
     oglib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
     oglib.getNumberOfNodesPy.restype = ctypes.c_uint64
@@ -49,7 +55,8 @@ class Network:
         return oglib.getNumberOfLinksPy(self.cnet)
 
 
-def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), POI=False, POI_sampling_ratio=1.0,
+def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), connector_link_types=(),
+                   POI=False, POI_sampling_ratio=1.0,
                    strict_boundary=True, offset='no', min_nodes=1, combine=False, bbox=None,
                    default_lanes=False, default_speed=False, default_capacity=False, start_node_id=0, start_link_id=0):
     """
@@ -132,9 +139,36 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), P
 
     link_types_byte_string = [link_type.encode() for link_type in link_types]
     link_types_arr = (ctypes.c_char_p * len(link_types_byte_string))(*link_types_byte_string)
-    network.cnet = oglib.getNetFromFilePy(filename.encode(), link_types_arr, len(link_types_arr), POI)
+    connector_link_types_byte_string = [link_type.encode() for link_type in connector_link_types]
+    connector_link_types_arr = (ctypes.c_char_p * len(connector_link_types_byte_string))(*connector_link_types_byte_string)
+    network.cnet = oglib.getNetFromFilePy(filename.encode(),
+                                          link_types_arr, len(link_types_arr),
+                                          connector_link_types_arr, len(connector_link_types_arr),
+                                          POI, POI_sampling_ratio,
+                                          strict_boundary)
 
     return network
+
+def generateNodeActivityInfo(network, zone_file=''):
+    """
+    Generate activity information, including activity_type, is_boundary, zone_id for nodes. activity_type includes
+    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links,
+    If a zone_file is provided, zone_id of boundary nodes will be determined by zones defined in the zone_file.
+    Otherwise, for each boundary node, its node_id will be used as zone_id.
+
+    Parameters
+    ----------
+    network: Network
+        osm2gmns Network object
+    zone_file: str
+        filename of the zone file. optional
+
+    Returns
+    -------
+    None
+    """
+
+    oglib.generateNodeActivityInfoPy(network.cnet, zone_file.encode())
 
 
 def outputNetToCSV(network, output_folder='', prefix='', projection=False, encoding=None):

@@ -4,7 +4,9 @@
 #include <absl/log/log.h>
 
 #include <filesystem>
+#include <vector>
 
+#include "io.h"
 #include "networks.h"
 #include "osmconfig.h"
 #include "osmnetwork.h"
@@ -70,10 +72,23 @@
 Network* getNetFromFile(const std::filesystem::path& osm_filepath,
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
-                        bool strict_boundary) {
+                        float POI_sampling_ratio, bool strict_boundary) {
   LOG(INFO) << "loading data from osm file";
   auto* osmnet = new OsmNetwork(osm_filepath, link_types, connector_link_types, POI, strict_boundary);
 
   LOG(INFO) << "building network";
-  return new Network(osmnet, link_types, connector_link_types, POI);
+  return new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);
 };
+
+void generateNodeActivityInfo(Network* network, const std::filesystem::path& zone_file) {
+  if (!zone_file.empty() && !std::filesystem::exists(zone_file)) {
+    LOG(ERROR) << "zone file " << zone_file << " does not exist. generateNodeActivityInfo() skipped";
+    return;
+  }
+  if (zone_file.empty()) {
+    network->generateNodeActivityInfo();
+  } else {
+    const std::vector<Zone*> zone_vector = readZoneFile(zone_file);
+    network->generateNodeActivityInfo(zone_vector);
+  }
+}
