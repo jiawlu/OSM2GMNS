@@ -40,11 +40,13 @@ extern "C" {
 C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
 
 C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_types_val, size_t link_types_len,
-                                const char** connector_link_types_val, size_t connector_link_types_len, bool POI) {
+                                const char** connector_link_types_val, size_t connector_link_types_len, bool POI,
+                                float POI_sampling_ratio, bool strict_boundary) {
   const absl::flat_hash_set<HighWayLinkType> link_types = parseLinkTypes(link_types_val, link_types_len);
   const absl::flat_hash_set<HighWayLinkType> connector_link_types =
       parseLinkTypes(connector_link_types_val, connector_link_types_len);
-  Network* network = getNetFromFile(osm_filepath, link_types, connector_link_types, POI);
+  Network* network =
+      getNetFromFile(osm_filepath, link_types, connector_link_types, POI, POI_sampling_ratio, strict_boundary);
   return network;
 };
 

@@ -171,11 +171,12 @@ NetIdType Zone::zoneId() const { return zone_id_; }
 const std::unique_ptr<geos::geom::Geometry>& Zone::geometry() const { return geometry_; }
 
 Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
-                 absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI)
+                 absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio)
     : osmnet_(osmnet),
       link_types_(std::move(link_types)),
       connector_link_types_(std::move(connector_link_types)),
-      POI_(POI) {
+      POI_(POI),
+      POI_sampling_ratio_(POI_sampling_ratio) {
   factory_ = geos::geom::GeometryFactory::create();
 
   createNodesAndLinksFromOsmNetwork();
@@ -401,8 +402,12 @@ void Network::createPOIsFromOsmNetwork() {
 void Network::createPOIsFromOsmWays(std::vector<std::vector<POI*>>& m_poi_vector) {
   const std::vector<OsmWay*>& osm_way_vector = osmnet_->osmWayVector();
   const size_t number_of_osm_ways = osm_way_vector.size();
-#pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector, number_of_osm_ways, m_poi_vector)
+  const int freq = std::max(static_cast<int>(std::round(1.0 / POI_sampling_ratio_)), 1);
+#pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector, number_of_osm_ways, freq, m_poi_vector)
   for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
+    if (idx % freq != 0) {
+      continue;
+    }
     createPOIsFromOneOsmWay(osm_way_vector[idx], m_poi_vector);
   }
 }
@@ -421,9 +426,13 @@ void Network::createPOIsFromOneOsmWay(const OsmWay* osm_way, std::vector<std::ve
 void Network::createPOIsFromOsmRelations(std::vector<std::vector<POI*>>& m_poi_vector) {
   const std::vector<OsmRelation*>& osm_relation_vector = osmnet_->osmRelationVector();
   const size_t number_of_osm_relations = osm_relation_vector.size();
+  const int freq = std::max(static_cast<int>(std::round(1.0 / POI_sampling_ratio_)), 1);
 #pragma omp parallel for schedule(dynamic) default(none) \
-    shared(osm_relation_vector, number_of_osm_relations, m_poi_vector)
+    shared(osm_relation_vector, number_of_osm_relations, freq, m_poi_vector)
   for (int64_t idx = 0; idx < number_of_osm_relations; ++idx) {
+    if (idx % freq != 0) {
+      continue;
+    }
     createPOIsFromOneOsmRelation(osm_relation_vector[idx], m_poi_vector);
   }
 }

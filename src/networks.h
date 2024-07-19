@@ -166,7 +166,7 @@ class Zone {
 class Network {
  public:
   explicit Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
-                   absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI);
+                   absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio);
   ~Network();
   Network(const Network&) = delete;
   Network& operator=(const Network&) = delete;
@@ -196,6 +196,7 @@ class Network {
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_;
+  float POI_sampling_ratio_;
 
   // absl::flat_hash_map<NetIdType, Node*> node_dict_;
   // absl::flat_hash_map<NetIdType, Link*> link_dict_;
