@@ -97,10 +97,15 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
+    if (!node->isValid()) {
+      continue;
+    }
     const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
+    const std::string boundary =
+        node->boundary().has_value() ? std::to_string(node->boundary().value()) : "";  // NOLINT
     node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << ",," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
-              << node->geometry()->getY() << std::defaultfloat << "," << node->boundary() << "," << zone_id << ",\n";
+              << node->geometry()->getY() << std::defaultfloat << "," << boundary << "," << zone_id << ",\n";
   }
   node_file.close();
 
@@ -113,6 +118,9 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
                "speed,lanes,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
+    if (!link->isValid()) {
+      continue;
+    }
     const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
     std::string free_speed;
     if (link->freeSpeed().has_value()) {
@@ -229,3 +237,5 @@ std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
   }
   return zone_vector;
 }
+
+std::vector<Intersection*> readIntersectionFile(const std::filesystem::path& /*intersection_file*/) { return {}; }

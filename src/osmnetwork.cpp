@@ -74,6 +74,7 @@ OsmNode::OsmNode(const osmium::Node& node)
 OsmIdType OsmNode::osmNodeId() const { return osm_node_id_; }
 const std::string& OsmNode::name() const { return name_; }
 const std::unique_ptr<geos::geom::Point>& OsmNode::geometry() const { return geometry_; }
+bool OsmNode::isSignalized() const { return is_signalized_; }
 int32_t OsmNode::usageCount() const { return usage_count_; }
 bool OsmNode::isTypologyNode() const { return is_typology_node_; }
 std::vector<OsmWay*> OsmNode::incomingWayVector() const { return incoming_way_vector_; }

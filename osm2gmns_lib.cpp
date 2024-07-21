@@ -50,6 +50,11 @@ C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_type
   return network;
 };
 
+C_API void consolidateComplexIntersectionsPy(Network* network, bool auto_identify, const char* intersection_file,
+                                             float int_buffer) {
+  consolidateComplexIntersections(network, auto_identify, intersection_file, int_buffer);
+};
+
 C_API void generateNodeActivityInfoPy(Network* network, const char* zone_file) {
   generateNodeActivityInfo(network, zone_file);
 };
