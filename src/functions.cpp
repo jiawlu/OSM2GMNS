@@ -80,6 +80,21 @@ Network* getNetFromFile(const std::filesystem::path& osm_filepath,
   return new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);
 };
 
+void consolidateComplexIntersections(Network* network, bool auto_identify,
+                                     const std::filesystem::path& intersection_file, float int_buffer) {
+  if (!intersection_file.empty() && !std::filesystem::exists(intersection_file)) {
+    LOG(ERROR) << "intersection file " << intersection_file
+               << " does not exist. consolidateComplexIntersections() skipped";
+    return;
+  }
+  if (intersection_file.empty()) {
+    network->consolidateComplexIntersections(auto_identify, {}, int_buffer);
+  } else {
+    const std::vector<Intersection*> intersection_vector = readIntersectionFile(intersection_file);
+    network->consolidateComplexIntersections(auto_identify, intersection_vector, int_buffer);
+  }
+}
+
 void generateNodeActivityInfo(Network* network, const std::filesystem::path& zone_file) {
   if (!zone_file.empty() && !std::filesystem::exists(zone_file)) {
     LOG(ERROR) << "zone file " << zone_file << " does not exist. generateNodeActivityInfo() skipped";

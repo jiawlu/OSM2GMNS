@@ -54,6 +54,7 @@ class OsmNode {
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] bool isSignalized() const;
   [[nodiscard]] int32_t usageCount() const;
   [[nodiscard]] bool isTypologyNode() const;
   [[nodiscard]] std::vector<OsmWay*> incomingWayVector() const;
@@ -84,9 +85,7 @@ class OsmNode {
   std::vector<OsmWay*> incoming_way_vector_;
   std::vector<OsmWay*> outgoing_way_vector_;
 
-  std::string notes{};
-  //    Node* node;
-  bool node_assigned{false};
+  std::string notes_;
 };
 
 class OsmWay {

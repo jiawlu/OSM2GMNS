@@ -14,4 +14,6 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
 
 std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file);
 
+std::vector<Intersection*> readIntersectionFile(const std::filesystem::path& intersection_file);
+
 #endif  // OSM2GMNS_IO_H

@@ -24,7 +24,6 @@
 #include "csv.h"
 #include "networks.h"
 #include "osmconfig.h"
-#include "utils.h"
 
 constexpr int COORDINATE_OUTPUT_PRECISION = 6;
 constexpr int LENGTH_OUTPUT_PRECISION = 2;
@@ -98,9 +97,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
     const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
+    const std::string boundary =
+        node->boundary().has_value() ? std::to_string(node->boundary().value()) : "";  // NOLINT
     node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << ",," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
-              << node->geometry()->getY() << std::defaultfloat << "," << node->boundary() << "," << zone_id << ",\n";
+              << node->geometry()->getY() << std::defaultfloat << "," << boundary << "," << zone_id << ",\n";
   }
   node_file.close();
 
@@ -122,7 +123,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     }
     link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
               << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
-              << std::setprecision(LENGTH_OUTPUT_PRECISION) << calculateLineStringLength(link->geometry().get()) << ","
+              << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
               << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << lanes << ",,"
               << link->toll() << ",\n";
   }
@@ -229,3 +230,5 @@ std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
   }
   return zone_vector;
 }
+
+std::vector<Intersection*> readIntersectionFile(const std::filesystem::path& /*intersection_file*/) { return {}; }

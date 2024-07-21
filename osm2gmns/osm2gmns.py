@@ -30,9 +30,11 @@ def initlib():
                                        ctypes.c_bool]
     oglib.getNetFromFilePy.restype = ctypes.c_void_p
 
-    oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+    oglib.consolidateComplexIntersectionsPy.argtypes = [ctypes.c_char_p, ctypes.c_bool, ctypes.c_char_p, ctypes.c_float]
 
     oglib.generateNodeActivityInfoPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+
+    oglib.outputNetToCSVPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 
     oglib.getNumberOfNodesPy.argtypes = [ctypes.c_void_p]
     oglib.getNumberOfNodesPy.restype = ctypes.c_uint64
@@ -148,6 +150,47 @@ def getNetFromFile(filename='map.osm', network_types=('auto',), link_types=(), c
                                           strict_boundary)
 
     return network
+
+
+def consolidateComplexIntersections(network, auto_identify=False, intersection_file="", int_buffer=20):
+    """
+    Consolidate each complex intersection that are originally represented by multiple nodes in osm into one node. Nodes
+    with the same intersection_id will be consolidated into one node. intersection_id of nodes can be obtained in three ways.
+
+    (1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
+    intersection_id for corresponding nodes.
+
+    (2) provide an intersection file that specifies the central position (required) and buffer (optional) of each complex intersection.
+
+    (3) user can assign intersection_id to nodes manually in network csv files (node.csv), and load the network using function loadNetFromCSV provided by osm2gmns.
+
+    The priority of the three approaches is (3) > (2) > (1).
+    Rules used in the approach (1) to identify if two nodes belong to a complex intersection: (a) ctrl_type of the two nodes must be signal;
+    (b) there is a link connecting these two nodes, and the length of the link is shorter than or equal to the argument int_buffer.
+
+    Parameters
+    ----------
+    network: Network
+        osm2gmns Network object
+    auto_identify: bool
+        if automatically identify complex intersections using built-in methods in osm2gmns. nodes that belong to a complex
+        intersection will be assigned with the same intersection_id
+    intersection_file: str
+        path of an intersction csv file that specifies complex intersections. required fields: central position of intersections
+        (in the form of x_coord and y_coord); optional field: int_buffer (if not specified, the global int_buffer will be used,
+        i.e., the forth arugment). For each record in the intersection_file, osm2gmns consolidates all nodes with a distance to the
+        central position shorter than buffer.
+    int_buffer: float
+        the threshold used to check if two nodes belong to one complex intersection. the unit is meter
+
+    Returns
+    -------
+    None
+
+    """
+
+    oglib.consolidateComplexIntersectionsPy(network.cnet, auto_identify, intersection_file.encode(), int_buffer)
+
 
 def generateNodeActivityInfo(network, zone_file=''):
     """
