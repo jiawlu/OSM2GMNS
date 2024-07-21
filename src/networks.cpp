@@ -65,7 +65,8 @@ Node::Node(NetIdType node_id, const std::vector<Node*>& nodes, NetIdType interse
 void Node::setNodeId(NetIdType node_id) { node_id_ = node_id; }
 void Node::setZoneId(NetIdType zone_id) { zone_id_ = zone_id; }
 void Node::setBoundary(int16_t boundary) { boundary_ = boundary; }
-void Node::setIsValid(bool is_valid) { is_valid_ = is_valid; }
+void Node::setIntersectionId(NetIdType intersection_id) { intersection_id_ = intersection_id; }
+// void Node::setIsValid(bool is_valid) { is_valid_ = is_valid; }
 void Node::addIncomingLink(Link* link) { incoming_link_vector_.push_back(link); }
 void Node::addOutgoingLink(Link* link) { outgoing_link_vector_.push_back(link); }
 
@@ -87,14 +88,15 @@ const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geomet
 std::optional<NetIdType> Node::zoneId() const { return zone_id_; }
 std::optional<int16_t> Node::boundary() const { return boundary_; }
 std::optional<NetIdType> Node::intersectionId() const { return intersection_id_; }
-bool Node::isValid() const { return is_valid_; }
+// bool Node::isValid() const { return is_valid_; }
 const std::vector<Link*>& Node::incomingLinkVector() const { return incoming_link_vector_; }
 const std::vector<Link*>& Node::outgoingLinkVector() const { return outgoing_link_vector_; }
 
 Link::Link(Node* from_node, Node* to_node) : from_node_(from_node), to_node_(to_node) {}
-Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
+Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction, size_t osm_way_seq_,
            const geos::geom::GeometryFactory* factory)
     : osm_way_id_(osm_way->osmWayId()),
+      osm_way_seq_(osm_way_seq_),
       name_(osm_way->name()),
       free_speed_(osm_way->maxSpeed()),
       toll_(osm_way->toll()) {
@@ -114,6 +116,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
     }
   }
   geometry_ = factory->createLineString(coord_seq);
+  length_ = calculateLineStringLength(geometry_.get());
   highway_link_type_ = osm_way->highwayLinkType();
 
   if (osm_way->isOneway()) {
@@ -139,6 +142,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
 
 NetIdType Link::linkId() const { return link_id_; }
 OsmIdType Link::osmWayId() const { return osm_way_id_; }
+size_t Link::osmWaySeq() const { return osm_way_seq_; }
 const std::string& Link::name() const { return name_; }
 OsmNode* Link::fromOsmNode() const { return from_osm_node_; }
 OsmNode* Link::toOsmNode() const { return to_osm_node_; }
@@ -146,7 +150,8 @@ Node* Link::fromNode() const { return from_node_; }
 Node* Link::toNode() const { return to_node_; }
 HighWayLinkType Link::highwayLinkType() const { return highway_link_type_; }
 const std::unique_ptr<geos::geom::LineString>& Link::geometry() const { return geometry_; }
-bool Link::isValid() const { return is_valid_; }
+double Link::length() const { return length_; }
+// bool Link::isValid() const { return is_valid_; }
 std::optional<int32_t> Link::lanes() const { return lanes_; }
 std::optional<float> Link::freeSpeed() const { return free_speed_; }
 const std::string& Link::toll() const { return toll_; }
@@ -154,7 +159,7 @@ const std::string& Link::toll() const { return toll_; }
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
 void Link::setFromNode(Node* from_node) { from_node_ = from_node; }
 void Link::setToNode(Node* to_node) { to_node_ = to_node; }
-void Link::setIsValid(bool is_valid) { is_valid_ = is_valid; }
+// void Link::setIsValid(bool is_valid) { is_valid_ = is_valid; }
 
 POI::POI(const OsmWay* osm_way, std::unique_ptr<geos::geom::Polygon> geometry)
     : name_(osm_way->name()),
@@ -303,12 +308,12 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
 }
 
 void Network::consolidateComplexIntersections(bool auto_identify, const std::vector<Intersection*>& intersection_vector,
-                                              float /*int_buffer*/) {
+                                              float int_buffer) {
   if (!intersection_vector.empty()) {
     // _designateComplexIntersectionsFromIntFile(network, intersection_file, int_buffer)
   }
   if (auto_identify) {
-    // _autoidentifyComplexIntersections(network, int_buffer)
+    identifyComplexIntersections(int_buffer);
   }
 
   absl::flat_hash_map<NetIdType, std::vector<Node*>> node_group_dict;
@@ -325,16 +330,20 @@ void Network::consolidateComplexIntersections(bool auto_identify, const std::vec
   }
 
   size_t number_of_intersections_consolidated = 0;
+  absl::flat_hash_set<Node*> nodes_to_remove;
+  absl::flat_hash_set<Link*> links_to_remove;
   for (auto& [intersection_id, node_group] : node_group_dict) {
     if (node_group.size() < 2) {
       continue;
     }
     Node* new_node = new Node(max_node_id_++, node_group, intersection_id, factory_.get());
     for (Node* node : node_group) {
-      node->setIsValid(false);
+      nodes_to_remove.insert(node);
+      // node->setIsValid(false);
       for (Link* link : node->incomingLinkVector()) {
         if (std::find(node_group.begin(), node_group.end(), link->fromNode()) != node_group.end()) {
-          link->setIsValid(false);
+          links_to_remove.insert(link);
+          // link->setIsValid(false);
         } else {
           link->setToNode(new_node);
           new_node->addIncomingLink(link);
@@ -342,7 +351,8 @@ void Network::consolidateComplexIntersections(bool auto_identify, const std::vec
       }
       for (Link* link : node->outgoingLinkVector()) {
         if (std::find(node_group.begin(), node_group.end(), link->toNode()) != node_group.end()) {
-          link->setIsValid(false);
+          links_to_remove.insert(link);
+          // link->setIsValid(false);
         } else {
           link->setFromNode(new_node);
           new_node->addOutgoingLink(link);
@@ -353,63 +363,14 @@ void Network::consolidateComplexIntersections(bool auto_identify, const std::vec
     ++number_of_intersections_consolidated;
   }
 
-  // for intersection_id, node_group in node_group_dict.items():
-  //     if len(node_group) < 2:
-  //         continue
-
-  //     new_node = Node(network.max_node_id)
-  //     new_node.intersection_id = intersection_id
-  //     if node_group_ctrl_type_dict[intersection_id]:
-  //         new_node.ctrl_type = 'signal'
-  //     osm_node_id_list = []
-  //     x_coord_sum, y_coord_sum = 0.0, 0.0
-  //     x_coord_xy_sum, y_coord_xy_sum = 0.0, 0.0
-
-  //     for node in node_group:
-  //         removal_node_set.add(node)
-  //         osm_node_id_list.append(node.osm_node_id if node.osm_node_id is not None else 'None')
-  //         x_coord_sum += node.geometry.x
-  //         y_coord_sum += node.geometry.y
-  //         x_coord_xy_sum += node.geometry_xy.x
-  //         y_coord_xy_sum += node.geometry_xy.y
-
-  //         for link in node.incoming_link_list:
-  //             if link.from_node in node_group:
-  //                 removal_link_set.add(link)
-  //             else:
-  //                 link.to_node = new_node
-  //                 new_node.incoming_link_list.append(link)
-  //         for link in node.outgoing_link_list:
-  //             if link.to_node in node_group:
-  //                 removal_link_set.add(link)
-  //             else:
-  //                 link.from_node = new_node
-  //                 new_node.outgoing_link_list.append(link)
-
-  //         new_node.osm_highway = node.osm_highway
-
-  //     new_node.osm_node_id = '_'.join(osm_node_id_list)
-  //     x_coord_ave = round(x_coord_sum / len(node_group), og_settings.lonlat_coord_precision)
-  //     y_coord_ave = round(y_coord_sum / len(node_group), og_settings.lonlat_coord_precision)
-  //     new_node.geometry = geometry.Point(x_coord_ave, y_coord_ave)
-  //     x_coord_xy_ave = round(x_coord_xy_sum / len(node_group), og_settings.local_coord_precision)
-  //     y_coord_xy_ave = round(y_coord_xy_sum / len(node_group), og_settings.local_coord_precision)
-  //     new_node.geometry_xy = geometry.Point(x_coord_xy_ave, y_coord_xy_ave)
-
-  //     # Keep the geometry of the links up to date by adding a small edge to join to the newly created node
-  //     for link in new_node.incoming_link_list:
-  //         new_coordinates = list(link.geometry.coords) + list(link.to_node.geometry.coords)
-  //         link.geometry = geometry.LineString(new_coordinates)
-  //     for link in new_node.outgoing_link_list:
-  //         new_coordinates = list(link.from_node.geometry.coords) + list(link.geometry.coords)
-  //         link.geometry = geometry.LineString(new_coordinates)
-
-  //     network.node_dict[new_node.node_id] = new_node
-  //     network.max_node_id += 1
-  //     number_of_intersections_consolidated += 1
-
-  // for node in removal_node_set: del network.node_dict[node.node_id]
-  // for link in removal_link_set: del network.link_dict[link.link_id]
+  node_vector_.erase(
+      remove_if(node_vector_.begin(), node_vector_.end(),
+                [nodes_to_remove](Node* node) { return nodes_to_remove.find(node) != nodes_to_remove.end(); }),
+      node_vector_.end());
+  link_vector_.erase(
+      remove_if(link_vector_.begin(), link_vector_.end(),
+                [links_to_remove](Link* link) { return links_to_remove.find(link) != links_to_remove.end(); }),
+      link_vector_.end());
 }
 
 void Network::createNodesAndLinksFromOsmNetwork() {
@@ -441,6 +402,14 @@ void Network::createNodesAndLinksFromOsmNetwork() {
                         std::make_move_iterator(links.end()));
     links.clear();
   }
+
+  // We need sort here to ensure a fixed link sequence in the link_vector_
+  std::sort(link_vector_.begin(), link_vector_.end(), [](const Link* link_a, const Link* link_b) {
+    if (link_a->osmWayId() != link_b->osmWayId()) {
+      return link_a->osmWayId() < link_b->osmWayId();
+    }
+    return link_a->osmWaySeq() < link_b->osmWaySeq();
+  });
 
   absl::flat_hash_map<OsmNode*, Node*> osm_node_to_node_dict;
   for (Link* link : link_vector_) {
@@ -482,10 +451,11 @@ void Network::createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<s
     if (segment_nodes.size() < 2) {
       continue;
     }
-    Link* link = new Link(osm_way, segment_nodes, true, factory_.get());
+    size_t osm_way_seq = 0;
+    Link* link = new Link(osm_way, segment_nodes, true, osm_way_seq++, factory_.get());
     m_link_vector[omp_get_thread_num()].push_back(link);
     if (!osm_way->isOneway()) {
-      link = new Link(osm_way, segment_nodes, false, factory_.get());
+      link = new Link(osm_way, segment_nodes, false, osm_way_seq++, factory_.get());
       m_link_vector[omp_get_thread_num()].push_back(link);
     }
   }
@@ -684,4 +654,52 @@ void Network::createPOIsFromOneOsmRelation(const OsmRelation* osm_relation,
   }
   std::unique_ptr<geos::geom::MultiPolygon> poi_geometry = factory_->createMultiPolygon(std::move(polygon_vector));
   m_poi_vector[omp_get_thread_num()].push_back(new POI(osm_relation, std::move(poi_geometry)));
+}
+
+void Network::identifyComplexIntersections(float int_buffer) {
+  std::vector<absl::flat_hash_set<Node*>> group_vector;
+  for (Link* link : link_vector_) {
+    if (link->length() > int_buffer) {
+      continue;
+    }
+    if (link->fromNode()->intersectionId().has_value() || link->toNode()->intersectionId().has_value()) {
+      continue;
+    }
+    if (!(link->fromNode()->isSignalized() && link->toNode()->isSignalized())) {
+      continue;
+    }
+    group_vector.push_back({link->fromNode(), link->toNode()});
+  }
+  bool updated = false;
+  while (true) {
+    for (size_t idx1 = 0; idx1 < group_vector.size(); ++idx1) {
+      absl::flat_hash_set<Node*>& group1 = group_vector[idx1];
+      if (group1.empty()) {
+        continue;
+      }
+      for (size_t idx2 = idx1 + 1; idx2 < group_vector.size(); ++idx2) {
+        absl::flat_hash_set<Node*>& group2 = group_vector[idx2];
+        if (group2.empty()) {
+          continue;
+        }
+        if (std::find_first_of(group1.begin(), group1.end(), group2.begin(), group2.end()) != group1.end()) {
+          group1.merge(group2);
+          updated = true;
+        }
+      }
+    }
+    if (!updated) {
+      break;
+    }
+  }
+
+  for (const absl::flat_hash_set<Node*>& group : group_vector) {
+    if (group.empty()) {
+      continue;
+    }
+    for (Node* node : group) {
+      node->setIntersectionId(max_intersection_id_);
+    }
+    ++max_intersection_id_;
+  }
 }

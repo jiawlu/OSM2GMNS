@@ -42,7 +42,8 @@ class Node {
   void setNodeId(NetIdType node_id);
   void setZoneId(NetIdType zone_id);
   void setBoundary(int16_t boundary);
-  void setIsValid(bool is_valid);
+  void setIntersectionId(NetIdType intersection_id);
+  // void setIsValid(bool is_valid);
   void addIncomingLink(Link* link);
   void addOutgoingLink(Link* link);
 
@@ -55,7 +56,7 @@ class Node {
   [[nodiscard]] std::optional<NetIdType> zoneId() const;
   [[nodiscard]] std::optional<int16_t> boundary() const;
   [[nodiscard]] std::optional<NetIdType> intersectionId() const;
-  [[nodiscard]] bool isValid() const;
+  // [[nodiscard]] bool isValid() const;
   [[nodiscard]] const std::vector<Link*>& incomingLinkVector() const;
   [[nodiscard]] const std::vector<Link*>& outgoingLinkVector() const;
 
@@ -69,7 +70,7 @@ class Node {
   // boundary: 0 - not a boundary node; -1 - incoming only; 1 - outgoing only; 2 - both incoming and outgoing
   std::optional<int16_t> boundary_;
   std::optional<NetIdType> intersection_id_;
-  bool is_valid_{true};
+  // bool is_valid_{true};
   //  unsigned long osm_node_id{};
   //  std::string osm_highway{};
   //  std::string ctrl_type{};
@@ -96,10 +97,11 @@ class Link {
  public:
   explicit Link(Node* from_node, Node* to_node);
   explicit Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool forward_direction,
-                const geos::geom::GeometryFactory* factory);
+                size_t osm_way_seq_, const geos::geom::GeometryFactory* factory);
 
   [[nodiscard]] NetIdType linkId() const;
   [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] size_t osmWaySeq() const;
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] OsmNode* fromOsmNode() const;
   [[nodiscard]] OsmNode* toOsmNode() const;
@@ -107,7 +109,8 @@ class Link {
   [[nodiscard]] Node* toNode() const;
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::LineString>& geometry() const;
-  [[nodiscard]] bool isValid() const;
+  [[nodiscard]] double length() const;
+  // [[nodiscard]] bool isValid() const;
   [[nodiscard]] std::optional<int32_t> lanes() const;
   [[nodiscard]] std::optional<float> freeSpeed() const;
   [[nodiscard]] const std::string& toll() const;
@@ -115,11 +118,12 @@ class Link {
   void setLinkId(NetIdType link_id);
   void setFromNode(Node* from_node);
   void setToNode(Node* to_node);
-  void setIsValid(bool is_valid);
+  // void setIsValid(bool is_valid);
 
  private:
   NetIdType link_id_{-1};
   OsmIdType osm_way_id_{-1};
+  size_t osm_way_seq_{0};
   std::string name_;
   OsmNode* from_osm_node_{nullptr};
   OsmNode* to_osm_node_{nullptr};
@@ -127,7 +131,8 @@ class Link {
   Node* to_node_{nullptr};
   HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   std::unique_ptr<geos::geom::LineString> geometry_;
-  bool is_valid_{true};
+  double length_{-1.0};
+  // bool is_valid_{true};
   std::optional<int32_t> lanes_;
   std::optional<float> free_speed_;
   std::string toll_;
@@ -213,6 +218,8 @@ class Network {
   void createPOIsFromOsmRelations(std::vector<std::vector<POI*>>& m_poi_vector);
   void createPOIsFromOneOsmRelation(const OsmRelation* osm_relation, std::vector<std::vector<POI*>>& m_poi_vector);
 
+  void identifyComplexIntersections(float int_buffer);
+
   OsmNetwork* osmnet_;
   geos::geom::GeometryFactory::Ptr factory_;
   absl::flat_hash_set<HighWayLinkType> link_types_;
@@ -228,6 +235,7 @@ class Network {
 
   NetIdType max_node_id_{0};
   NetIdType max_link_id_{0};
+  NetIdType max_intersection_id_{0};
 };
 
 #endif  // OSM2GMNS_NETWORKS_H

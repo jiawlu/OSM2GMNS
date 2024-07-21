@@ -24,7 +24,6 @@
 #include "csv.h"
 #include "networks.h"
 #include "osmconfig.h"
-#include "utils.h"
 
 constexpr int COORDINATE_OUTPUT_PRECISION = 6;
 constexpr int LENGTH_OUTPUT_PRECISION = 2;
@@ -97,9 +96,6 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
-    if (!node->isValid()) {
-      continue;
-    }
     const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
     const std::string boundary =
         node->boundary().has_value() ? std::to_string(node->boundary().value()) : "";  // NOLINT
@@ -118,9 +114,6 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
                "speed,lanes,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
-    if (!link->isValid()) {
-      continue;
-    }
     const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
     std::string free_speed;
     if (link->freeSpeed().has_value()) {
@@ -130,7 +123,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     }
     link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
               << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
-              << std::setprecision(LENGTH_OUTPUT_PRECISION) << calculateLineStringLength(link->geometry().get()) << ","
+              << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
               << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << lanes << ",,"
               << link->toll() << ",\n";
   }
