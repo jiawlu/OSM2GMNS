@@ -99,6 +99,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
       osm_way_seq_(osm_way_seq_),
       name_(osm_way->name()),
       free_speed_(osm_way->maxSpeed()),
+      free_speed_raw_(osm_way->maxSpeedRaw()),
       toll_(osm_way->toll()) {
   if (osm_nodes.size() < 2) {
     return;
@@ -154,6 +155,7 @@ double Link::length() const { return length_; }
 // bool Link::isValid() const { return is_valid_; }
 std::optional<int32_t> Link::lanes() const { return lanes_; }
 std::optional<float> Link::freeSpeed() const { return free_speed_; }
+std::string Link::freeSpeedRaw() const { return free_speed_raw_; }
 const std::string& Link::toll() const { return toll_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
@@ -253,10 +255,11 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
       node->setBoundary(-1);
     } else if (node->incomingLinkVector().empty() && !node->outgoingLinkVector().empty()) {
       node->setBoundary(1);
-    } else if (node->incomingLinkVector().size() == 1 && node->outgoingLinkVector().size() == 1) {
-      if (node->incomingLinkVector().at(0)->fromNode() == node->outgoingLinkVector().at(0)->toNode()) {
-        node->setBoundary(2);
-      }
+    } else if (node->incomingLinkVector().size() == 1 && node->outgoingLinkVector().size() == 1 &&
+               node->incomingLinkVector().at(0)->fromNode() == node->outgoingLinkVector().at(0)->toNode()) {
+      node->setBoundary(2);
+    } else {
+      node->setBoundary(0);
     }
   }
 
@@ -305,6 +308,7 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
       node->setZoneId(nearest_zone_id.value());
     }
   }
+  LOG(INFO) << "Node activity info generated";
 }
 
 void Network::consolidateComplexIntersections(bool auto_identify, const std::vector<Intersection*>& intersection_vector,
@@ -362,6 +366,7 @@ void Network::consolidateComplexIntersections(bool auto_identify, const std::vec
     node_vector_.push_back(new_node);
     ++number_of_intersections_consolidated;
   }
+  LOG(INFO) << number_of_intersections_consolidated << " intersections consolidated";
 
   node_vector_.erase(
       remove_if(node_vector_.begin(), node_vector_.end(),
@@ -672,6 +677,7 @@ void Network::identifyComplexIntersections(float int_buffer) {
   }
   bool updated = false;
   while (true) {
+    updated = false;
     for (size_t idx1 = 0; idx1 < group_vector.size(); ++idx1) {
       absl::flat_hash_set<Node*>& group1 = group_vector[idx1];
       if (group1.empty()) {
@@ -684,6 +690,7 @@ void Network::identifyComplexIntersections(float int_buffer) {
         }
         if (std::find_first_of(group1.begin(), group1.end(), group2.begin(), group2.end()) != group1.end()) {
           group1.merge(group2);
+          group2.clear();
           updated = true;
         }
       }

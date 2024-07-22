@@ -113,6 +113,7 @@ class Link {
   // [[nodiscard]] bool isValid() const;
   [[nodiscard]] std::optional<int32_t> lanes() const;
   [[nodiscard]] std::optional<float> freeSpeed() const;
+  [[nodiscard]] std::string freeSpeedRaw() const;
   [[nodiscard]] const std::string& toll() const;
 
   void setLinkId(NetIdType link_id);
@@ -135,6 +136,7 @@ class Link {
   // bool is_valid_{true};
   std::optional<int32_t> lanes_;
   std::optional<float> free_speed_;
+  std::string free_speed_raw_;
   std::string toll_;
 };
 

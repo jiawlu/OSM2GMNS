@@ -74,7 +74,7 @@ class OsmNode {
   std::unique_ptr<geos::geom::Point> geometry_;
   double x, y;
   std::string highway_;
-  std::string signal_;
+  // std::string signal_;
 
   bool is_signalized_{false};
   bool in_region_{true};
@@ -106,6 +106,7 @@ class OsmWay {
   [[nodiscard]] bool isOneway() const;
   [[nodiscard]] bool isReversed() const;
   [[nodiscard]] std::optional<float> maxSpeed() const;
+  [[nodiscard]] std::string maxSpeedRaw() const;
   [[nodiscard]] const std::string& toll() const;
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;

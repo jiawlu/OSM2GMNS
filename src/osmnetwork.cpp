@@ -64,9 +64,8 @@ OsmNode::OsmNode(const osmium::Node& node)
       x(node.location().lon()),
       y(node.location().lat()),
       name_(getOSMTagValue(node.tags(), "name")),
-      highway_(getOSMTagValue(node.tags(), "highway")),
-      signal_(getOSMTagValue(node.tags(), "signal")) {
-  if (absl::StrContains(signal_, "signal")) {
+      highway_(getOSMTagValue(node.tags(), "highway")) {
+  if (absl::StrContains(highway_, "signal")) {
     is_signalized_ = true;
   }
 }
@@ -134,6 +133,7 @@ bool OsmWay::isTargetLinkType() const { return is_target_link_type_; }
 bool OsmWay::isOneway() const { return is_oneway_; }
 bool OsmWay::isReversed() const { return is_reversed_; }
 std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
+std::string OsmWay::maxSpeedRaw() const { return max_speed_raw_; }
 const std::string& OsmWay::toll() const { return toll_; }
 const std::string& OsmWay::building() const { return building_; }
 const std::string& OsmWay::amenity() const { return amenity_; }
@@ -333,7 +333,7 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
       POI_(POI),
       strict_boundary_(strict_boundary) {
   if (!std::filesystem::exists(osm_filepath)) {
-    LOG(ERROR) << "osm file " << osm_filepath << " does not exist";
+    LOG(FATAL) << "osm file " << osm_filepath << " does not exist";
     return;
   }
 
