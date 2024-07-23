@@ -165,6 +165,11 @@ if (BUILD_OSM2GMNS_LIB)
     add_library(osm2gmnslib SHARED osm2gmns_lib.cpp)
     target_link_libraries(osm2gmnslib osm2gmns_core)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
+    if (WIN32)
+    set_target_properties(osm2gmnslib PROPERTIES
+        COMPILE_FLAGS "-static-libgcc -static-libstdc++"
+        LINK_FLAGS "-static-libgcc -static-libstdc++")
+    endif ()
 endif ()
 
 option(BUILD_OSM2GMNS_DEV "Build executable for development" OFF)
