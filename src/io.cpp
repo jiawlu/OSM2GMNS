@@ -96,11 +96,12 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
+    const std::string ctrl_type = node->isSignalized() ? "signal" : "";
     const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
     const std::string boundary =
         node->boundary().has_value() ? std::to_string(node->boundary().value()) : "";  // NOLINT
-    node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << ",," << std::fixed
-              << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
+    node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << "," << ctrl_type << ","
+              << std::fixed << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
               << node->geometry()->getY() << std::defaultfloat << "," << boundary << "," << zone_id << ",\n";
   }
   node_file.close();
@@ -112,7 +113,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
-               "speed,lanes,allowed_uses,toll,notes\n";
+               "speed,free_speed_raw,lanes,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
     std::string free_speed;
@@ -124,8 +125,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
               << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
-              << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << lanes << ",,"
-              << link->toll() << ",\n";
+              << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << link->freeSpeedRaw()
+              << "," << lanes << ",," << link->toll() << ",\n";
   }
   link_file.close();
 
@@ -190,7 +191,8 @@ std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
   }
 
   constexpr int16_t number_of_columns = 4;
-  io::CSVReader<number_of_columns, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in_file(zone_file);
+  io::CSVReader<number_of_columns, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in_file(
+      zone_file.string().c_str());
   bool has_geometry_info = false;
   bool has_coord_info = false;
   in_file.read_header(io::ignore_missing_column, "zone_id", "x_coord", "y_coord", "geometry");

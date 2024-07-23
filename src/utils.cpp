@@ -28,7 +28,7 @@ void initializeAbslLogging() {
 };
 
 double toRadians(double degrees) {
-  return degrees * M_PI / 180.0;  // NOLINT
+  return degrees * 3.14159265 / 180.0;  // NOLINT
 }
 
 double haversineDistance(double lon1, double lat1, double lon2, double lat2) {
