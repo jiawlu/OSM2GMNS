@@ -166,9 +166,9 @@ if (BUILD_OSM2GMNS_LIB)
     target_link_libraries(osm2gmnslib osm2gmns_core)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
     if (WIN32)
-    set_target_properties(osm2gmnslib PROPERTIES
-        COMPILE_FLAGS "-static-libgcc -static-libstdc++"
-        LINK_FLAGS "-static-libgcc -static-libstdc++")
+        set_target_properties(osm2gmnslib PROPERTIES
+            COMPILE_FLAGS "-static-libgcc -static-libstdc++"
+            LINK_FLAGS "-static -static-libgcc -static-libstdc++ -Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive")
     endif ()
 endif ()
 
