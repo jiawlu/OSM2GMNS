@@ -4,9 +4,9 @@
 
 
 from osm2gmns.osm2gmns import initlib
-from osm2gmns.osm2gmns import getNetFromFile, outputNetToCSV
+from osm2gmns.osm2gmns import getNetFromFile, generateNodeActivityInfo, consolidateComplexIntersections, outputNetToCSV
 
-__version__ = '1.0.0dev1'
+__version__ = '1.0.0dev2'
 print(__version__)
 
 initlib()
