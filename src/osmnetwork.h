@@ -225,9 +225,9 @@ class OsmNetwork {
   std::vector<OsmWay*> osm_way_vector_;
   std::vector<OsmRelation*> osm_relation_vector_;
 
-  std::vector<OsmWay*> link_way_vector{};
+  // std::vector<OsmWay*> link_way_vector{};
 
-  geos::geom::Geometry* bounds{};
+  // geos::geom::Geometry* bounds{};
 };
 
 #endif  // OSM2GMNS_OSMNETWORK_H

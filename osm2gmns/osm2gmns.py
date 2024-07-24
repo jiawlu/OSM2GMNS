@@ -24,6 +24,8 @@ oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
 def initlib():
     oglib.initializeAbslLoggingPy.argtypes = []
 
+    oglib.releaseNetworkMemoryPy.argtypes = [ctypes.c_void_p]
+
     oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p,
                                        ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
                                        ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
@@ -48,6 +50,9 @@ def initlib():
 class Network:
     def __init__(self):
         self.cnet = None
+
+    def __del__(self):
+        oglib.releaseNetworkMemoryPy(self.cnet)
 
     @property
     def number_of_nodes(self):

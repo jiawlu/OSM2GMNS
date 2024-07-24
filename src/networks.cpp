@@ -234,12 +234,16 @@ Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_t
 }
 
 Network::~Network() {
+  LOG(INFO) << "releasing network memory";
   delete osmnet_;
   for (Node* node : node_vector_) {
     delete node;
   }
   for (Link* link : link_vector_) {
     delete link;
+  }
+  for (POI* poi : poi_vector_) {
+    delete poi;
   }
 }
 
@@ -368,6 +372,12 @@ void Network::consolidateComplexIntersections(bool auto_identify, const std::vec
   }
   LOG(INFO) << number_of_intersections_consolidated << " intersections consolidated";
 
+  for (Node* node : nodes_to_remove) {
+    delete node;
+  }
+  for (Link* link : links_to_remove) {
+    delete link;
+  }
   node_vector_.erase(
       remove_if(node_vector_.begin(), node_vector_.end(),
                 [nodes_to_remove](Node* node) { return nodes_to_remove.find(node) != nodes_to_remove.end(); }),
