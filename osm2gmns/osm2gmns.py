@@ -12,6 +12,7 @@ if current_os == "Darwin":
     library_name = "libosm2gmns.dylib"
 elif current_os == "Windows":
     library_name = "libosm2gmns.dll"
+    os.add_dll_directory(os.path.join(os.path.dirname(__file__), "dlls"))
 elif current_os == "Linux":
     library_name = "libosm2gmns.so"
 else:

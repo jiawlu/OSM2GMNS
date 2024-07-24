@@ -9,6 +9,7 @@ compile_commands.json
 dev/maps/**/*.csv
 osm2gmns/*
 !osm2gmns/*.py
+!osm2gmns/dlls
 
 
 # Byte-compiled / optimized / DLL files

@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   build_wheels:
-    name: Build wheel for ${{ matrix.buildplat[1] }}
+    name: Build wheel for ${{ matrix.buildplat[1] }} ${{ matrix.python }}
     runs-on: ${{ matrix.buildplat[0] }}
     strategy:
       fail-fast: false
@@ -78,6 +78,8 @@ jobs:
             CC=gcc
             CXX=g++
             CMAKE_GENERATOR=Ninja
+          CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
       - uses: actions/upload-artifact@v3
         with:
