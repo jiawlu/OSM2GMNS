@@ -236,15 +236,28 @@ Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_t
 Network::~Network() {
   LOG(INFO) << "releasing network memory";
   delete osmnet_;
-  for (Node* node : node_vector_) {
-    delete node;
+  if (!node_vector_.empty()) {
+    const size_t number_of_nodes = node_vector_.size();
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_nodes)
+    for (int64_t idx = 0; idx < number_of_nodes; ++idx) {
+      delete node_vector_[idx];
+    }
   }
-  for (Link* link : link_vector_) {
-    delete link;
+  if (!link_vector_.empty()) {
+    const size_t number_of_links = link_vector_.size();
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_links)
+    for (int64_t idx = 0; idx < number_of_links; ++idx) {
+      delete link_vector_[idx];
+    }
   }
-  for (POI* poi : poi_vector_) {
-    delete poi;
+  if (!poi_vector_.empty()) {
+    const size_t number_of_pois = poi_vector_.size();
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_pois)
+    for (int64_t idx = 0; idx < number_of_pois; ++idx) {
+      delete poi_vector_[idx];
+    }
   }
+  LOG(INFO) << "network memory released";
 }
 
 size_t Network::numberOfNodes() const { return node_vector_.size(); }
