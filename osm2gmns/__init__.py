@@ -6,7 +6,7 @@
 from osm2gmns.osm2gmns import initlib
 from osm2gmns.osm2gmns import getNetFromFile, outputNetToCSV
 
-__version__ = '1.0.1dev1'
+__version__ = '1.0.0dev1'
 print(__version__)
 
 initlib()
