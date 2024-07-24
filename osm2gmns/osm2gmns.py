@@ -31,7 +31,7 @@ def initlib():
                                        ctypes.c_bool]
     oglib.getNetFromFilePy.restype = ctypes.c_void_p
 
-    oglib.consolidateComplexIntersectionsPy.argtypes = [ctypes.c_char_p, ctypes.c_bool, ctypes.c_char_p, ctypes.c_float]
+    oglib.consolidateComplexIntersectionsPy.argtypes = [ctypes.c_void_p, ctypes.c_bool, ctypes.c_char_p, ctypes.c_float]
 
     oglib.generateNodeActivityInfoPy.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
 

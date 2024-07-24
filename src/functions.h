@@ -12,7 +12,7 @@
 #include "networks.h"
 #include "osmconfig.h"
 
-constexpr double DEFAULT_INT_BUFFER = 20.0;
+constexpr float DEFAULT_INT_BUFFER = 20.0;
 
 Network* getNetFromFile(const std::filesystem::path& osm_filepath,
                         const absl::flat_hash_set<HighWayLinkType>& link_types = {},
