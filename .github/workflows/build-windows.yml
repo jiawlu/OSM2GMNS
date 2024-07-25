@@ -25,7 +25,7 @@ jobs:
           mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
 
       - name: Upload build directory as artifact
-        if: failure() # Upload only if the build fails
+        # if: failure() # Upload only if the build fails
         uses: actions/upload-artifact@v3
         with:
           name: build-directory

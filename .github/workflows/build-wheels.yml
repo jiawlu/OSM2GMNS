@@ -15,9 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         buildplat:
-          - [ubuntu-20.04, manylinux_x86_64]
-          - [macos-13, macosx_x86_64]
-          - [macos-14, macosx_arm64]
           - [windows-2022, win_amd64]
         python: ["cp38", "cp311"]
     steps:
