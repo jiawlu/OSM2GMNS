@@ -13,12 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Ninja
-        run: choco install ninja
+      # - name: Install Ninja
+      #   run: choco install ninja
+
+      # - name: Build
+      #   run: |
+      #     mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja .. && ninja
 
       - name: Build
         run: |
-          mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja .. && ninja
+          mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
 
       - name: Upload build directory as artifact
         if: failure() # Upload only if the build fails
