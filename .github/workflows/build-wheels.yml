@@ -74,10 +74,10 @@ jobs:
         uses: pypa/cibuildwheel@v2.19
         env:
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.buildplat[1] }}
-          CIBW_ENVIRONMENT_WINDOWS: >
-            CC=gcc
-            CXX=g++
-            CMAKE_GENERATOR=Ninja
+          # CIBW_ENVIRONMENT_WINDOWS: >
+          #   CC=gcc
+          #   CXX=g++
+          #   CMAKE_GENERATOR=Ninja
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
