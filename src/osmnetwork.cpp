@@ -396,15 +396,26 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
 }
 
 OsmNetwork::~OsmNetwork() {
-  const size_t number_of_osm_nodes = osm_node_vector_.size();
+  if (!osm_node_vector_.empty()) {
+    const size_t number_of_osm_nodes = osm_node_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
-  for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
-    delete osm_node_vector_[idx];
+    for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
+      delete osm_node_vector_[idx];
+    }
   }
-  const size_t number_of_osm_ways = osm_way_vector_.size();
+  if (!osm_way_vector_.empty()) {
+    const size_t number_of_osm_ways = osm_way_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_ways)
-  for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
-    delete osm_way_vector_[idx];
+    for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
+      delete osm_way_vector_[idx];
+    }
+  }
+  if (!osm_relation_vector_.empty()) {
+    const size_t number_of_osm_relations = osm_relation_vector_.size();
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_relations)
+    for (int64_t idx = 0; idx < number_of_osm_relations; ++idx) {
+      delete osm_relation_vector_[idx];
+    }
   }
 }
 

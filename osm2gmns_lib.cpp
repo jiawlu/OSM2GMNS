@@ -39,6 +39,8 @@ extern "C" {
 
 C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
 
+C_API void releaseNetworkMemoryPy(Network* network) { delete network; };
+
 C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_types_val, size_t link_types_len,
                                 const char** connector_link_types_val, size_t connector_link_types_len, bool POI,
                                 float POI_sampling_ratio, bool strict_boundary) {
