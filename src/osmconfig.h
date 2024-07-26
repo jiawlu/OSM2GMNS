@@ -5,6 +5,8 @@
 #ifndef OSM2GMNS_OSMCONFIG_H
 #define OSM2GMNS_OSMCONFIG_H
 
+#include <absl/container/flat_hash_map.h>
+
 #include <cstdint>
 #include <string>
 
@@ -29,6 +31,10 @@ enum class HighWayLinkType : uint8_t {
 };
 
 HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str);
+
+const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultLanesDict();
+const absl::flat_hash_map<HighWayLinkType, float>& getPresetDefaultSpeedDict();
+const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultCapacityDict();
 
 bool isHighwayPoiType(const std::string& highway);
 bool isRailwayPoiType(const std::string& railway);

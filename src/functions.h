@@ -5,8 +5,10 @@
 #ifndef OSM2GMNS_FUNCTIONS_H
 #define OSM2GMNS_FUNCTIONS_H
 
+#include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
 
+#include <cstdint>
 #include <filesystem>
 
 #include "networks.h"
@@ -24,5 +26,11 @@ void consolidateComplexIntersections(Network* network, bool auto_identify = fals
                                      float int_buffer = DEFAULT_INT_BUFFER);
 
 void generateNodeActivityInfo(Network* network, const std::filesystem::path& zone_file = "");
+
+void fillLinkAttributesWithDefaultValues(
+    Network* network, bool default_lanes = false,
+    const absl::flat_hash_map<HighWayLinkType, int32_t>& default_lanes_dict = {}, bool default_speed = false,
+    const absl::flat_hash_map<HighWayLinkType, float>& default_speed_dict = {}, bool default_capacity = false,
+    const absl::flat_hash_map<HighWayLinkType, int32_t>& default_capacity_dict = {});
 
 #endif  // OSM2GMNS_FUNCTIONS_H

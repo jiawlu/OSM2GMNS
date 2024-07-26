@@ -113,7 +113,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
-               "speed,free_speed_raw,lanes,allowed_uses,toll,notes\n";
+               "speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
     std::string free_speed;
@@ -122,14 +122,19 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
       oss << std::fixed << std::setprecision(0) << link->freeSpeed().value();  // NOLINT
       free_speed = oss.str();
     }
+    const std::string capacity =
+        link->capacity().has_value() ? std::to_string(link->capacity().value()) : "";  // NOLINT
     link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
               << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
               << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << link->freeSpeedRaw()
-              << "," << lanes << ",," << link->toll() << ",\n";
+              << "," << lanes << "," << capacity << ",," << link->toll() << ",\n";
   }
   link_file.close();
 
+  if (!network->poi()) {
+    return;
+  }
   const std::filesystem::path poi_filepath = output_folder / "poi.csv";
   std::ofstream poi_file(poi_filepath);
   if (!poi_file) {
