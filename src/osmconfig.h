@@ -32,6 +32,8 @@ enum class HighWayLinkType : uint8_t {
 
 HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str);
 
+bool getDefaultOneWayFlag(HighWayLinkType highway_link_type);
+
 const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultLanesDict();
 const absl::flat_hash_map<HighWayLinkType, float>& getPresetDefaultSpeedDict();
 const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultCapacityDict();

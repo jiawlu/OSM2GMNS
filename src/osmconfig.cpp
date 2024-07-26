@@ -41,6 +41,18 @@ HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str) {
   return HighWayLinkType::OTHER;
 }
 
+bool getDefaultOneWayFlag(HighWayLinkType highway_link_type) {
+  static const absl::flat_hash_map<HighWayLinkType, bool> default_oneway_dict = {
+      {HighWayLinkType::MOTORWAY, false},      {HighWayLinkType::TRUNK, false},
+      {HighWayLinkType::PRIMARY, false},       {HighWayLinkType::SECONDARY, false},
+      {HighWayLinkType::TERTIARY, false},      {HighWayLinkType::RESIDENTIAL, false},
+      {HighWayLinkType::LIVING_STREET, false}, {HighWayLinkType::SERVICE, false},
+      {HighWayLinkType::CYCLEWAY, true},       {HighWayLinkType::FOOTWAY, true},
+      {HighWayLinkType::TRACK, true},          {HighWayLinkType::UNCLASSIFIED, false},
+      {HighWayLinkType::OTHER, false}};
+  return default_oneway_dict.at(highway_link_type);
+}
+
 const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultLanesDict() {
   static const absl::flat_hash_map<HighWayLinkType, int32_t> default_lanes_dict = {
       {HighWayLinkType::MOTORWAY, 4},      {HighWayLinkType::TRUNK, 3},    {HighWayLinkType::PRIMARY, 3},

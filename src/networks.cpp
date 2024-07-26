@@ -17,6 +17,7 @@
 #include <omp.h>
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -120,7 +121,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
   length_ = calculateLineStringLength(geometry_.get());
   highway_link_type_ = osm_way->highwayLinkType();
 
-  if (osm_way->isOneway()) {
+  if (osm_way->isOneway().value()) {  // NOLINT
     if (osm_way->lanes().has_value()) {
       lanes_ = osm_way->lanes().value();  // NOLINT
     }
@@ -513,10 +514,11 @@ void Network::createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<s
     if (segment_nodes.size() < 2) {
       continue;
     }
+    assert(osm_way->isOneway().has_value());
     size_t osm_way_seq = 0;
     Link* link = new Link(osm_way, segment_nodes, true, osm_way_seq++, factory_.get());
     m_link_vector[omp_get_thread_num()].push_back(link);
-    if (!osm_way->isOneway()) {
+    if (!osm_way->isOneway().value()) {  // NOLINT
       link = new Link(osm_way, segment_nodes, false, osm_way_seq++, factory_.get());
       m_link_vector[omp_get_thread_num()].push_back(link);
     }
