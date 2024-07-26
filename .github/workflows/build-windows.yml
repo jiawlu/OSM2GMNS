@@ -9,19 +9,23 @@ on:
 jobs:
   build:
     name: Build Windows
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Ninja
-        run: choco install ninja
+      # - name: Install Ninja
+      #   run: choco install ninja
+
+      # - name: Build
+      #   run: |
+      #     mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja .. && ninja
 
       - name: Build
         run: |
-          mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja .. && ninja
+          mkdir build && cd build && cmake .. && cmake --build . --config Release
 
       - name: Upload build directory as artifact
-        if: failure() # Upload only if the build fails
+        if: failure()
         uses: actions/upload-artifact@v3
         with:
           name: build-directory
