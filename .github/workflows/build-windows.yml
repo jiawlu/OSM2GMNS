@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build Windows
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
       - uses: actions/checkout@v3
 
@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         run: |
-          mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && cmake --build .
+          mkdir build && cd build && cmake .. && cmake --build . --config Release
 
       - name: Upload build directory as artifact
         # if: failure() # Upload only if the build fails
