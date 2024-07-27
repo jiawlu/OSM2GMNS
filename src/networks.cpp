@@ -356,7 +356,7 @@ void Network::fillLinkAttributesWithDefaultValues(
     if (!default_capacity_dict.empty()) {
       if (!link->capacity().has_value()) {
         const int32_t lanes = link->lanes().has_value() ? link->lanes().value()  // NOLINT
-                                                        : default_lanes_dict.at(link->highwayLinkType());
+                                                        : getPresetDefaultLanesDict().at(link->highwayLinkType());
         link->setCapacity(lanes * default_capacity_dict.at(link->highwayLinkType()));
       }
     }

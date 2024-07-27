@@ -17,5 +17,9 @@ og.consolidateComplexIntersections(net, auto_identify=True)
 
 og.generateNodeActivityInfo(net)
 
+og.fillLinkAttributesWithDefaultValues(net, default_lanes=False, default_lanes_dict={},
+                                       default_speed=True, default_speed_dict={},
+                                       default_capacity=True, default_capacity_dict={'primary':1289})
+
 og.outputNetToCSV(net, map_folder)
 
