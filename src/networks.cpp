@@ -341,7 +341,7 @@ void Network::fillLinkAttributesWithDefaultValues(
   const size_t number_of_links = link_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) \
     shared(number_of_links, default_lanes_dict, default_speed_dict, default_capacity_dict)
-  for (size_t idx = 0; idx < number_of_links; ++idx) {
+  for (int64_t idx = 0; idx < number_of_links; ++idx) {
     Link* link = link_vector_[idx];
     if (!default_lanes_dict.empty()) {
       if (!link->lanes().has_value()) {
