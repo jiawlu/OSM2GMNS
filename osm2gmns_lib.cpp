@@ -2,10 +2,12 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
+#include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
 #include <absl/log/log.h>
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 
 #include "src/functions.h"
@@ -24,7 +26,7 @@ absl::flat_hash_set<HighWayLinkType> parseLinkTypes(const char** link_types_val,
   absl::flat_hash_set<HighWayLinkType> link_types;
   link_types.reserve(link_types_len);
   for (size_t idx = 0; idx < link_types_len; ++idx) {
-    const std::string link_type_str = link_types_val[idx];  // NOLINT
+    const std::string& link_type_str = link_types_val[idx];  // NOLINT
     const HighWayLinkType link_type = highwayStringToLinkType(link_type_str);
     if (link_type != HighWayLinkType::OTHER) {
       link_types.insert(link_type);
@@ -33,6 +35,27 @@ absl::flat_hash_set<HighWayLinkType> parseLinkTypes(const char** link_types_val,
     }
   }
   return link_types;
+}
+
+template <typename T>
+struct StrNumDict {
+  const char* key;
+  T value;
+};
+
+template <typename T>
+absl::flat_hash_map<HighWayLinkType, T> parseLinkTypeToNumDict(const StrNumDict<T>* dict_val, size_t dict_len) {
+  absl::flat_hash_map<HighWayLinkType, T> dict;
+  for (size_t idx = 0; idx < dict_len; ++idx) {
+    const std::string& link_type_str = dict_val[idx].key;  // NOLINT
+    const HighWayLinkType link_type = highwayStringToLinkType(link_type_str);
+    if (link_type != HighWayLinkType::OTHER) {
+      dict.emplace(link_type, dict_val[idx].value);  // NOLINT
+    } else {
+      LOG(WARNING) << "unrecogonized link_type " << link_type_str;
+    }
+  }
+  return dict;
 }
 
 extern "C" {
@@ -60,6 +83,23 @@ C_API void consolidateComplexIntersectionsPy(Network* network, bool auto_identif
 C_API void generateNodeActivityInfoPy(Network* network, const char* zone_file) {
   generateNodeActivityInfo(network, zone_file);
 };
+
+C_API void fillLinkAttributesWithDefaultValuesPy(Network* network, bool default_lanes,
+                                                 const StrNumDict<int32_t>* default_lanes_dict_val,
+                                                 size_t default_lanes_dict_len, bool default_speed,
+                                                 const StrNumDict<float>* default_speed_dict_val,
+                                                 size_t default_speed_dict_len, bool default_capacity,
+                                                 const StrNumDict<int32_t>* default_capacity_dict_val,
+                                                 size_t default_capacity_dict_len) {
+  const absl::flat_hash_map<HighWayLinkType, int32_t> default_lanes_dict =
+      parseLinkTypeToNumDict<int32_t>(default_lanes_dict_val, default_lanes_dict_len);
+  const absl::flat_hash_map<HighWayLinkType, float> default_speed_dict =
+      parseLinkTypeToNumDict<float>(default_speed_dict_val, default_speed_dict_len);
+  const absl::flat_hash_map<HighWayLinkType, int32_t> default_capacity_dict =
+      parseLinkTypeToNumDict<int32_t>(default_capacity_dict_val, default_capacity_dict_len);
+  fillLinkAttributesWithDefaultValues(network, default_lanes, default_lanes_dict, default_speed, default_speed_dict,
+                                      default_capacity, default_capacity_dict);
+}
 
 C_API void outputNetToCSVPy(const Network* network, const char* output_folder) {
   outputNetToCSV(network, output_folder);

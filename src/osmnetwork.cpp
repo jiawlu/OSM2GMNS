@@ -130,7 +130,7 @@ OsmNode* OsmWay::toNode() const { return to_node_; }
 WayType OsmWay::wayType() const { return way_type_; };
 HighWayLinkType OsmWay::highwayLinkType() const { return highway_link_type_; }
 bool OsmWay::isTargetLinkType() const { return is_target_link_type_; }
-bool OsmWay::isOneway() const { return is_oneway_; }
+std::optional<bool> OsmWay::isOneway() const { return is_oneway_; }
 bool OsmWay::isReversed() const { return is_reversed_; }
 std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
 std::string OsmWay::maxSpeedRaw() const { return max_speed_raw_; }
@@ -232,19 +232,27 @@ void OsmWay::configAttributes() {
   }
 
   // oneway info
-  if (!oneway_raw_.empty()) {
-    if (oneway_raw_ == "yes" || oneway_raw_ == "1") {
-      is_oneway_ = true;
-    } else if (oneway_raw_ == "no" || oneway_raw_ == "0") {
-      is_oneway_ = false;
-    } else if (oneway_raw_ == "-1") {
-      is_oneway_ = true;
-      is_reversed_ = true;
-    } else if (oneway_raw_ == "reversible" || oneway_raw_ == "alternating") {
-      // todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
-      is_oneway_ = false;
-    } else {
-      DLOG(WARNING) << "new oneway type detected at way " << osm_way_id_ << " " << oneway_raw_;
+  if (way_type_ == WayType::HIGHWAY) {
+    if (!oneway_raw_.empty()) {
+      if (oneway_raw_ == "yes" || oneway_raw_ == "1") {
+        is_oneway_ = true;
+      } else if (oneway_raw_ == "no" || oneway_raw_ == "0") {
+        is_oneway_ = false;
+      } else if (oneway_raw_ == "-1") {
+        is_oneway_ = true;
+        is_reversed_ = true;
+      } else if (oneway_raw_ == "reversible" || oneway_raw_ == "alternating") {
+        // todo: reversible, alternating: https://wiki.openstreetmap.org/wiki/Tag:oneway%3Dreversible
+        is_oneway_ = false;
+      } else {
+        DLOG(WARNING) << "new oneway type detected at way " << osm_way_id_ << " " << oneway_raw_;
+        if (junction_ == "circular" || junction_ == "roundabout") {
+          is_oneway_ = true;
+        }
+      }
+    }
+    if (!is_oneway_.has_value()) {
+      is_oneway_ = getDefaultOneWayFlag(highway_link_type_);
     }
   }
 }

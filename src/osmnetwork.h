@@ -103,7 +103,7 @@ class OsmWay {
   [[nodiscard]] WayType wayType() const;
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] bool isTargetLinkType() const;
-  [[nodiscard]] bool isOneway() const;
+  [[nodiscard]] std::optional<bool> isOneway() const;
   [[nodiscard]] bool isReversed() const;
   [[nodiscard]] std::optional<float> maxSpeed() const;
   [[nodiscard]] std::string maxSpeedRaw() const;
@@ -135,7 +135,7 @@ class OsmWay {
   std::optional<int32_t> lanes_;
   std::optional<int32_t> forward_lanes_;
   std::optional<int32_t> backward_lanes_;
-  bool is_oneway_{true};
+  std::optional<bool> is_oneway_{true};
   bool is_reversed_{false};  // ToDo: use when generating segments
   std::optional<float> max_speed_;
   std::string toll_;

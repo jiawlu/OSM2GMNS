@@ -5,6 +5,7 @@
 #ifndef OSM2GMNS_NETWORKS_H
 #define OSM2GMNS_NETWORKS_H
 
+#include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
 #include <geos/geom/Geometry.h>
 #include <geos/geom/LineString.h>
@@ -114,11 +115,15 @@ class Link {
   [[nodiscard]] std::optional<int32_t> lanes() const;
   [[nodiscard]] std::optional<float> freeSpeed() const;
   [[nodiscard]] std::string freeSpeedRaw() const;
+  [[nodiscard]] std::optional<int32_t> capacity() const;
   [[nodiscard]] const std::string& toll() const;
 
   void setLinkId(NetIdType link_id);
   void setFromNode(Node* from_node);
   void setToNode(Node* to_node);
+  void setLanes(int32_t lanes);
+  void setFreeSpeed(float free_speed);
+  void setCapacity(int32_t capacity);
   // void setIsValid(bool is_valid);
 
  private:
@@ -137,6 +142,7 @@ class Link {
   std::optional<int32_t> lanes_;
   std::optional<float> free_speed_;
   std::string free_speed_raw_;
+  std::optional<int32_t> capacity_;
   std::string toll_;
 };
 
@@ -200,6 +206,7 @@ class Network {
   Network(Network&&) = delete;
   Network& operator=(Network&&) = delete;
 
+  [[nodiscard]] bool poi() const;
   [[nodiscard]] size_t numberOfNodes() const;
   [[nodiscard]] size_t numberOfLinks() const;
   [[nodiscard]] const std::vector<Node*>& nodeVector() const;
@@ -207,6 +214,9 @@ class Network {
   [[nodiscard]] const std::vector<POI*>& poiVector() const;
 
   void generateNodeActivityInfo(const std::vector<Zone*>& zone_vector = {});
+  void fillLinkAttributesWithDefaultValues(const absl::flat_hash_map<HighWayLinkType, int32_t>& default_lanes_dict,
+                                           const absl::flat_hash_map<HighWayLinkType, float>& default_speed_dict,
+                                           const absl::flat_hash_map<HighWayLinkType, int32_t>& default_capacity_dict);
   void consolidateComplexIntersections(bool auto_identify, const std::vector<Intersection*>& intersection_vector,
                                        float int_buffer);
 

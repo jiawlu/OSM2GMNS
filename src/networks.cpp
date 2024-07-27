@@ -17,6 +17,7 @@
 #include <omp.h>
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -120,7 +121,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
   length_ = calculateLineStringLength(geometry_.get());
   highway_link_type_ = osm_way->highwayLinkType();
 
-  if (osm_way->isOneway()) {
+  if (osm_way->isOneway().value()) {  // NOLINT
     if (osm_way->lanes().has_value()) {
       lanes_ = osm_way->lanes().value();  // NOLINT
     }
@@ -156,11 +157,15 @@ double Link::length() const { return length_; }
 std::optional<int32_t> Link::lanes() const { return lanes_; }
 std::optional<float> Link::freeSpeed() const { return free_speed_; }
 std::string Link::freeSpeedRaw() const { return free_speed_raw_; }
+std::optional<int32_t> Link::capacity() const { return capacity_; }
 const std::string& Link::toll() const { return toll_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
 void Link::setFromNode(Node* from_node) { from_node_ = from_node; }
 void Link::setToNode(Node* to_node) { to_node_ = to_node; }
+void Link::setLanes(int32_t lanes) { lanes_ = lanes; }
+void Link::setFreeSpeed(float free_speed) { free_speed_ = free_speed; }
+void Link::setCapacity(int32_t capacity) { capacity_ = capacity; }
 // void Link::setIsValid(bool is_valid) { is_valid_ = is_valid; }
 
 POI::POI(const OsmWay* osm_way, std::unique_ptr<geos::geom::Polygon> geometry)
@@ -260,6 +265,7 @@ Network::~Network() {
   LOG(INFO) << "network memory released";
 }
 
+bool Network::poi() const { return POI_; }
 size_t Network::numberOfNodes() const { return node_vector_.size(); }
 size_t Network::numberOfLinks() const { return link_vector_.size(); }
 const std::vector<Node*>& Network::nodeVector() const { return node_vector_; }
@@ -326,6 +332,35 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
     }
   }
   LOG(INFO) << "Node activity info generated";
+}
+
+void Network::fillLinkAttributesWithDefaultValues(
+    const absl::flat_hash_map<HighWayLinkType, int32_t>& default_lanes_dict,
+    const absl::flat_hash_map<HighWayLinkType, float>& default_speed_dict,
+    const absl::flat_hash_map<HighWayLinkType, int32_t>& default_capacity_dict) {
+  const size_t number_of_links = link_vector_.size();
+#pragma omp parallel for schedule(dynamic) default(none) \
+    shared(number_of_links, default_lanes_dict, default_speed_dict, default_capacity_dict)
+  for (int64_t idx = 0; idx < number_of_links; ++idx) {
+    Link* link = link_vector_[idx];
+    if (!default_lanes_dict.empty()) {
+      if (!link->lanes().has_value()) {
+        link->setLanes(default_lanes_dict.at(link->highwayLinkType()));
+      }
+    }
+    if (!default_speed_dict.empty()) {
+      if (!link->freeSpeed().has_value()) {
+        link->setFreeSpeed(default_speed_dict.at(link->highwayLinkType()));
+      }
+    }
+    if (!default_capacity_dict.empty()) {
+      if (!link->capacity().has_value()) {
+        const int32_t lanes = link->lanes().has_value() ? link->lanes().value()  // NOLINT
+                                                        : getPresetDefaultLanesDict().at(link->highwayLinkType());
+        link->setCapacity(lanes * default_capacity_dict.at(link->highwayLinkType()));
+      }
+    }
+  }
 }
 
 void Network::consolidateComplexIntersections(bool auto_identify, const std::vector<Intersection*>& intersection_vector,
@@ -479,10 +514,11 @@ void Network::createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<s
     if (segment_nodes.size() < 2) {
       continue;
     }
+    assert(osm_way->isOneway().has_value());
     size_t osm_way_seq = 0;
     Link* link = new Link(osm_way, segment_nodes, true, osm_way_seq++, factory_.get());
     m_link_vector[omp_get_thread_num()].push_back(link);
-    if (!osm_way->isOneway()) {
+    if (!osm_way->isOneway().value()) {  // NOLINT
       link = new Link(osm_way, segment_nodes, false, osm_way_seq++, factory_.get());
       m_link_vector[omp_get_thread_num()].push_back(link);
     }

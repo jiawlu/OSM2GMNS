@@ -1,8 +1,10 @@
 #include "functions.h"
 
+#include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
 #include <absl/log/log.h>
 
+#include <cstdint>
 #include <filesystem>
 #include <vector>
 
@@ -106,4 +108,34 @@ void generateNodeActivityInfo(Network* network, const std::filesystem::path& zon
     const std::vector<Zone*> zone_vector = readZoneFile(zone_file);
     network->generateNodeActivityInfo(zone_vector);
   }
+}
+
+void fillLinkAttributesWithDefaultValues(Network* network, bool default_lanes,
+                                         const absl::flat_hash_map<HighWayLinkType, int32_t>& default_lanes_dict,
+                                         bool default_speed,
+                                         const absl::flat_hash_map<HighWayLinkType, float>& default_speed_dict,
+                                         bool default_capacity,
+                                         const absl::flat_hash_map<HighWayLinkType, int32_t>& default_capacity_dict) {
+  absl::flat_hash_map<HighWayLinkType, int32_t> default_lanes_dict_;
+  if (default_lanes) {
+    default_lanes_dict_ = getPresetDefaultLanesDict();
+    for (const auto& [link_type, default_val] : default_lanes_dict) {
+      default_lanes_dict_[link_type] = default_val;
+    }
+  }
+  absl::flat_hash_map<HighWayLinkType, float> default_speed_dict_;
+  if (default_speed) {
+    default_speed_dict_ = getPresetDefaultSpeedDict();
+    for (const auto& [link_type, default_val] : default_speed_dict) {
+      default_speed_dict_[link_type] = default_val;
+    }
+  }
+  absl::flat_hash_map<HighWayLinkType, int32_t> default_capacity_dict_;
+  if (default_capacity) {
+    default_capacity_dict_ = getPresetDefaultCapacityDict();
+    for (const auto& [link_type, default_val] : default_capacity_dict) {
+      default_capacity_dict_[link_type] = default_val;
+    }
+  }
+  network->fillLinkAttributesWithDefaultValues(default_lanes_dict_, default_speed_dict_, default_capacity_dict_);
 }

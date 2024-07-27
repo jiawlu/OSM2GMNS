@@ -7,6 +7,7 @@
 #include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
 
+#include <cstdint>
 #include <string>
 
 HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str) {
@@ -40,12 +41,53 @@ HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str) {
   return HighWayLinkType::OTHER;
 }
 
+bool getDefaultOneWayFlag(HighWayLinkType highway_link_type) {
+  static const absl::flat_hash_map<HighWayLinkType, bool> default_oneway_dict = {
+      {HighWayLinkType::MOTORWAY, false},      {HighWayLinkType::TRUNK, false},
+      {HighWayLinkType::PRIMARY, false},       {HighWayLinkType::SECONDARY, false},
+      {HighWayLinkType::TERTIARY, false},      {HighWayLinkType::RESIDENTIAL, false},
+      {HighWayLinkType::LIVING_STREET, false}, {HighWayLinkType::SERVICE, false},
+      {HighWayLinkType::CYCLEWAY, true},       {HighWayLinkType::FOOTWAY, true},
+      {HighWayLinkType::TRACK, true},          {HighWayLinkType::UNCLASSIFIED, false},
+      {HighWayLinkType::OTHER, false}};
+  return default_oneway_dict.at(highway_link_type);
+}
+
+const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultLanesDict() {
+  static const absl::flat_hash_map<HighWayLinkType, int32_t> default_lanes_dict = {
+      {HighWayLinkType::MOTORWAY, 4},      {HighWayLinkType::TRUNK, 3},    {HighWayLinkType::PRIMARY, 3},
+      {HighWayLinkType::SECONDARY, 2},     {HighWayLinkType::TERTIARY, 2}, {HighWayLinkType::RESIDENTIAL, 1},
+      {HighWayLinkType::LIVING_STREET, 1}, {HighWayLinkType::SERVICE, 1},  {HighWayLinkType::CYCLEWAY, 1},
+      {HighWayLinkType::FOOTWAY, 1},       {HighWayLinkType::TRACK, 1},    {HighWayLinkType::UNCLASSIFIED, 1},
+      {HighWayLinkType::OTHER, 1}};
+  return default_lanes_dict;
+}
+const absl::flat_hash_map<HighWayLinkType, float>& getPresetDefaultSpeedDict() {
+  static const absl::flat_hash_map<HighWayLinkType, float> default_speed_dict = {
+      {HighWayLinkType::MOTORWAY, 120},     {HighWayLinkType::TRUNK, 100},   {HighWayLinkType::PRIMARY, 80},
+      {HighWayLinkType::SECONDARY, 60},     {HighWayLinkType::TERTIARY, 40}, {HighWayLinkType::RESIDENTIAL, 30},
+      {HighWayLinkType::LIVING_STREET, 30}, {HighWayLinkType::SERVICE, 30},  {HighWayLinkType::CYCLEWAY, 5},
+      {HighWayLinkType::FOOTWAY, 5},        {HighWayLinkType::TRACK, 30},    {HighWayLinkType::UNCLASSIFIED, 30},
+      {HighWayLinkType::OTHER, 30}};
+  return default_speed_dict;
+}
+const absl::flat_hash_map<HighWayLinkType, int32_t>& getPresetDefaultCapacityDict() {
+  static const absl::flat_hash_map<HighWayLinkType, int32_t> default_capacity_dict = {
+      {HighWayLinkType::MOTORWAY, 2300},      {HighWayLinkType::TRUNK, 2200},    {HighWayLinkType::PRIMARY, 1800},
+      {HighWayLinkType::SECONDARY, 1600},     {HighWayLinkType::TERTIARY, 1200}, {HighWayLinkType::RESIDENTIAL, 1000},
+      {HighWayLinkType::LIVING_STREET, 1000}, {HighWayLinkType::SERVICE, 800},   {HighWayLinkType::CYCLEWAY, 800},
+      {HighWayLinkType::FOOTWAY, 800},        {HighWayLinkType::TRACK, 800},     {HighWayLinkType::UNCLASSIFIED, 800},
+      {HighWayLinkType::OTHER, 800}};
+  return default_capacity_dict;
+}
+
 bool isHighwayPoiType(const std::string& highway) {
   static const absl::flat_hash_set<std::string> highway_poi_set = {"bus_stop", "platform"};
   return highway_poi_set.find(highway) != highway_poi_set.end();
 }
 bool isRailwayPoiType(const std::string& railway) {
-  static const absl::flat_hash_set<std::string> railway_poi_set = {"depot","station","workshop","halt","interlocking","junction","spur_junction","terminal","platform"};
+  static const absl::flat_hash_set<std::string> railway_poi_set = {
+      "depot", "station", "workshop", "halt", "interlocking", "junction", "spur_junction", "terminal", "platform"};
   return railway_poi_set.find(railway) != railway_poi_set.end();
 }
 bool isAerowayPoiType(const std::string& aeroway) {
@@ -60,7 +102,8 @@ bool isNegligibleHighwayType(const std::string& highway) {
   return negligible_highway_type_set.find(highway) != negligible_highway_type_set.end();
 }
 bool isNegligibleRailwayType(const std::string& railway) {
-  static const absl::flat_hash_set<std::string> negligible_railway_type_set = {"construction","abandoned","disused","proposed","planned","dismantled","razed","ventilation_shaft"};
+  static const absl::flat_hash_set<std::string> negligible_railway_type_set = {
+      "construction", "abandoned", "disused", "proposed", "planned", "dismantled", "razed", "ventilation_shaft"};
   return negligible_railway_type_set.find(railway) != negligible_railway_type_set.end();
 }
 bool isNegligibleAerowayType(const std::string& aeroway) {
