@@ -14,6 +14,8 @@ using OsmIdType = int64_t;
 
 enum class WayType : uint8_t { HIGHWAY, RAILWAY, AEROWAY, POI, OTHER };
 
+enum class ModeType : uint8_t { AUTO, BIKE, WALK, RAILWAY, AEROWAY, OTHER };
+
 enum class HighWayLinkType : uint8_t {
   MOTORWAY,
   TRUNK,
@@ -30,7 +32,27 @@ enum class HighWayLinkType : uint8_t {
   OTHER
 };
 
+ModeType modeStringToModeType(const std::string& mode_type_str);
 HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str);
+
+bool checkAllowedUsedAutoInMotor_Vehicle(const std::string& motor_vehicle);
+bool checkAllowedUsedAutoInMotorCar(const std::string& motorcar);
+bool checkAllowedUsedBikeInBicycle(const std::string& bicycle);
+bool checkAllowedUsedWalkInFoot(const std::string& foot);
+
+bool checkAllowedUsedAutoExHighway(const std::string& highway);
+bool checkAllowedUsedAutoExMotor_Vehicle(const std::string& motor_vehicle);
+bool checkAllowedUsedAutoExMotorCar(const std::string& motorcar);
+bool checkAllowedUsedAutoExAccess(const std::string& access);
+bool checkAllowedUsedAutoExService(const std::string& service);
+bool checkAllowedUsedBikeExHighway(const std::string& highway);
+bool checkAllowedUsedBikeExBicycle(const std::string& bicycle);
+bool checkAllowedUsedBikeExService(const std::string& service);
+bool checkAllowedUsedBikeExAccess(const std::string& access);
+bool checkAllowedUsedWalkExHighway(const std::string& highway);
+bool checkAllowedUsedWalkExFoot(const std::string& foot);
+bool checkAllowedUsedWalkExService(const std::string& service);
+bool checkAllowedUsedWalkExAccess(const std::string& access);
 
 bool getDefaultOneWayFlag(HighWayLinkType highway_link_type);
 

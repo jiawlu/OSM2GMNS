@@ -17,6 +17,7 @@
 constexpr float DEFAULT_INT_BUFFER = 20.0;
 
 Network* getNetFromFile(const std::filesystem::path& osm_filepath,
+                        const absl::flat_hash_set<ModeType>& mode_types = {ModeType::AUTO},
                         const absl::flat_hash_set<HighWayLinkType>& link_types = {},
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types = {}, bool POI = false,
                         float POI_sampling_ratio = 1.0, bool strict_boundary = true);

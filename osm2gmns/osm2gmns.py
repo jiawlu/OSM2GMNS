@@ -35,6 +35,7 @@ def initlib():
     oglib.getNetFromFilePy.argtypes = [ctypes.c_char_p,
                                        ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
                                        ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
+                                       ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
                                        ctypes.c_bool, ctypes.c_float,
                                        ctypes.c_bool]
     oglib.getNetFromFilePy.restype = ctypes.c_void_p
@@ -74,14 +75,28 @@ class Network:
         return oglib.getNumberOfLinksPy(self.cnet)
 
 
-def getNetFromFile(filename='map.osm', link_types=(), connector_link_types=(), POI=False, POI_sampling_ratio=1.0,
-                   strict_boundary=True):
+def _checkStringToTuple(arg_val):
+    return (arg_val,) if isinstance(arg_val, str) else arg_val
+
+def getNetFromFile(filename='map.osm', mode_types=('auto',), link_types=(), connector_link_types=(), POI=False, POI_sampling_ratio=1.0,
+                   strict_boundary=True, **kwargs):
     network = Network()
-    link_types_byte_string = [link_type.encode() for link_type in link_types]
+
+    mode_types_ = _checkStringToTuple(mode_types)
+    if 'network_types' in kwargs:
+        print('[WARNING] deprecated argument network_types, please use mode_types.')
+        mode_types_ = _checkStringToTuple(kwargs['network_types'])
+    mode_types_byte_string = [mode_type.encode() for mode_type in _checkStringToTuple(mode_types_)]
+    mode_types_arr = (ctypes.c_char_p * len(mode_types_byte_string))(*mode_types_byte_string)
+
+    link_types_byte_string = [link_type.encode() for link_type in _checkStringToTuple(link_types)]
     link_types_arr = (ctypes.c_char_p * len(link_types_byte_string))(*link_types_byte_string)
-    connector_link_types_byte_string = [link_type.encode() for link_type in connector_link_types]
+
+    connector_link_types_byte_string = [link_type.encode() for link_type in _checkStringToTuple(connector_link_types)]
     connector_link_types_arr = (ctypes.c_char_p * len(connector_link_types_byte_string))(*connector_link_types_byte_string)
+
     network.cnet = oglib.getNetFromFilePy(filename.encode(),
+                                          mode_types_arr, len(mode_types_arr),
                                           link_types_arr, len(link_types_arr),
                                           connector_link_types_arr, len(connector_link_types_arr),
                                           POI, POI_sampling_ratio,

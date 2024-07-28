@@ -28,7 +28,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
     // const std::string map_filename = "map.pbf";
     const std::string map_filename = "arizona-latest.osm.pbf";
 
-    Network* network = getNetFromFile(map_folder / map_filename,
+    Network* network = getNetFromFile(map_folder / map_filename, {ModeType::AUTO},
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, 1.0, true);

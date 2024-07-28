@@ -9,6 +9,7 @@
 #include <geos/geom/Geometry.h>
 #include <geos/io/WKTReader.h>
 
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -46,6 +47,17 @@ std::string getHighWayLinkTypeStr(const HighWayLinkType& highway_link_type) {
   auto iter = highway_link_type_dict.find(highway_link_type);
   return iter != highway_link_type_dict.end() ? iter->second : "";
 }
+
+std::string getModeTypeStr(const ModeType& mode_type) {
+  static const absl::flat_hash_map<ModeType, std::string> mode_type_dict = {{ModeType::AUTO, "auto"},
+                                                                            {ModeType::BIKE, "bike"},
+                                                                            {ModeType::WALK, "walk"},
+                                                                            {ModeType::RAILWAY, "railway"},
+                                                                            {ModeType::AEROWAY, "aeroway"}};
+  auto iter = mode_type_dict.find(mode_type);
+  return iter != mode_type_dict.end() ? iter->second : "";
+}
+
 // static void geos_message_handler(const char* fmt, ...) {
 //   va_list ap = nullptr;
 //   va_start(ap, fmt);
@@ -124,11 +136,15 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     }
     const std::string capacity =
         link->capacity().has_value() ? std::to_string(link->capacity().value()) : "";  // NOLINT
+    std::string allowed_uses = getModeTypeStr(link->allowedModeTypes().at(0));
+    for (size_t idx = 1; idx < link->allowedModeTypes().size(); ++idx) {
+      allowed_uses += ";" + getModeTypeStr(link->allowedModeTypes().at(idx));
+    }
     link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
               << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
               << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << link->freeSpeedRaw()
-              << "," << lanes << "," << capacity << ",," << link->toll() << ",\n";
+              << "," << lanes << "," << capacity << "," << allowed_uses << "," << link->toll() << ",\n";
   }
   link_file.close();
 

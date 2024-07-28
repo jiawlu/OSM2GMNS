@@ -116,6 +116,7 @@ class Link {
   [[nodiscard]] std::optional<float> freeSpeed() const;
   [[nodiscard]] std::string freeSpeedRaw() const;
   [[nodiscard]] std::optional<int32_t> capacity() const;
+  [[nodiscard]] const std::vector<ModeType>& allowedModeTypes() const;
   [[nodiscard]] const std::string& toll() const;
 
   void setLinkId(NetIdType link_id);
@@ -143,6 +144,7 @@ class Link {
   std::optional<float> free_speed_;
   std::string free_speed_raw_;
   std::optional<int32_t> capacity_;
+  std::vector<ModeType> allowed_mode_types_;
   std::string toll_;
 };
 

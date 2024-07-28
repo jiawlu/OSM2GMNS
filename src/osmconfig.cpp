@@ -10,6 +10,19 @@
 #include <cstdint>
 #include <string>
 
+ModeType modeStringToModeType(const std::string& mode_type_str) {
+  static const absl::flat_hash_map<std::string, ModeType> mode_type_map = {{"auto", ModeType::AUTO},
+                                                                           {"bike", ModeType::BIKE},
+                                                                           {"walk", ModeType::WALK},
+                                                                           {"railway", ModeType::RAILWAY},
+                                                                           {"aeroway", ModeType::AEROWAY}};
+  auto iter = mode_type_map.find(mode_type_str);
+  if (iter != mode_type_map.end()) {
+    return iter->second;
+  }
+  return ModeType::OTHER;
+}
+
 HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str) {
   static const absl::flat_hash_map<std::string, HighWayLinkType> link_type_map = {
       {"motorway", HighWayLinkType::MOTORWAY},
@@ -39,6 +52,80 @@ HighWayLinkType highwayStringToLinkType(const std::string& highway_type_str) {
     return iter->second;
   }
   return HighWayLinkType::OTHER;
+}
+
+bool checkAllowedUsedAutoInMotor_Vehicle(const std::string& motor_vehicle) {
+  static const absl::flat_hash_set<std::string> value_set = {"yes"};
+  return value_set.find(motor_vehicle) != value_set.end();
+}
+bool checkAllowedUsedAutoInMotorCar(const std::string& motorcar) {
+  static const absl::flat_hash_set<std::string> value_set = {"yes"};
+  return value_set.find(motorcar) != value_set.end();
+}
+bool checkAllowedUsedBikeInBicycle(const std::string& bicycle) {
+  static const absl::flat_hash_set<std::string> value_set = {"yes"};
+  return value_set.find(bicycle) != value_set.end();
+}
+bool checkAllowedUsedWalkInFoot(const std::string& foot) {
+  static const absl::flat_hash_set<std::string> value_set = {"yes"};
+  return value_set.find(foot) != value_set.end();
+}
+
+bool checkAllowedUsedAutoExHighway(const std::string& highway) {
+  static const absl::flat_hash_set<std::string> value_set = {"cycleway", "footway",      "pedestrian", "steps",
+                                                             "track",    "corridor",     "elevator",   "escalator",
+                                                             "service",  "living_street"};
+  return value_set.find(highway) != value_set.end();
+}
+bool checkAllowedUsedAutoExMotor_Vehicle(const std::string& motor_vehicle) {
+  static const absl::flat_hash_set<std::string> value_set = {"no"};
+  return value_set.find(motor_vehicle) != value_set.end();
+}
+bool checkAllowedUsedAutoExMotorCar(const std::string& motorcar) {
+  static const absl::flat_hash_set<std::string> value_set = {"no"};
+  return value_set.find(motorcar) != value_set.end();
+}
+bool checkAllowedUsedAutoExAccess(const std::string& access) {
+  static const absl::flat_hash_set<std::string> value_set = {"private"};
+  return value_set.find(access) != value_set.end();
+}
+bool checkAllowedUsedAutoExService(const std::string& service) {
+  static const absl::flat_hash_set<std::string> value_set = {"parking", "parking_aisle", "driveway", "private",
+                                                             "emergency_access"};
+  return value_set.find(service) != value_set.end();
+}
+bool checkAllowedUsedBikeExHighway(const std::string& highway) {
+  static const absl::flat_hash_set<std::string> value_set = {"footway",   "steps", "corridor", "elevator",
+                                                             "escalator", "motor", "motorway", "motorway_link"};
+  return value_set.find(highway) != value_set.end();
+}
+bool checkAllowedUsedBikeExBicycle(const std::string& bicycle) {
+  static const absl::flat_hash_set<std::string> value_set = {"no"};
+  return value_set.find(bicycle) != value_set.end();
+}
+bool checkAllowedUsedBikeExService(const std::string& service) {
+  static const absl::flat_hash_set<std::string> value_set = {"private"};
+  return value_set.find(service) != value_set.end();
+}
+bool checkAllowedUsedBikeExAccess(const std::string& access) {
+  static const absl::flat_hash_set<std::string> value_set = {"private"};
+  return value_set.find(access) != value_set.end();
+}
+bool checkAllowedUsedWalkExHighway(const std::string& highway) {
+  static const absl::flat_hash_set<std::string> value_set = {"cycleway", "motor", "motorway", "motorway_link"};
+  return value_set.find(highway) != value_set.end();
+}
+bool checkAllowedUsedWalkExFoot(const std::string& foot) {
+  static const absl::flat_hash_set<std::string> value_set = {"no"};
+  return value_set.find(foot) != value_set.end();
+}
+bool checkAllowedUsedWalkExService(const std::string& service) {
+  static const absl::flat_hash_set<std::string> value_set = {"private"};
+  return value_set.find(service) != value_set.end();
+}
+bool checkAllowedUsedWalkExAccess(const std::string& access) {
+  static const absl::flat_hash_set<std::string> value_set = {"private"};
+  return value_set.find(access) != value_set.end();
 }
 
 bool getDefaultOneWayFlag(HighWayLinkType highway_link_type) {

@@ -37,6 +37,21 @@ absl::flat_hash_set<HighWayLinkType> parseLinkTypes(const char** link_types_val,
   return link_types;
 }
 
+absl::flat_hash_set<ModeType> parseModeTypes(const char** mode_types_val, size_t mode_types_len) {
+  absl::flat_hash_set<ModeType> mode_types;
+  mode_types.reserve(mode_types_len);
+  for (size_t idx = 0; idx < mode_types_len; ++idx) {
+    const std::string& mode_type_str = mode_types_val[idx];  // NOLINT
+    const ModeType mode_type = modeStringToModeType(mode_type_str);
+    if (mode_type != ModeType::OTHER) {
+      mode_types.insert(mode_type);
+    } else {
+      LOG(WARNING) << "unrecogonized mode_type " << mode_type_str;
+    }
+  }
+  return mode_types;
+}
+
 template <typename T>
 struct StrNumDict {
   const char* key;
@@ -64,14 +79,16 @@ C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
 
 C_API void releaseNetworkMemoryPy(Network* network) { delete network; };
 
-C_API Network* getNetFromFilePy(const char* osm_filepath, const char** link_types_val, size_t link_types_len,
+C_API Network* getNetFromFilePy(const char* osm_filepath, const char** mode_types_val, size_t mode_types_len,
+                                const char** link_types_val, size_t link_types_len,
                                 const char** connector_link_types_val, size_t connector_link_types_len, bool POI,
                                 float POI_sampling_ratio, bool strict_boundary) {
+  const absl::flat_hash_set<ModeType> mode_types = parseModeTypes(mode_types_val, mode_types_len);
   const absl::flat_hash_set<HighWayLinkType> link_types = parseLinkTypes(link_types_val, link_types_len);
   const absl::flat_hash_set<HighWayLinkType> connector_link_types =
       parseLinkTypes(connector_link_types_val, connector_link_types_len);
-  Network* network =
-      getNetFromFile(osm_filepath, link_types, connector_link_types, POI, POI_sampling_ratio, strict_boundary);
+  Network* network = getNetFromFile(osm_filepath, mode_types, link_types, connector_link_types, POI, POI_sampling_ratio,
+                                    strict_boundary);
   return network;
 };
 

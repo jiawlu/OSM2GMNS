@@ -71,12 +71,12 @@
 //   return network;
 // }
 
-Network* getNetFromFile(const std::filesystem::path& osm_filepath,
+Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::flat_hash_set<ModeType>& mode_types,
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
                         float POI_sampling_ratio, bool strict_boundary) {
   LOG(INFO) << "loading data from osm file";
-  auto* osmnet = new OsmNetwork(osm_filepath, link_types, connector_link_types, POI, strict_boundary);
+  auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types, POI, strict_boundary);
 
   LOG(INFO) << "building network";
   return new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);

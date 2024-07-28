@@ -101,6 +101,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
       name_(osm_way->name()),
       free_speed_(osm_way->maxSpeed()),
       free_speed_raw_(osm_way->maxSpeedRaw()),
+      allowed_mode_types_(osm_way->allowedModeTypes()),
       toll_(osm_way->toll()) {
   if (osm_nodes.size() < 2) {
     return;
@@ -158,6 +159,7 @@ std::optional<int32_t> Link::lanes() const { return lanes_; }
 std::optional<float> Link::freeSpeed() const { return free_speed_; }
 std::string Link::freeSpeedRaw() const { return free_speed_raw_; }
 std::optional<int32_t> Link::capacity() const { return capacity_; }
+const std::vector<ModeType>& Link::allowedModeTypes() const { return allowed_mode_types_; }
 const std::string& Link::toll() const { return toll_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
