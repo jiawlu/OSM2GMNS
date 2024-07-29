@@ -17,6 +17,8 @@ int main(int /*argc*/, char* /*argv*/[]) {
   try {
     initializeAbslLogging();
 
+    verboseLevel(true, VerboseLevel::Trace);
+
     const auto map_folder = std::filesystem::path("dev/maps/yuba");
     // const auto map_folder = std::filesystem::path("dev/maps/imperial");
     // const auto map_folder =
