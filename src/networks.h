@@ -22,13 +22,7 @@
 
 #include "osmconfig.h"
 #include "osmnetwork.h"
-// #include <map>
-// #include <string>
-// #include <vector>
-//
-// #include "geos/geom/Geometry.h"
-//
-//
+
 using NetIdType = int64_t;
 
 class Node;
@@ -81,17 +75,6 @@ class Node {
 
   std::vector<Link*> incoming_link_vector_;
   std::vector<Link*> outgoing_link_vector_;
-
-  //  void buildFromOSMNode(OSMNode* osmnode) {
-  //    name = osmnode->name();
-  //    osm_node_id = osmnode->osm_node_id;
-  //    osm_highway = osmnode->osm_highway;
-  //    ctrl_type = osmnode->ctrl_type;
-  //    geometry = osmnode->geometry;
-  //    x = osmnode->x;
-  //    y = osmnode->y;
-  //    self.geometry_xy = osmnode.geometry_xy notes = osmnode->notes;
-  //  }
 };
 
 class Link {

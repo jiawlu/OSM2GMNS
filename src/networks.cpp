@@ -177,16 +177,7 @@ POI::POI(const OsmWay* osm_way, std::unique_ptr<geos::geom::Polygon> geometry)
       amenity_(osm_way->amenity()),
       leisure_(osm_way->leisure()),
       geometry_(std::move(geometry)),
-      centroid_geometry_(std::move(geometry_->getCentroid())) {
-  // poi.way = way.way_poi
-
-  // lon, lat = poi.geometry.centroid.x, poi.geometry.centroid.y
-  // poi.centroid =
-  // geometry.Point((round(lon,og_settings.lonlat_coord_precision),round(lat,og_settings.lonlat_coord_precision))) x, y
-  // = poi.geometry_xy.centroid.x, poi.geometry_xy.centroid.y poi.centroid_xy =
-  // geometry.Point((round(x,og_settings.local_coord_precision),round(y,og_settings.local_coord_precision)))
-  // POI_list1.append(poi)
-}
+      centroid_geometry_(std::move(geometry_->getCentroid())) {}
 
 POI::POI(const OsmRelation* osm_relation, std::unique_ptr<geos::geom::MultiPolygon> geometry)
     : name_(osm_relation->name()),
@@ -195,17 +186,7 @@ POI::POI(const OsmRelation* osm_relation, std::unique_ptr<geos::geom::MultiPolyg
       amenity_(osm_relation->amenity()),
       leisure_(osm_relation->leisure()),
       geometry_(std::move(geometry)),
-      centroid_geometry_(std::move(geometry_->getCentroid())) {
-  // poi.osm_relation_id = relation.osm_relation_id
-  // poi.name = relation.name
-  // poi.building = relation.building
-  // poi.amenity = relation.amenity
-  // poi.leisure = relation.leisure
-  // polygon_list = []
-  // polygon_list_xy = []
-  // number_of_members = len(relation.member_list)
-  // m_ref_node_list = []
-}
+      centroid_geometry_(std::move(geometry_->getCentroid())) {}
 
 NetIdType POI::poiId() const { return poi_id_; }
 const std::string& POI::name() const { return name_; }
