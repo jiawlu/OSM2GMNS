@@ -66,14 +66,19 @@ void OsmHandler::way(const osmium::Way& way) {
   osm_way->identifyWayType(highway_mode_types_, include_railway_, include_aeroway_, link_types_, connector_link_types_,
                            POI_);
   if (osm_way->includeTheWay()) {
-    osm_way_vector_.push_back(new OsmWay(way));
+    osm_way_vector_.push_back(osm_way);
   } else {
     delete osm_way;
   }
 }
 void OsmHandler::relation(const osmium::Relation& relation) {
   if (POI_) {
-    osm_relation_vector_.push_back(new OsmRelation(relation));
+    auto* osm_relation = new OsmRelation(relation);
+    if (osm_relation->building().empty() && osm_relation->amenity().empty() && osm_relation->leisure().empty()) {
+      delete osm_relation;
+    } else {
+      osm_relation_vector_.push_back(osm_relation);
+    }
   }
 }
 
@@ -153,6 +158,7 @@ OsmNode* OsmWay::toNode() const { return to_node_; }
 WayType OsmWay::wayType() const { return way_type_; };
 HighWayLinkType OsmWay::highwayLinkType() const { return highway_link_type_; }
 bool OsmWay::isTargetLinkType() const { return is_target_link_type_; }
+bool OsmWay::isTargetConnectorLinkType() const { return is_target_connector_link_type_; }
 std::optional<bool> OsmWay::isOneway() const { return is_oneway_; }
 bool OsmWay::isReversed() const { return is_reversed_; }
 std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }

@@ -544,16 +544,16 @@ std::vector<OsmWay*> Network::identifyConnectorWays() const {
   }
 
   for (OsmWay* osm_way : osmnet_->osmWayVector()) {
-    if (connector_link_types_.find(osm_way->highwayLinkType()) == connector_link_types_.end()) {
-      continue;
-    }
-    if (osm_way->refNodeVector().empty()) {
-      continue;
-    }
     if (osm_way->wayType() != WayType::HIGHWAY) {
       continue;
     }
     if (osm_way->isTargetLinkType()) {
+      continue;
+    }
+    if (!osm_way->isTargetConnectorLinkType()) {
+      continue;
+    }
+    if (osm_way->refNodeVector().empty()) {
       continue;
     }
     if (checkConnectorNode(osm_way->fromNode()) || checkConnectorNode(osm_way->toNode())) {
@@ -626,9 +626,6 @@ void Network::createPOIsFromOsmRelations(std::vector<std::vector<POI*>>& m_poi_v
 
 void Network::createPOIsFromOneOsmRelation(const OsmRelation* osm_relation,
                                            std::vector<std::vector<POI*>>& m_poi_vector) {
-  if (osm_relation->building().empty() && osm_relation->amenity().empty() && osm_relation->leisure().empty()) {
-    return;
-  }
   const size_t number_of_way_members = osm_relation->memberWayVector().size();
   if (number_of_way_members < 1) {
     return;

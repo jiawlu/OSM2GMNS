@@ -110,6 +110,7 @@ class OsmWay {
   [[nodiscard]] WayType wayType() const;
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] bool isTargetLinkType() const;
+  [[nodiscard]] bool isTargetConnectorLinkType() const;
   [[nodiscard]] std::optional<bool> isOneway() const;
   [[nodiscard]] bool isReversed() const;
   [[nodiscard]] std::optional<float> maxSpeed() const;

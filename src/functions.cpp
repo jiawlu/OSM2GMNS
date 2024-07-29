@@ -78,8 +78,10 @@ Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::f
   LOG(INFO) << "loading data from osm file";
   auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types, POI, strict_boundary);
 
-  LOG(INFO) << "building network";
+  LOG(INFO) << "start to build network";
   return new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);
+
+  LOG(INFO) << "build network done";
 };
 
 void consolidateComplexIntersections(Network* network, bool auto_identify,

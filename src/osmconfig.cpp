@@ -184,8 +184,9 @@ bool isAerowayPoiType(const std::string& aeroway) {
 
 bool isNegligibleHighwayType(const std::string& highway) {
   static const absl::flat_hash_set<std::string> negligible_highway_type_set = {
-      "path",    "construction", "proposed", "raceway",    "bridleway", "rest_area", "su",     "road",     "abandoned",
-      "planned", "trailhead",    "stairs",   "dismantled", "disused",   "razed",     "access", "corridor", "stop"};
+      "path",  "construction", "proposed", "raceway",   "bridleway", "rest_area",  "su",
+      "road",  "abandoned",    "planned",  "trailhead", "stairs",    "dismantled", "disused",
+      "razed", "access",       "corridor", "stop",      "elevator",  "escape"};
   return negligible_highway_type_set.find(highway) != negligible_highway_type_set.end();
 }
 bool isNegligibleRailwayType(const std::string& railway) {

@@ -11,7 +11,7 @@ map_name = 'map.osm.pbf'
 
 net = og.getNetFromFile(os.path.join(map_folder, map_name),
                         link_types=['motorway', 'trunk', 'primary', 'secondary'],
-                        connector_link_types=['tertiary'])
+                        connector_link_types=['tertiary'], POI=True)
 
 og.consolidateComplexIntersections(net, auto_identify=True)
 

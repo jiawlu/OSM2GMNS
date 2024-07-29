@@ -169,6 +169,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   poi_file.close();
 
+  LOG(INFO) << "write network done";
+
   //  const std::string node_filepath = output_folder.empty() ? "node.csv" : output_folder + "/node.csv";
   //  std::ofstream node_file(node_filepath);
   //  if (!node_file) {
