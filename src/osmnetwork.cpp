@@ -477,12 +477,6 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
   osm_relation_vector_ = std::move(handler.osmRelationVector());
   LOG(INFO) << "nodes: " << osm_node_vector_.size() << " ways: " << osm_way_vector_.size()
             << " relations: " << osm_relation_vector_.size();
-  for (OsmNode* osm_node : osm_node_vector_) {
-    osm_node_dict_[osm_node->osmNodeId()] = osm_node;
-  }
-  for (OsmWay* osm_way : osm_way_vector_) {
-    osm_way_dict_[osm_way->osmWayId()] = osm_way;
-  }
 
   const auto time3 = std::chrono::high_resolution_clock::now();
   DLOG(INFO) << "pass osm "
@@ -531,6 +525,18 @@ void OsmNetwork::processOsmData() {
 }
 
 void OsmNetwork::initializeElements() {
+  absl::flat_hash_map<OsmIdType, OsmNode*> osm_node_dict;
+  osm_node_dict.reserve(osm_node_vector_.size());
+  for (OsmNode* osm_node : osm_node_vector_) {
+    osm_node_dict.emplace(osm_node->osmNodeId(), osm_node);
+  }
+
+  absl::flat_hash_map<OsmIdType, OsmWay*> osm_way_dict;
+  osm_way_dict.reserve(osm_way_vector_.size());
+  for (OsmWay* osm_way : osm_way_vector_) {
+    osm_way_dict.emplace(osm_way->osmWayId(), osm_way);
+  }
+
   /*================= OsmNode =================*/
   const size_t number_of_osm_nodes = osm_node_vector_.size();
 #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
@@ -540,16 +546,16 @@ void OsmNetwork::initializeElements() {
 
   /*================= OsmRelation =================*/
   const size_t number_of_osm_relations = osm_relation_vector_.size();
-#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_relations)
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_relations, osm_way_dict)
   for (int64_t idx = 0; idx < number_of_osm_relations; ++idx) {
-    osm_relation_vector_[idx]->initOsmRelation(osm_way_dict_);
+    osm_relation_vector_[idx]->initOsmRelation(osm_way_dict);
   }
 
   /*================= OsmWay =================*/
   const size_t number_of_osm_ways = osm_way_vector_.size();
-#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_ways)
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_ways, osm_node_dict)
   for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
-    osm_way_vector_[idx]->initOsmWay(osm_node_dict_);
+    osm_way_vector_[idx]->initOsmWay(osm_node_dict);
   }
   osm_way_vector_.erase(remove_if(osm_way_vector_.begin(), osm_way_vector_.end(),
                                   [](OsmWay* osm_way) { return !osm_way->includeTheWay(); }),
