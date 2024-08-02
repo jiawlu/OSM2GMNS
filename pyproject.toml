@@ -1,0 +1,55 @@
+[project.urls]
+"Source Code" = "https://github.com/jiawlu/OSM2GMNS"
+"Bug Tracker" = "https://github.com/jiawlu/OSM2GMNS/issues"
+
+[build-system]
+requires = ["scikit-build-core>=0.9.0"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "osm2gmns"
+version = "1.0.0b0"
+description = "convert map data from OpenStreetMap to network files in GMNS format"
+authors = [{ name = "Jiawei Lu", email = "lujiaweiwk@gmail.com" }, { name = "Xuesong (Simon) Zhou", email = "xzhou74@asu.edu" }]
+readme = "README.rst"
+
+requires-python = ">=3.8"
+dependencies = []
+
+classifiers = [
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+
+[tool.scikit-build]
+wheel.packages = ["osm2gmns"]
+wheel.install-dir = "osm2gmns"
+wheel.expand-macos-universal-tags = true
+
+cmake.version = ">=3.25"
+cmake.args = ["-DBUILD_OSM2GMNS_EXE=OFF"]
+cmake.build-type = "Release"
+cmake.verbose = true
+
+sdist.include = [
+    "docs",
+    "python",
+    "src"
+]
+
+sdist.exclude = [
+  ".github",
+  ".gitattributes",
+  ".gitignore",
+  "build"
+]
+
+[tool.cibuildwheel]
+build = "*"
+skip = "cp3{6,7}-*"

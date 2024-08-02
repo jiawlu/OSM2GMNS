@@ -1,0 +1,4 @@
+Checks: '*,-=,-fuchsia-*,-zircon-*,-modernize-use-trailing-return-type,-hicpp-use-emplace,-modernize-use-emplace,-llvm-*,-llvmlibc-*,-readability-function-cognitive-complexity,-altera-*,-openmp-exception-escape,-cppcoreguidelines-owning-memory,-bugprone-easily-swappable-parameters,-bugprone-branch-clone'
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'src/.*'
+FormatStyle: 'file'
