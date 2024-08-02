@@ -27,11 +27,10 @@ Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::f
                         float POI_sampling_ratio, bool strict_boundary) {
   LOG(INFO) << "loading data from osm file";
   auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types, POI, strict_boundary);
-
   LOG(INFO) << "start to build network";
-  return new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);
-
+  auto* network = new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);
   LOG(INFO) << "build network done";
+  return network;
 };
 
 void consolidateComplexIntersections(Network* network, bool auto_identify,
