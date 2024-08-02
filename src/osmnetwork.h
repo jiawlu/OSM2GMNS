@@ -37,11 +37,19 @@ class OsmHandler : public osmium::handler::Handler {
   void way(const osmium::Way& way);
   void relation(const osmium::Relation& relation);
 
+  void updateParseTargets(bool parse_node, bool parse_way, bool parse_relation);
+
   std::vector<OsmNode*>& osmNodeVector();
   std::vector<OsmWay*>& osmWayVector();
   std::vector<OsmRelation*>& osmRelationVector();
 
  private:
+  bool parse_node_{false};
+  bool parse_way_{false};
+  bool parse_relation_{false};
+  absl::flat_hash_set<OsmIdType> nodes_used_in_ways_;
+  absl::flat_hash_set<OsmIdType> ways_used_in_relations_;
+
   absl::flat_hash_set<ModeType> highway_mode_types_;
   bool include_railway_{false};
   bool include_aeroway_{false};
@@ -119,19 +127,27 @@ class OsmWay {
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;
   [[nodiscard]] const std::string& leisure() const;
+
+  [[nodiscard]] const std::vector<OsmIdType>& refNodeIdVector() const;
   [[nodiscard]] const std::vector<ModeType>& allowedModeTypes() const;
   [[nodiscard]] bool includeTheWay() const;
   [[nodiscard]] const std::vector<std::vector<OsmNode*>>& segmentNodesVector() const;
 
   void identifyWayType(const absl::flat_hash_set<ModeType>& highway_mode_types, bool include_railway,
                        bool include_aeroway, const absl::flat_hash_set<HighWayLinkType>& link_types,
-                       const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI);
+                       const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
+                       const absl::flat_hash_set<OsmIdType>& ways_used_in_relations);
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void splitIntoSegments();
 
-  void setUsedByRelation(bool used_by_relation);
+  // void setUsedByRelation(bool used_by_relation);
 
  private:
+  void identifyHighwayType(const absl::flat_hash_set<ModeType>& highway_mode_types,
+                           const absl::flat_hash_set<HighWayLinkType>& link_types,
+                           const absl::flat_hash_set<HighWayLinkType>& connector_link_types);
+  void identifyRailwayType();
+  void identifyAerowayType();
   void generateHighwayAllowedModeTypes(const absl::flat_hash_set<ModeType>& highway_mode_types);
   void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void configAttributes();
@@ -178,7 +194,7 @@ class OsmWay {
   bool is_target_link_type_{false};
   bool is_target_connector_link_type_{false};
   bool include_the_way_{false};
-  bool used_by_relation_{false};
+  // bool used_by_relation_{false};
 
   int number_of_segments_{0};
   std::vector<std::vector<OsmNode*>> segment_nodes_vector_;
@@ -192,6 +208,8 @@ class OsmRelation {
 
   [[nodiscard]] OsmIdType osmRelationId() const;
   [[nodiscard]] const std::string& name() const;
+  [[nodiscard]] const std::vector<OsmIdType>& memberIdVector() const;
+  [[nodiscard]] const std::vector<osmium::item_type>& memberTypeVector() const;
   [[nodiscard]] const std::vector<OsmWay*>& memberWayVector() const;
   [[nodiscard]] const std::vector<std::string>& memberWayRoleVector() const;
   [[nodiscard]] const std::string& building() const;
