@@ -59,10 +59,12 @@ std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<Os
     return nullptr;
   }
   for (const OsmNode* osm_node : osm_nodes) {
-    coord_seq.add(*(osm_node->geometry()->getCoordinate()));
+    // coord_seq.add(*(osm_node->geometry()->getCoordinate()));
+    coord_seq.add(osm_node->getX(), osm_node->getY());
   }
   if (osm_nodes.at(0)->osmNodeId() != osm_nodes.back()->osmNodeId()) {
-    coord_seq.add(*(osm_nodes.at(0)->geometry()->getCoordinate()));
+    // coord_seq.add(*(osm_nodes.at(0)->geometry()->getCoordinate()));
+    coord_seq.add(osm_nodes.at(0)->getX(), osm_nodes.at(0)->getY());
   }
   return factory->createPolygon(std::move(coord_seq));
 }

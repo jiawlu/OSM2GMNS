@@ -68,15 +68,17 @@ class OsmNode {
 
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
-  [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] double getX() const;
+  [[nodiscard]] double getY() const;
+  // [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
   [[nodiscard]] bool isSignalized() const;
   [[nodiscard]] int32_t usageCount() const;
   [[nodiscard]] bool isTypologyNode() const;
   [[nodiscard]] std::vector<OsmWay*> incomingWayVector() const;
   [[nodiscard]] std::vector<OsmWay*> outgoingWayVector() const;
 
-  void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary,
-                   bool strict_boundary);
+  // void initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary,
+  //                  bool strict_boundary);
   void changeUsageCount(int32_t usage_count_changes);
   void setIsEndingNode(bool is_ending_node);
   void setIsTypologyNode();
@@ -86,7 +88,7 @@ class OsmNode {
  private:
   OsmIdType osm_node_id_;
   std::string name_;
-  std::unique_ptr<geos::geom::Point> geometry_;
+  // std::unique_ptr<geos::geom::Point> geometry_;
   double x, y;
   std::string highway_;
   // std::string signal_;

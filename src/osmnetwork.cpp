@@ -120,20 +120,22 @@ OsmNode::OsmNode(const osmium::Node& node)
 
 OsmIdType OsmNode::osmNodeId() const { return osm_node_id_; }
 const std::string& OsmNode::name() const { return name_; }
-const std::unique_ptr<geos::geom::Point>& OsmNode::geometry() const { return geometry_; }
+double OsmNode::getX() const { return x; }
+double OsmNode::getY() const { return y; }
+// const std::unique_ptr<geos::geom::Point>& OsmNode::geometry() const { return geometry_; }
 bool OsmNode::isSignalized() const { return is_signalized_; }
 int32_t OsmNode::usageCount() const { return usage_count_; }
 bool OsmNode::isTypologyNode() const { return is_typology_node_; }
 std::vector<OsmWay*> OsmNode::incomingWayVector() const { return incoming_way_vector_; }
 std::vector<OsmWay*> OsmNode::outgoingWayVector() const { return outgoing_way_vector_; }
 
-void OsmNode::initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary,
-                          bool strict_boundary) {
-  geometry_ = factory->createPoint(geos::geom::Coordinate(x, y));
-  if (strict_boundary && !boundary->covers(geometry_.get())) {
-    in_region_ = false;
-  }
-}
+// void OsmNode::initOsmNode(const geos::geom::GeometryFactory* factory, const geos::geom::Polygon* boundary,
+//                           bool strict_boundary) {
+//   geometry_ = factory->createPoint(geos::geom::Coordinate(x, y));
+//   if (strict_boundary && !boundary->covers(geometry_.get())) {
+//     in_region_ = false;
+//   }
+// }
 void OsmNode::changeUsageCount(int32_t usage_count_changes = 1) { usage_count_ += usage_count_changes; }
 void OsmNode::setIsEndingNode(bool is_ending_node) { is_ending_node_ = is_ending_node; }
 void OsmNode::setIsTypologyNode() { is_typology_node_ = is_ending_node_ || usage_count_ >= 2 || is_signalized_; }
@@ -580,11 +582,11 @@ void OsmNetwork::initializeElements() {
   }
 
   /*================= OsmNode =================*/
-  const size_t number_of_osm_nodes = osm_node_vector_.size();
-#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
-  for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
-    osm_node_vector_[idx]->initOsmNode(factory_.get(), boundary_.get(), strict_boundary_);
-  }
+  //   const size_t number_of_osm_nodes = osm_node_vector_.size();
+  // #pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_nodes)
+  //   for (int64_t idx = 0; idx < number_of_osm_nodes; ++idx) {
+  //     osm_node_vector_[idx]->initOsmNode(factory_.get(), boundary_.get(), strict_boundary_);
+  //   }
 
   /*================= OsmWay =================*/
   const size_t number_of_osm_ways = osm_way_vector_.size();
