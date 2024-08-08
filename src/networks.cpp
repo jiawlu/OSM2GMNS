@@ -37,7 +37,7 @@
 
 Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory)
     : osm_nodes_({osm_node}), name_(osm_node->name()), is_signalized_(osm_node->isSignalized()) {
-  geometry_ = factory->createPoint(*(osm_node->geometry()->getCoordinate()));
+  geometry_ = factory->createPoint(geos::geom::Coordinate(osm_node->getX(), osm_node->getY()));
 }
 
 Node::Node(NetIdType node_id, const std::vector<Node*>& nodes, NetIdType intersection_id,
@@ -111,11 +111,13 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
   geos::geom::CoordinateSequence coord_seq;
   if (forward_direction) {
     for (const OsmNode* osm_node : osm_nodes) {
-      coord_seq.add(*(osm_node->geometry()->getCoordinate()));
+      // coord_seq.add(*(osm_node->geometry()->getCoordinate()));
+      coord_seq.add(osm_node->getX(), osm_node->getY());
     }
   } else {
     for (auto rit = osm_nodes.rbegin(); rit != osm_nodes.rend(); ++rit) {
-      coord_seq.add(*((*rit)->geometry()->getCoordinate()));
+      // coord_seq.add(*((*rit)->geometry()->getCoordinate()));
+      coord_seq.add((*rit)->getX(), (*rit)->getY());
     }
   }
   geometry_ = factory->createLineString(coord_seq);
