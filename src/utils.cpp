@@ -12,13 +12,10 @@
 #include <cmath>
 #include <cstddef>
 #include <memory>
-#include <utility>
-#include <vector>
 
 #include "absl/base/log_severity.h"
 #include "absl/log/globals.h"
 #include "absl/log/initialize.h"
-#include "osmnetwork.h"
 
 constexpr double EARTH_RADIUS = 6371000.0;
 
@@ -26,6 +23,14 @@ void initializeAbslLogging() {
   absl::InitializeLog();
   absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 };
+
+VerboseLevel verboseLevel(bool update, VerboseLevel new_level) {
+  static VerboseLevel verbose_level = VerboseLevel::Information;
+  if (update) {
+    verbose_level = new_level;
+  }
+  return verbose_level;
+}
 
 double toRadians(double degrees) {
   return degrees * 3.14159265 / 180.0;  // NOLINT
@@ -50,21 +55,4 @@ double calculateLineStringLength(const geos::geom::LineString* lineString) {
     totalLength += haversineDistance(point_1.x, point_1.y, point_2.x, point_2.y);
   }
   return totalLength;
-}
-
-std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<OsmNode*>& osm_nodes,
-                                                            const geos::geom::GeometryFactory* factory) {
-  geos::geom::CoordinateSequence coord_seq;
-  if (osm_nodes.size() < 3) {
-    return nullptr;
-  }
-  for (const OsmNode* osm_node : osm_nodes) {
-    // coord_seq.add(*(osm_node->geometry()->getCoordinate()));
-    coord_seq.add(osm_node->getX(), osm_node->getY());
-  }
-  if (osm_nodes.at(0)->osmNodeId() != osm_nodes.back()->osmNodeId()) {
-    // coord_seq.add(*(osm_nodes.at(0)->geometry()->getCoordinate()));
-    coord_seq.add(osm_nodes.at(0)->getX(), osm_nodes.at(0)->getY());
-  }
-  return factory->createPolygon(std::move(coord_seq));
 }

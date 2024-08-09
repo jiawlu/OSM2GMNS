@@ -13,14 +13,6 @@
 #include "osmconfig.h"
 #include "osmnetwork.h"
 
-VerboseLevel verboseLevel(bool update, VerboseLevel new_level) {
-  static VerboseLevel verbose_level = VerboseLevel::Information;
-  if (update) {
-    verbose_level = new_level;
-  }
-  return verbose_level;
-}
-
 Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::flat_hash_set<ModeType>& mode_types,
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,

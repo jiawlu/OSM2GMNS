@@ -32,6 +32,13 @@ SET(ABSL_BUILD_TESTING OFF)
 
 message("CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 
+find_package(OpenMP REQUIRED)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+set(Required_Libraries ${Required_Libraries} OpenMP::OpenMP_CXX)
+
 FetchContent_Declare(
         absl
         GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
@@ -144,13 +151,6 @@ FetchContent_Declare(
 )
 FetchContent_Populate(fast-cpp-csv-parser)
 include_directories(SYSTEM ${fast-cpp-csv-parser_SOURCE_DIR})
-
-find_package(OpenMP REQUIRED)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
-set(Required_Libraries ${Required_Libraries} OpenMP::OpenMP_CXX)
 
 add_subdirectory(src)
 

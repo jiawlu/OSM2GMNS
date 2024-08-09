@@ -582,6 +582,23 @@ void Network::createPOIsFromOsmWays(std::vector<std::vector<POI*>>& m_poi_vector
   }
 }
 
+std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<OsmNode*>& osm_nodes,
+                                                            const geos::geom::GeometryFactory* factory) {
+  geos::geom::CoordinateSequence coord_seq;
+  if (osm_nodes.size() < 3) {
+    return nullptr;
+  }
+  for (const OsmNode* osm_node : osm_nodes) {
+    // coord_seq.add(*(osm_node->geometry()->getCoordinate()));
+    coord_seq.add(osm_node->getX(), osm_node->getY());
+  }
+  if (osm_nodes.at(0)->osmNodeId() != osm_nodes.back()->osmNodeId()) {
+    // coord_seq.add(*(osm_nodes.at(0)->geometry()->getCoordinate()));
+    coord_seq.add(osm_nodes.at(0)->getX(), osm_nodes.at(0)->getY());
+  }
+  return factory->createPolygon(std::move(coord_seq));
+}
+
 void Network::createPOIsFromOneOsmWay(const OsmWay* osm_way, std::vector<std::vector<POI*>>& m_poi_vector) {
   if (osm_way->wayType() != WayType::POI || osm_way->refNodeVector().size() < 3) {
     return;
