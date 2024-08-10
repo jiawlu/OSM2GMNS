@@ -9,18 +9,16 @@
 #include <geos/geom/LineString.h>
 #include <geos/geom/Polygon.h>
 
-#include <cstdint>
-
 constexpr double MIN_LAT = -90.0;
 constexpr double MAX_LAT = 90.0;
 constexpr double MIN_LON = -180.0;
 constexpr double MAX_LON = 180.0;
 
-enum class VerboseLevel : uint8_t { None, Information, Trace };
+// enum class VerboseLevel : uint8_t { OFF, Information, Trace };
 
-void initializeAbslLogging();
+// void initializeAbslLogging();
 
-[[maybe_unused]] VerboseLevel verboseLevel(bool update = false, VerboseLevel new_level = VerboseLevel::Information);
+// [[maybe_unused]] VerboseLevel verboseLevel(bool update = false, VerboseLevel new_level = VerboseLevel::Information);
 
 double calculateLineStringLength(const geos::geom::LineString* lineString);
 // std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<OsmNode*>& osm_nodes,

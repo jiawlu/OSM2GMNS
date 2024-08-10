@@ -13,24 +13,20 @@
 #include <cstddef>
 #include <memory>
 
-#include "absl/base/log_severity.h"
-#include "absl/log/globals.h"
-#include "absl/log/initialize.h"
-
 constexpr double EARTH_RADIUS = 6371000.0;
 
-void initializeAbslLogging() {
-  absl::InitializeLog();
-  absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
-};
+// void initializeAbslLogging() {
+//   absl::InitializeLog();
+//   absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
+// };
 
-VerboseLevel verboseLevel(bool update, VerboseLevel new_level) {
-  static VerboseLevel verbose_level = VerboseLevel::Information;
-  if (update) {
-    verbose_level = new_level;
-  }
-  return verbose_level;
-}
+// VerboseLevel verboseLevel(bool update, VerboseLevel new_level) {
+//   static VerboseLevel verbose_level = VerboseLevel::Information;
+//   if (update) {
+//     verbose_level = new_level;
+//   }
+//   return verbose_level;
+// }
 
 double toRadians(double degrees) {
   return degrees * 3.14159265 / 180.0;  // NOLINT
