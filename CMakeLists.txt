@@ -32,6 +32,13 @@ SET(ABSL_BUILD_TESTING OFF)
 
 message("CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
 
+find_package(OpenMP REQUIRED)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+set(Required_Libraries ${Required_Libraries} OpenMP::OpenMP_CXX)
+
 FetchContent_Declare(
         absl
         GIT_REPOSITORY https://github.com/abseil/abseil-cpp.git
@@ -145,23 +152,16 @@ FetchContent_Declare(
 FetchContent_Populate(fast-cpp-csv-parser)
 include_directories(SYSTEM ${fast-cpp-csv-parser_SOURCE_DIR})
 
-find_package(OpenMP REQUIRED)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
-set(Required_Libraries ${Required_Libraries} OpenMP::OpenMP_CXX)
-
 add_subdirectory(src)
 
-option(BUILD_OSM2GMNS_EXE "Build osm2gmns executable" ON)
-if (BUILD_OSM2GMNS_EXE)
+option(OSM2GMNS_BUILD_EXE "Build osm2gmns executable" ON)
+if (OSM2GMNS_BUILD_EXE)
     add_executable(osm2gmns osm2gmns_main.cpp)
     target_link_libraries(osm2gmns osm2gmns_core)
 endif ()
 
-option(BUILD_OSM2GMNS_LIB "Build osm2gmns library" ON)
-if (BUILD_OSM2GMNS_LIB)
+option(OSM2GMNS_BUILD_LIB "Build osm2gmns library" ON)
+if (OSM2GMNS_BUILD_LIB)
     add_library(osm2gmnslib SHARED osm2gmns_lib.cpp)
     target_link_libraries(osm2gmnslib osm2gmns_core)
     set_target_properties(osm2gmnslib PROPERTIES OUTPUT_NAME osm2gmns)
@@ -172,8 +172,8 @@ if (BUILD_OSM2GMNS_LIB)
     endif ()
 endif ()
 
-option(BUILD_OSM2GMNS_DEV "Build executable for development" OFF)
-if (BUILD_OSM2GMNS_DEV)
+option(OSM2GMNS_BUILD_DEV "Build executable for development" OFF)
+if (OSM2GMNS_BUILD_DEV)
     add_subdirectory(dev)
 endif ()
 
@@ -211,10 +211,10 @@ endif ()
 # endif()
 
 
-if (BUILD_OSM2GMNS_EXE)
+if (OSM2GMNS_BUILD_EXE)
     install(TARGETS osm2gmns RUNTIME DESTINATION .)
 endif ()
-if (BUILD_OSM2GMNS_LIB)
+if (OSM2GMNS_BUILD_LIB)
     if (WIN32)
         install(TARGETS osm2gmnslib RUNTIME DESTINATION .)
     else ()

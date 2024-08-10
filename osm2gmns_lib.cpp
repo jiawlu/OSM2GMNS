@@ -2,8 +2,11 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
+#include <absl/base/log_severity.h>
 #include <absl/container/flat_hash_map.h>
 #include <absl/container/flat_hash_set.h>
+#include <absl/log/globals.h>
+#include <absl/log/initialize.h>
 #include <absl/log/log.h>
 
 #include <cstddef>
@@ -14,7 +17,6 @@
 #include "src/io.h"
 #include "src/networks.h"
 #include "src/osmconfig.h"
-#include "src/utils.h"
 
 #ifdef _WIN32
 #define C_API __declspec(dllexport)
@@ -75,7 +77,10 @@ absl::flat_hash_map<HighWayLinkType, T> parseLinkTypeToNumDict(const StrNumDict<
 
 extern "C" {
 
-C_API void initializeAbslLoggingPy() { initializeAbslLogging(); };
+C_API void initializeAbslLoggingPy() {
+  absl::InitializeLog();
+  absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
+};
 
 C_API void releaseNetworkMemoryPy(Network* network) { delete network; };
 

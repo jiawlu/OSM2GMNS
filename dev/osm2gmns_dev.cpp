@@ -2,6 +2,10 @@
 // Created by Jiawei Lu on 2/17/23.
 //
 
+#include <absl/base/log_severity.h>
+#include <absl/log/globals.h>
+#include <absl/log/initialize.h>
+
 #include <exception>
 #include <filesystem>
 #include <iostream>
@@ -11,13 +15,11 @@
 #include "io.h"
 #include "networks.h"
 #include "osmconfig.h"
-#include "utils.h"
 
 int main(int /*argc*/, char* /*argv*/[]) {
   try {
-    initializeAbslLogging();
-
-    verboseLevel(true, VerboseLevel::Trace);
+    absl::InitializeLog();
+    absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
     // const auto map_folder = std::filesystem::path("dev/maps/District_of_Columbia");
     const auto map_folder = std::filesystem::path("dev/maps/Georgia");

@@ -16,10 +16,6 @@
 
 constexpr float DEFAULT_INT_BUFFER = 20.0;
 
-enum class VerboseLevel : uint8_t { None, Information, Trace };
-
-[[maybe_unused]] VerboseLevel verboseLevel(bool update = false, VerboseLevel new_level = VerboseLevel::Information);
-
 Network* getNetFromFile(const std::filesystem::path& osm_filepath,
                         const absl::flat_hash_set<ModeType>& mode_types = {ModeType::AUTO},
                         const absl::flat_hash_set<HighWayLinkType>& link_types = {},
