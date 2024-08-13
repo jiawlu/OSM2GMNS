@@ -6,6 +6,7 @@
 
 #include <absl/container/flat_hash_map.h>
 #include <absl/log/log.h>
+#include <absl/strings/match.h>
 #include <geos/geom/Geometry.h>
 #include <geos/io/WKTReader.h>
 
@@ -69,12 +70,13 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,boundary,zone_id,notes\n";
   for (const Node* node : network->nodeVector()) {
+    const std::string& name = absl::StrContains(node->name(), ',') ? "\"" + node->name() + "\"" : node->name();
     const std::string ctrl_type = node->isSignalized() ? "signal" : "";
     const std::string zone_id = node->zoneId().has_value() ? std::to_string(node->zoneId().value()) : "";  // NOLINT
     const std::string boundary =
         node->boundary().has_value() ? std::to_string(node->boundary().value()) : "";  // NOLINT
-    node_file << node->name() << "," << node->nodeId() << "," << node->osmNodeId() << "," << ctrl_type << ","
-              << std::fixed << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
+    node_file << name << "," << node->nodeId() << "," << node->osmNodeId() << "," << ctrl_type << "," << std::fixed
+              << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
               << node->geometry()->getY() << std::defaultfloat << "," << boundary << "," << zone_id << ",\n";
   }
   node_file.close();
@@ -88,6 +90,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
                "speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
+    const std::string& name = absl::StrContains(link->name(), ',') ? "\"" + link->name() + "\"" : link->name();
     const std::string lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
     std::string free_speed;
     if (link->freeSpeed().has_value()) {
@@ -101,8 +104,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     for (size_t idx = 1; idx < link->allowedModeTypes().size(); ++idx) {
       allowed_uses += ";" + getModeTypeStr(link->allowedModeTypes().at(idx));
     }
-    link_file << link->linkId() << "," << link->name() << "," << link->osmWayId() << "," << link->fromNode()->nodeId()
-              << "," << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
+    link_file << link->linkId() << "," << name << "," << link->osmWayId() << "," << link->fromNode()->nodeId() << ","
+              << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
               << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << link->freeSpeedRaw()
               << "," << lanes << "," << capacity << "," << allowed_uses << "," << link->toll() << ",\n";
