@@ -22,21 +22,23 @@ int main(int /*argc*/, char* /*argv*/[]) {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
     // const auto map_folder = std::filesystem::path("dev/maps/District_of_Columbia");
-    const auto map_folder = std::filesystem::path("dev/maps/Georgia");
+    // const auto map_folder = std::filesystem::path("dev/maps/gatech");
+    const auto map_folder = std::filesystem::path("dev/maps/debug");
 
-    const std::string map_filename = "map.osm.pbf";
+    // const std::string map_filename = "map.osm.pbf";
+    const std::string map_filename = "map.osm";
 
     Network* network = getNetFromFile(map_folder / map_filename, {ModeType::AUTO},
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, 1.0, true);
 
-    consolidateComplexIntersections(network, true);
+    // consolidateComplexIntersections(network, true);
 
-    generateNodeActivityInfo(network);
+    // generateNodeActivityInfo(network);
 
-    fillLinkAttributesWithDefaultValues(network, true, {}, false, {{HighWayLinkType::MOTORWAY, 1}}, true,
-                                        {{HighWayLinkType::MOTORWAY, 1}});
+    // fillLinkAttributesWithDefaultValues(network, true, {}, false, {{HighWayLinkType::MOTORWAY, 1}}, true,
+    //                                     {{HighWayLinkType::MOTORWAY, 1}});
 
     outputNetToCSV(network, map_folder);
 

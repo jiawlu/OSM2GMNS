@@ -218,6 +218,7 @@ class Network {
   void identifyComplexIntersections(float int_buffer);
 
   OsmNetwork* osmnet_;
+  std::optional<std::unique_ptr<geos::geom::Polygon>> boundary_;
   geos::geom::GeometryFactory::Ptr factory_;
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;

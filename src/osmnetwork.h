@@ -242,7 +242,7 @@ class OsmNetwork {
   OsmNetwork(OsmNetwork&&) = delete;
   OsmNetwork& operator=(OsmNetwork&&) = delete;
 
-  [[nodiscard]] const std::unique_ptr<geos::geom::Polygon>& boundary() const;
+  [[nodiscard]] const std::optional<std::unique_ptr<geos::geom::Polygon>>& boundary() const;
   [[nodiscard]] const std::vector<OsmWay*>& osmWayVector() const;
   [[nodiscard]] const std::vector<OsmRelation*>& osmRelationVector() const;
 
@@ -258,7 +258,7 @@ class OsmNetwork {
   bool strict_boundary_;
 
   geos::geom::GeometryFactory::Ptr factory_;
-  std::unique_ptr<geos::geom::Polygon> boundary_;
+  std::optional<std::unique_ptr<geos::geom::Polygon>> boundary_;
 
   std::vector<OsmNode*> osm_node_vector_;
   std::vector<OsmWay*> osm_way_vector_;

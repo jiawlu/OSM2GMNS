@@ -39,7 +39,6 @@
 
 #include "constants.h"
 #include "osmconfig.h"
-#include "utils.h"
 
 const char* getOSMTagValue(const osmium::TagList& tag_list, const char* tag_key) {
   const char* tag_value = tag_list[tag_key];
@@ -488,11 +487,7 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
                                            geos::geom::Coordinate(box.bottom_left().lon(), box.top_right().lat()),
                                            geos::geom::Coordinate(box.bottom_left().lon(), box.bottom_left().lat())});
     } else {
-      LOG(WARNING) << "no valid boundary information in the osm file";
-      boundary_ =
-          factory_->createPolygon({geos::geom::Coordinate(MIN_LON, MIN_LAT), geos::geom::Coordinate(MAX_LON, MIN_LAT),
-                                   geos::geom::Coordinate(MAX_LON, MAX_LAT), geos::geom::Coordinate(MIN_LON, MAX_LAT),
-                                   geos::geom::Coordinate(MIN_LON, MIN_LAT)});
+      LOG(INFO) << "no valid boundary information in the osm file";
     }
 
     if (POI_) {
@@ -559,7 +554,7 @@ OsmNetwork::~OsmNetwork() {
   }
 }
 
-const std::unique_ptr<geos::geom::Polygon>& OsmNetwork::boundary() const { return boundary_; }
+const std::optional<std::unique_ptr<geos::geom::Polygon>>& OsmNetwork::boundary() const { return boundary_; }
 const std::vector<OsmWay*>& OsmNetwork::osmWayVector() const { return osm_way_vector_; }
 const std::vector<OsmRelation*>& OsmNetwork::osmRelationVector() const { return osm_relation_vector_; }
 

@@ -218,7 +218,9 @@ Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_t
       POI_(POI),
       POI_sampling_ratio_(POI_sampling_ratio) {
   factory_ = geos::geom::GeometryFactory::create();
-
+  if (osmnet_->boundary().has_value()) {
+    boundary_ = static_cast<std::unique_ptr<geos::geom::Polygon>>(osmnet_->boundary().value()->clone());  // NOLINT
+  }
   createNodesAndLinksFromOsmNetwork();
   createPOIsFromOsmNetwork();
 }
@@ -604,7 +606,10 @@ void Network::createPOIsFromOneOsmWay(const OsmWay* osm_way, std::vector<std::ve
     return;
   }
   std::unique_ptr<geos::geom::Polygon> geometry = getPolygonFromOsmNodes(osm_way->refNodeVector(), factory_.get());
-  if (geometry == nullptr || geometry->disjoint(osmnet_->boundary().get())) {
+  if (geometry == nullptr) {
+    return;
+  }
+  if (boundary_.has_value() && geometry->disjoint(boundary_.value().get())) {  // NOLINT
     return;
   }
   m_poi_vector[omp_get_thread_num()].push_back(new POI(osm_way, std::move(geometry)));
@@ -705,15 +710,18 @@ void Network::createPOIsFromOneOsmRelation(const OsmRelation* osm_relation,
   if (polygon_vector.empty()) {
     return;
   }
-  bool disjoint = true;
-  for (const auto& polygon : polygon_vector) {
-    if (!polygon->disjoint(osmnet_->boundary().get())) {
-      disjoint = false;
-      break;
+  if (boundary_.has_value()) {
+    const geos::geom::Polygon* boundary = boundary_.value().get();  // NOLINT
+    bool disjoint = true;
+    for (const auto& polygon : polygon_vector) {
+      if (!polygon->disjoint(boundary)) {
+        disjoint = false;
+        break;
+      }
     }
-  }
-  if (disjoint) {
-    return;
+    if (disjoint) {
+      return;
+    }
   }
   std::unique_ptr<geos::geom::MultiPolygon> poi_geometry = factory_->createMultiPolygon(std::move(polygon_vector));
   m_poi_vector[omp_get_thread_num()].push_back(new POI(osm_relation, std::move(poi_geometry)));
