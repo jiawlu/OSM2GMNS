@@ -26,7 +26,8 @@ int main(int /*argc*/, char* /*argv*/[]) {
     const auto map_folder = std::filesystem::path("dev/maps/debug");
 
     // const std::string map_filename = "map.osm.pbf";
-    const std::string map_filename = "map.osm";
+    const std::string map_filename = "illinois-latest.osm.pbf";
+    // const std::string map_filename = "map.osm";
 
     Network* network = getNetFromFile(map_folder / map_filename, {ModeType::AUTO},
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
@@ -35,7 +36,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
 
     // consolidateComplexIntersections(network, true);
 
-    // generateNodeActivityInfo(network);
+    generateNodeActivityInfo(network);
 
     // fillLinkAttributesWithDefaultValues(network, true, {}, false, {{HighWayLinkType::MOTORWAY, 1}}, true,
     //                                     {{HighWayLinkType::MOTORWAY, 1}});

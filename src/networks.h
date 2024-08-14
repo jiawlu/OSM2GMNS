@@ -37,6 +37,7 @@ class Node {
   void setNodeId(NetIdType node_id);
   void setZoneId(NetIdType zone_id);
   void setBoundary(int16_t boundary);
+  void setActivityType(HighWayLinkType activity_type);
   void setIntersectionId(NetIdType intersection_id);
   // void setIsValid(bool is_valid);
   void addIncomingLink(Link* link);
@@ -50,6 +51,7 @@ class Node {
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
   [[nodiscard]] std::optional<NetIdType> zoneId() const;
   [[nodiscard]] std::optional<int16_t> boundary() const;
+  [[nodiscard]] std::optional<HighWayLinkType> activityType() const;
   [[nodiscard]] std::optional<NetIdType> intersectionId() const;
   // [[nodiscard]] bool isValid() const;
   [[nodiscard]] const std::vector<Link*>& incomingLinkVector() const;
@@ -64,6 +66,7 @@ class Node {
   std::optional<NetIdType> zone_id_;
   // boundary: 0 - not a boundary node; -1 - incoming only; 1 - outgoing only; 2 - both incoming and outgoing
   std::optional<int16_t> boundary_;
+  std::optional<HighWayLinkType> activity_type_;
   std::optional<NetIdType> intersection_id_;
   // bool is_valid_{true};
   //  unsigned long osm_node_id{};
