@@ -66,6 +66,7 @@ Node::Node(NetIdType node_id, const std::vector<Node*>& nodes, NetIdType interse
 void Node::setNodeId(NetIdType node_id) { node_id_ = node_id; }
 void Node::setZoneId(NetIdType zone_id) { zone_id_ = zone_id; }
 void Node::setBoundary(int16_t boundary) { boundary_ = boundary; }
+void Node::setActivityType(HighWayLinkType activity_type) { activity_type_ = activity_type; }
 void Node::setIntersectionId(NetIdType intersection_id) { intersection_id_ = intersection_id; }
 // void Node::setIsValid(bool is_valid) { is_valid_ = is_valid; }
 void Node::addIncomingLink(Link* link) { incoming_link_vector_.push_back(link); }
@@ -88,6 +89,7 @@ bool Node::isSignalized() const { return is_signalized_; }
 const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geometry_; }
 std::optional<NetIdType> Node::zoneId() const { return zone_id_; }
 std::optional<int16_t> Node::boundary() const { return boundary_; }
+std::optional<HighWayLinkType> Node::activityType() const { return activity_type_; }
 std::optional<NetIdType> Node::intersectionId() const { return intersection_id_; }
 // bool Node::isValid() const { return is_valid_; }
 const std::vector<Link*>& Node::incomingLinkVector() const { return incoming_link_vector_; }
@@ -260,6 +262,28 @@ const std::vector<Link*>& Network::linkVector() const { return link_vector_; }
 const std::vector<POI*>& Network::poiVector() const { return poi_vector_; }
 
 void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
+  // ========== Acitvity_info ========== //
+  std::map<HighWayLinkType, int> count_map;
+  for (Node* node : node_vector_) {
+    for (int idx = 0; idx <= static_cast<int>(HighWayLinkType::OTHER); ++idx) {
+      count_map[static_cast<HighWayLinkType>(idx)] = 0;
+    }
+    for (Link* link : node->outgoingLinkVector()) {
+      ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+    }
+    for (Link* link : node->incomingLinkVector()) {
+      ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+    }
+
+    auto max_element = std::max_element(count_map.begin(), count_map.end(), [](const auto& pair1, const auto& pair2) {
+      return pair1.second < pair2.second;
+    });
+    if (max_element->second > 0) {
+      node->setActivityType(max_element->first);
+    }
+  }
+
+  // ========== Boundary ========== //
   for (Node* node : node_vector_) {
     if (node->outgoingLinkVector().empty() && !node->incomingLinkVector().empty()) {
       node->setBoundary(-1);
@@ -273,6 +297,7 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
     }
   }
 
+  // ========== Zone_id ========== //
   absl::flat_hash_map<geos::geom::Geometry*, NetIdType> point_zone_dict;
   absl::flat_hash_map<geos::geom::Geometry*, NetIdType> polygon_zone_dict;
   for (const Zone* zone : zone_vector) {
