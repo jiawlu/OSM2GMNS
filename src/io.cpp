@@ -90,8 +90,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     std::cout << "Cannot open file " << link_filepath;
     return;
   }
-  link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,free_"
-               "speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
+  link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,link_"
+               "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string& name = absl::StrContains(link->name(), ',') ? "\"" + link->name() + "\"" : link->name();
     const std::string& free_speed_raw =
@@ -112,8 +112,10 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     link_file << link->linkId() << "," << name << "," << link->osmWayId() << "," << link->fromNode()->nodeId() << ","
               << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
-              << getHighWayLinkTypeStr(link->highwayLinkType()) << "," << free_speed << "," << free_speed_raw << ","
-              << lanes << "," << capacity << "," << allowed_uses << "," << link->toll() << ",\n";
+              << getHighWayLinkTypeStr(link->highwayLinkType()) << ","
+              << highWayLinkTypeTohighWayLinkTypeNo(link->highwayLinkType()) << "," << free_speed << ","
+              << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses << "," << link->toll()
+              << ",\n";
   }
   link_file.close();
 
