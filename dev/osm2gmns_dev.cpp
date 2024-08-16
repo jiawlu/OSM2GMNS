@@ -21,12 +21,13 @@ int main(int /*argc*/, char* /*argv*/[]) {
     absl::InitializeLog();
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
-    // const auto map_folder = std::filesystem::path("dev/maps/District_of_Columbia");
+    const auto map_folder = std::filesystem::path("dev/maps/District_of_Columbia");
     // const auto map_folder = std::filesystem::path("dev/maps/gatech");
-    const auto map_folder = std::filesystem::path("dev/maps/debug");
+    // const auto map_folder = std::filesystem::path("dev/maps/Ile-de-France");
+    // const auto map_folder = std::filesystem::path("dev/maps/debug");
 
-    // const std::string map_filename = "map.osm.pbf";
-    const std::string map_filename = "illinois-latest.osm.pbf";
+    const std::string map_filename = "map.osm.pbf";
+    // const std::string map_filename = "illinois-latest.osm.pbf";
     // const std::string map_filename = "map.osm";
 
     Network* network = getNetFromFile(map_folder / map_filename, {ModeType::AUTO},
@@ -36,7 +37,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
 
     // consolidateComplexIntersections(network, true);
 
-    generateNodeActivityInfo(network);
+    // generateNodeActivityInfo(network);
 
     // fillLinkAttributesWithDefaultValues(network, true, {}, false, {{HighWayLinkType::MOTORWAY, 1}}, true,
     //                                     {{HighWayLinkType::MOTORWAY, 1}});

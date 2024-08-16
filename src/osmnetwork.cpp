@@ -384,7 +384,11 @@ void OsmWay::configAttributes() {
   if (!max_speed_raw_.empty()) {
     std::smatch match;
     if (std::regex_search(max_speed_raw_, match, getFloatNumMatchingPattern())) {
-      max_speed_ = std::stof(match.str());
+      if (absl::StrContains(max_speed_raw_, "mph")) {
+        max_speed_ = std::round(std::stof(match.str()) * MPH_TO_KPH);
+      } else {
+        max_speed_ = std::stof(match.str());
+      }
     }
   }
 
