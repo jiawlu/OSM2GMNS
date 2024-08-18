@@ -29,7 +29,7 @@ absl::flat_hash_set<HighWayLinkType> parseLinkTypes(const char** link_types_val,
   link_types.reserve(link_types_len);
   for (size_t idx = 0; idx < link_types_len; ++idx) {
     const std::string& link_type_str = link_types_val[idx];  // NOLINT
-    const HighWayLinkType link_type = highwayStringToLinkType(link_type_str);
+    const HighWayLinkType link_type = highwayStringToHighWayLinkType(link_type_str);
     if (link_type != HighWayLinkType::OTHER) {
       link_types.insert(link_type);
     } else {
@@ -65,7 +65,7 @@ absl::flat_hash_map<HighWayLinkType, T> parseLinkTypeToNumDict(const StrNumDict<
   absl::flat_hash_map<HighWayLinkType, T> dict;
   for (size_t idx = 0; idx < dict_len; ++idx) {
     const std::string& link_type_str = dict_val[idx].key;  // NOLINT
-    const HighWayLinkType link_type = highwayStringToLinkType(link_type_str);
+    const HighWayLinkType link_type = highwayStringToHighWayLinkType(link_type_str);
     if (link_type != HighWayLinkType::OTHER) {
       dict.emplace(link_type, dict_val[idx].value);  // NOLINT
     } else {

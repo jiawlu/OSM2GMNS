@@ -230,7 +230,7 @@ void OsmWay::identifyWayType(const absl::flat_hash_set<ModeType>& highway_mode_t
 void OsmWay::identifyHighwayType(const absl::flat_hash_set<ModeType>& highway_mode_types,
                                  const absl::flat_hash_set<HighWayLinkType>& link_types,
                                  const absl::flat_hash_set<HighWayLinkType>& connector_link_types) {
-  highway_link_type_ = highwayStringToLinkType(highway_);
+  highway_link_type_ = highwayStringToHighWayLinkType(highway_);
   if (highway_link_type_ == HighWayLinkType::OTHER) {
     if (!isNegligibleHighwayType(highway_)) {
       LOG(WARNING) << "way " << osm_way_id_ << " has a new highway value " << highway_;
