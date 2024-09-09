@@ -109,13 +109,13 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     for (size_t idx = 1; idx < link->allowedModeTypes().size(); ++idx) {
       allowed_uses += ";" + getModeTypeStr(link->allowedModeTypes().at(idx));
     }
+    const std::string& toll = absl::StrContains(link->toll(), ',') ? "\"" + link->toll() + "\"" : link->toll();
     link_file << link->linkId() << "," << name << "," << link->osmWayId() << "," << link->fromNode()->nodeId() << ","
               << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
               << getHighWayLinkTypeStr(link->highwayLinkType()) << ","
               << highWayLinkTypeTohighWayLinkTypeNo(link->highwayLinkType()) << "," << free_speed << ","
-              << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses << "," << link->toll()
-              << ",\n";
+              << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses << "," << toll << ",\n";
   }
   link_file.close();
 
@@ -130,13 +130,18 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2\n";
   for (const POI* poi : network->poiVector()) {
+    const std::string& name = absl::StrContains(poi->name(), ',') ? "\"" + poi->name() + "\"" : poi->name();
     const std::string osm_way_id =
         poi->osmWayId().has_value() ? std::to_string(poi->osmWayId().value()) : "";  // NOLINT
     const std::string osm_relation_id =
         poi->osmRelationId().has_value() ? std::to_string(poi->osmRelationId().value()) : "";  // NOLINT
-    poi_file << poi->name() << "," << poi->poiId() << "," << osm_way_id << "," << osm_relation_id << ","
-             << poi->building() << "," << poi->amenity() << "," << poi->leisure() << ",,\""
-             << poi->geometry()->toString() << "\",\"" << poi->centroidGeometry()->toString() << "\",,1\n";
+    const std::string& building =
+        absl::StrContains(poi->building(), ',') ? "\"" + poi->building() + "\"" : poi->building();
+    const std::string& amenity = absl::StrContains(poi->amenity(), ',') ? "\"" + poi->amenity() + "\"" : poi->amenity();
+    const std::string& leisure = absl::StrContains(poi->leisure(), ',') ? "\"" + poi->leisure() + "\"" : poi->leisure();
+    poi_file << name << "," << poi->poiId() << "," << osm_way_id << "," << osm_relation_id << "," << building << ","
+             << amenity << "," << leisure << ",,\"" << poi->geometry()->toString() << "\",\""
+             << poi->centroidGeometry()->toString() << "\",,\n";
   }
   poi_file.close();
 
