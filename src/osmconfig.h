@@ -34,7 +34,6 @@ enum class HighWayLinkType : uint8_t {
 
 ModeType modeStringToModeType(const std::string& mode_type_str);
 HighWayLinkType highwayStringToHighWayLinkType(const std::string& highway_type_str);
-int32_t highWayLinkTypeTohighWayLinkTypeNo(HighWayLinkType highway_link_type);
 
 bool checkAllowedUsedAutoInMotor_Vehicle(const std::string& motor_vehicle);
 bool checkAllowedUsedAutoInMotorCar(const std::string& motorcar);

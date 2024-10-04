@@ -155,7 +155,9 @@ OsmNode* Link::fromOsmNode() const { return from_osm_node_; }
 OsmNode* Link::toOsmNode() const { return to_osm_node_; }
 Node* Link::fromNode() const { return from_node_; }
 Node* Link::toNode() const { return to_node_; }
-HighWayLinkType Link::highwayLinkType() const { return highway_link_type_; }
+std::optional<HighWayLinkType> Link::highwayLinkType() const { return highway_link_type_; }
+const std::optional<std::string>& Link::railwayLinkType() const { return railway_link_type_; }
+const std::optional<std::string>& Link::aerowayLinkType() const { return aeroway_link_type_; }
 const std::unique_ptr<geos::geom::LineString>& Link::geometry() const { return geometry_; }
 double Link::length() const { return length_; }
 // bool Link::isValid() const { return is_valid_; }
@@ -269,10 +271,14 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
       count_map[static_cast<HighWayLinkType>(idx)] = 0;
     }
     for (Link* link : node->outgoingLinkVector()) {
-      ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+      if (link->highwayLinkType().has_value()) {
+        ++count_map.at(link->highwayLinkType().value());  // ToDo: check way_type
+      }
     }
     for (Link* link : node->incomingLinkVector()) {
-      ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+      if (link->highwayLinkType().has_value()) {
+        ++count_map.at(link->highwayLinkType().value());  // ToDo: check way_type
+      }
     }
 
     auto max_element = std::max_element(count_map.begin(), count_map.end(), [](const auto& pair1, const auto& pair2) {
@@ -355,21 +361,25 @@ void Network::fillLinkAttributesWithDefaultValues(
     shared(number_of_links, default_lanes_dict, default_speed_dict, default_capacity_dict)
   for (int64_t idx = 0; idx < number_of_links; ++idx) {
     Link* link = link_vector_[idx];
+    if (!link->highwayLinkType().has_value()) {
+      continue;
+    }
+    const HighWayLinkType link_type = link->highwayLinkType().value();
     if (!default_lanes_dict.empty()) {
       if (!link->lanes().has_value()) {
-        link->setLanes(default_lanes_dict.at(link->highwayLinkType()));
+        link->setLanes(default_lanes_dict.at(link_type));
       }
     }
     if (!default_speed_dict.empty()) {
       if (!link->freeSpeed().has_value()) {
-        link->setFreeSpeed(default_speed_dict.at(link->highwayLinkType()));
+        link->setFreeSpeed(default_speed_dict.at(link_type));
       }
     }
     if (!default_capacity_dict.empty()) {
       if (!link->capacity().has_value()) {
         const int32_t lanes = link->lanes().has_value() ? link->lanes().value()  // NOLINT
-                                                        : getPresetDefaultLanesDict().at(link->highwayLinkType());
-        link->setCapacity(lanes * default_capacity_dict.at(link->highwayLinkType()));
+                                                        : getPresetDefaultLanesDict().at(link_type);
+        link->setCapacity(lanes * default_capacity_dict.at(link_type));
       }
     }
   }
