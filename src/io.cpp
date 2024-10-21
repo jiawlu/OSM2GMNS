@@ -120,17 +120,17 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   for (const Link* link : network->linkVector()) {
     const std::string& name = absl::StrContains(link->name(), ',') ? "\"" + link->name() + "\"" : link->name();
     const std::string& facility_type =
-        link->highwayLinkType().has_value()
-            ? getHighWayLinkTypeStr(link->highwayLinkType().value())
-            : (link->railwayLinkType().has_value()
-                   ? link->railwayLinkType().value()
-                   : (link->aerowayLinkType().has_value() ? link->aerowayLinkType().value() : ""));
+        link->wayType() == WayType::HIGHWAY
+            ? getHighWayLinkTypeStr(link->highwayLinkType())
+            : (link->wayType() == WayType::RAILWAY
+                   ? link->railwayLinkType()
+                   : (link->wayType() == WayType::AEROWAY ? link->aerowayLinkType() : ""));
     const std::string& type_no =
-        link->highwayLinkType().has_value()
-            ? std::to_string(getHighWayLinkTypeNo(link->highwayLinkType().value()))
-            : (link->railwayLinkType().has_value()
+        link->wayType() == WayType::HIGHWAY
+            ? std::to_string(getHighWayLinkTypeNo(link->highwayLinkType()))
+            : (link->wayType() == WayType::RAILWAY
                    ? std::to_string(getRailwayLinkTypeNo())
-                   : (link->aerowayLinkType().has_value() ? std::to_string(getAerowayLinkTypeNo()) : ""));
+                   : (link->wayType() == WayType::AEROWAY ? std::to_string(getAerowayLinkTypeNo()) : ""));
     const std::string& free_speed_raw =
         absl::StrContains(link->freeSpeedRaw(), ',') ? "\"" + link->freeSpeedRaw() + "\"" : link->freeSpeedRaw();
     const std::string& lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT

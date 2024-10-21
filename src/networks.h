@@ -94,9 +94,10 @@ class Link {
   [[nodiscard]] OsmNode* toOsmNode() const;
   [[nodiscard]] Node* fromNode() const;
   [[nodiscard]] Node* toNode() const;
-  [[nodiscard]] std::optional<HighWayLinkType> highwayLinkType() const;
-  [[nodiscard]] const std::optional<std::string>& railwayLinkType() const;
-  [[nodiscard]] const std::optional<std::string>& aerowayLinkType() const;
+  [[nodiscard]] WayType wayType() const;
+  [[nodiscard]] HighWayLinkType highwayLinkType() const;
+  [[nodiscard]] const std::string& railwayLinkType() const;
+  [[nodiscard]] const std::string& aerowayLinkType() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::LineString>& geometry() const;
   [[nodiscard]] double length() const;
   // [[nodiscard]] bool isValid() const;
@@ -124,9 +125,11 @@ class Link {
   OsmNode* to_osm_node_{nullptr};
   Node* from_node_{nullptr};
   Node* to_node_{nullptr};
-  std::optional<HighWayLinkType> highway_link_type_;
-  std::optional<std::string> railway_link_type_;
-  std::optional<std::string> aeroway_link_type_;
+
+  WayType way_type_{WayType::OTHER};
+  HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
+  std::string railway_link_type_;
+  std::string aeroway_link_type_;
   std::unique_ptr<geos::geom::LineString> geometry_;
   double length_{-1.0};
   // bool is_valid_{true};
@@ -214,7 +217,7 @@ class Network {
 
  private:
   void createNodesAndLinksFromOsmNetwork();
-  void createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<std::vector<Link*>>& m_link_vector);
+  void createLinksFromWay(const OsmWay* osm_way, std::vector<std::vector<Link*>>& m_link_vector);
   [[nodiscard]] std::vector<OsmWay*> identifyConnectorWays() const;
   void createPOIsFromOsmNetwork();
   void createPOIsFromOsmWays(std::vector<std::vector<POI*>>& m_poi_vector);

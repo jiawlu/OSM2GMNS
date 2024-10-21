@@ -13,4 +13,4 @@ repos:
       - id: clang-format
         args: [--style=file, -i]
       - id: clang-tidy
-        args: [-p=./cmake-build-debug, --fix-errors]
+        args: [-p=./cmake-build-reldeb, --fix-errors]
