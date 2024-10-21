@@ -54,21 +54,6 @@ HighWayLinkType highwayStringToHighWayLinkType(const std::string& highway_type_s
   return HighWayLinkType::OTHER;
 }
 
-int32_t highWayLinkTypeTohighWayLinkTypeNo(HighWayLinkType highway_link_type) {
-  static const absl::flat_hash_map<HighWayLinkType, int32_t> link_type_no_map = {
-      {HighWayLinkType::MOTORWAY, 1},      {HighWayLinkType::TRUNK, 2},    {HighWayLinkType::PRIMARY, 3},
-      {HighWayLinkType::SECONDARY, 4},     {HighWayLinkType::TERTIARY, 5}, {HighWayLinkType::RESIDENTIAL, 6},
-      {HighWayLinkType::LIVING_STREET, 7}, {HighWayLinkType::SERVICE, 8},  {HighWayLinkType::CYCLEWAY, 9},
-      {HighWayLinkType::FOOTWAY, 10},      {HighWayLinkType::TRACK, 11},   {HighWayLinkType::UNCLASSIFIED, 20},
-      {HighWayLinkType::OTHER, 21}};
-
-  auto iter = link_type_no_map.find(highway_link_type);
-  if (iter != link_type_no_map.end()) {
-    return iter->second;
-  }
-  return -1;
-}
-
 bool checkAllowedUsedAutoInMotor_Vehicle(const std::string& motor_vehicle) {
   static const absl::flat_hash_set<std::string> value_set = {"yes"};
   return value_set.find(motor_vehicle) != value_set.end();

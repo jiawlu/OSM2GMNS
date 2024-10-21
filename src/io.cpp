@@ -49,6 +49,31 @@ std::string getHighWayLinkTypeStr(const HighWayLinkType& highway_link_type) {
   return iter != highway_link_type_dict.end() ? iter->second : "";
 }
 
+int32_t getHighWayLinkTypeNo(HighWayLinkType highway_link_type) {
+  static const absl::flat_hash_map<HighWayLinkType, int32_t> link_type_no_map = {
+      {HighWayLinkType::MOTORWAY, 1},      {HighWayLinkType::TRUNK, 2},    {HighWayLinkType::PRIMARY, 3},
+      {HighWayLinkType::SECONDARY, 4},     {HighWayLinkType::TERTIARY, 5}, {HighWayLinkType::RESIDENTIAL, 6},
+      {HighWayLinkType::LIVING_STREET, 7}, {HighWayLinkType::SERVICE, 8},  {HighWayLinkType::CYCLEWAY, 9},
+      {HighWayLinkType::FOOTWAY, 10},      {HighWayLinkType::TRACK, 11},   {HighWayLinkType::UNCLASSIFIED, 20},
+      {HighWayLinkType::OTHER, 21}};
+
+  auto iter = link_type_no_map.find(highway_link_type);
+  if (iter != link_type_no_map.end()) {
+    return iter->second;
+  }
+  return -1;
+}
+
+int32_t getRailwayLinkTypeNo() {
+  static const int32_t railway_link_type_no = 30;
+  return railway_link_type_no;
+}
+
+int32_t getAerowayLinkTypeNo() {
+  static const int32_t aeroway_link_type_no = 40;
+  return aeroway_link_type_no;
+}
+
 std::string getModeTypeStr(const ModeType& mode_type) {
   static const absl::flat_hash_map<ModeType, std::string> mode_type_dict = {{ModeType::AUTO, "auto"},
                                                                             {ModeType::BIKE, "bike"},
@@ -94,6 +119,18 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
                "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string& name = absl::StrContains(link->name(), ',') ? "\"" + link->name() + "\"" : link->name();
+    const std::string& facility_type =
+        link->wayType() == WayType::HIGHWAY
+            ? getHighWayLinkTypeStr(link->highwayLinkType())
+            : (link->wayType() == WayType::RAILWAY
+                   ? link->railwayLinkType()
+                   : (link->wayType() == WayType::AEROWAY ? link->aerowayLinkType() : ""));
+    const std::string& type_no =
+        link->wayType() == WayType::HIGHWAY
+            ? std::to_string(getHighWayLinkTypeNo(link->highwayLinkType()))
+            : (link->wayType() == WayType::RAILWAY
+                   ? std::to_string(getRailwayLinkTypeNo())
+                   : (link->wayType() == WayType::AEROWAY ? std::to_string(getAerowayLinkTypeNo()) : ""));
     const std::string& free_speed_raw =
         absl::StrContains(link->freeSpeedRaw(), ',') ? "\"" + link->freeSpeedRaw() + "\"" : link->freeSpeedRaw();
     const std::string& lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
@@ -109,13 +146,13 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     for (size_t idx = 1; idx < link->allowedModeTypes().size(); ++idx) {
       allowed_uses += ";" + getModeTypeStr(link->allowedModeTypes().at(idx));
     }
+
     const std::string& toll = absl::StrContains(link->toll(), ',') ? "\"" + link->toll() + "\"" : link->toll();
     link_file << link->linkId() << "," << name << "," << link->osmWayId() << "," << link->fromNode()->nodeId() << ","
               << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
-              << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << ","
-              << getHighWayLinkTypeStr(link->highwayLinkType()) << ","
-              << highWayLinkTypeTohighWayLinkTypeNo(link->highwayLinkType()) << "," << free_speed << ","
-              << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses << "," << toll << ",\n";
+              << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << "," << facility_type << "," << type_no
+              << "," << free_speed << "," << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses
+              << "," << toll << ",\n";
   }
   link_file.close();
 

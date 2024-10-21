@@ -13,6 +13,7 @@
 #include <geos/geom/Point.h>
 #include <geos/geom/Polygon.h>
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstddef>
@@ -170,6 +171,8 @@ OsmWay::OsmWay(const osmium::Way& way)
 }
 
 OsmIdType OsmWay::osmWayId() const { return osm_way_id_; }
+const std::string& OsmWay::railway() const { return railway_; }
+const std::string& OsmWay::aeroway() const { return aeroway_; }
 const std::string& OsmWay::name() const { return name_; }
 std::optional<int32_t> OsmWay::lanes() const { return lanes_; }
 std::optional<int32_t> OsmWay::forward_lanes() const { return forward_lanes_; }
@@ -181,6 +184,7 @@ WayType OsmWay::wayType() const { return way_type_; };
 HighWayLinkType OsmWay::highwayLinkType() const { return highway_link_type_; }
 bool OsmWay::isTargetLinkType() const { return is_target_link_type_; }
 bool OsmWay::isTargetConnectorLinkType() const { return is_target_connector_link_type_; }
+bool OsmWay::isTargetConnector() const { return is_target_connector_; }
 std::optional<bool> OsmWay::isOneway() const { return is_oneway_; }
 bool OsmWay::isReversed() const { return is_reversed_; }
 std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
@@ -276,6 +280,30 @@ void OsmWay::initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node
   if (way_type_ == WayType::HIGHWAY || way_type_ == WayType::RAILWAY || way_type_ == WayType::AEROWAY) {
     configAttributes();
   }
+}
+
+bool checkNodeConnecting(const std::vector<OsmWay*>& connecting_osm_ways) {
+  return std::any_of(connecting_osm_ways.begin(), connecting_osm_ways.end(), [](const OsmWay* osm_way) {
+    return osm_way->wayType() == WayType::HIGHWAY && osm_way->isTargetLinkType();
+  });
+}
+bool checkConnectorNode(OsmNode* osm_node) {
+  return checkNodeConnecting(osm_node->incomingWayVector()) || checkNodeConnecting(osm_node->outgoingWayVector());
+}
+
+void OsmWay::identifyTargetConnector() {
+  if (way_type_ != WayType::HIGHWAY || is_target_link_type_ || !is_target_connector_link_type_ ||
+      ref_node_vector_.empty()) {
+    is_target_connector_ = false;
+    return;
+  }
+  const bool from_node_connection = checkConnectorNode(from_node_);
+  const bool to_node_connection = checkConnectorNode(to_node_);
+  if (!(from_node_connection || to_node_connection) || (from_node_connection && to_node_connection)) {
+    is_target_connector_ = false;
+    return;
+  }
+  is_target_connector_ = true;
 }
 
 void OsmWay::splitIntoSegments() {
@@ -598,6 +626,11 @@ void OsmNetwork::initializeElements() {
     if (osm_way->toNode() != nullptr) {
       osm_way->toNode()->addIncomingWay(osm_way);
     }
+  }
+
+#pragma omp parallel for schedule(dynamic) default(none) shared(number_of_osm_ways)
+  for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
+    osm_way_vector_[idx]->identifyTargetConnector();
   }
 
   /*================= OsmRelation =================*/

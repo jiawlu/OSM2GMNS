@@ -110,6 +110,8 @@ class OsmWay {
   explicit OsmWay(const osmium::Way& way);
 
   [[nodiscard]] OsmIdType osmWayId() const;
+  [[nodiscard]] const std::string& railway() const;
+  [[nodiscard]] const std::string& aeroway() const;
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] std::optional<int32_t> lanes() const;
   [[nodiscard]] std::optional<int32_t> forward_lanes() const;
@@ -121,6 +123,7 @@ class OsmWay {
   [[nodiscard]] HighWayLinkType highwayLinkType() const;
   [[nodiscard]] bool isTargetLinkType() const;
   [[nodiscard]] bool isTargetConnectorLinkType() const;
+  [[nodiscard]] bool isTargetConnector() const;
   [[nodiscard]] std::optional<bool> isOneway() const;
   [[nodiscard]] bool isReversed() const;
   [[nodiscard]] std::optional<float> maxSpeed() const;
@@ -140,6 +143,7 @@ class OsmWay {
                        const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
                        const absl::flat_hash_set<OsmIdType>& ways_used_in_relations);
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
+  void identifyTargetConnector();
   void splitIntoSegments();
 
   // void setUsedByRelation(bool used_by_relation);
@@ -195,6 +199,7 @@ class OsmWay {
   HighWayLinkType highway_link_type_{HighWayLinkType::OTHER};
   bool is_target_link_type_{false};
   bool is_target_connector_link_type_{false};
+  bool is_target_connector_{false};
   bool include_the_way_{false};
   // bool used_by_relation_{false};
 

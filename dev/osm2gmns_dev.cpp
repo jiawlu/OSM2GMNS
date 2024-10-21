@@ -21,18 +21,15 @@ int main(int /*argc*/, char* /*argv*/[]) {
     absl::InitializeLog();
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
-    // const auto map_folder = std::filesystem::path("dev/maps/District_of_Columbia");
-    const auto map_folder = std::filesystem::path("../maps/dubai");
-    // const auto map_folder = std::filesystem::path("dev/maps/gatech");
-    // const auto map_folder = std::filesystem::path("dev/maps/Ile-de-France");
-    // const auto map_folder = std::filesystem::path("dev/maps/debug");
+    // const auto map_folder = std::filesystem::path("maps/Texas");
+    const auto map_folder = std::filesystem::path("maps/Dallas");
 
     // const std::string map_filename = "map.osm.pbf";
-    // const std::string map_filename = "illinois-latest.osm.pbf";
-    // const std::string map_filename = "map.osm";
-    const std::string map_filename = "dubai_net.osm";
+    // const std::string map_filename = "northwest-latest.osm.pbf";
+    const std::string map_filename = "map_sub.osm";
 
-    Network* network = getNetFromFile(map_folder / map_filename, {ModeType::AUTO},
+    Network* network = getNetFromFile(map_folder / map_filename,
+                                      {ModeType::AUTO, ModeType::BIKE, ModeType::RAILWAY, ModeType::AEROWAY},
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, 1.0, true);

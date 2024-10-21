@@ -124,7 +124,14 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
   }
   geometry_ = factory->createLineString(coord_seq);
   length_ = calculateLineStringLength(geometry_.get());
-  highway_link_type_ = osm_way->highwayLinkType();
+  way_type_ = osm_way->wayType();
+  if (way_type_ == WayType::HIGHWAY) {
+    highway_link_type_ = osm_way->highwayLinkType();
+  } else if (way_type_ == WayType::RAILWAY) {
+    railway_link_type_ = osm_way->railway();
+  } else if (way_type_ == WayType::AEROWAY) {
+    aeroway_link_type_ = osm_way->aeroway();
+  }
 
   if (osm_way->isOneway().value()) {  // NOLINT
     if (osm_way->lanes().has_value()) {
@@ -155,7 +162,10 @@ OsmNode* Link::fromOsmNode() const { return from_osm_node_; }
 OsmNode* Link::toOsmNode() const { return to_osm_node_; }
 Node* Link::fromNode() const { return from_node_; }
 Node* Link::toNode() const { return to_node_; }
+WayType Link::wayType() const { return way_type_; }
 HighWayLinkType Link::highwayLinkType() const { return highway_link_type_; }
+const std::string& Link::railwayLinkType() const { return railway_link_type_; }
+const std::string& Link::aerowayLinkType() const { return aeroway_link_type_; }
 const std::unique_ptr<geos::geom::LineString>& Link::geometry() const { return geometry_; }
 double Link::length() const { return length_; }
 // bool Link::isValid() const { return is_valid_; }
@@ -269,10 +279,14 @@ void Network::generateNodeActivityInfo(const std::vector<Zone*>& zone_vector) {
       count_map[static_cast<HighWayLinkType>(idx)] = 0;
     }
     for (Link* link : node->outgoingLinkVector()) {
-      ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+      if (link->wayType() == WayType::HIGHWAY) {
+        ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+      }
     }
     for (Link* link : node->incomingLinkVector()) {
-      ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+      if (link->wayType() == WayType::HIGHWAY) {
+        ++count_map.at(link->highwayLinkType());  // ToDo: check way_type
+      }
     }
 
     auto max_element = std::max_element(count_map.begin(), count_map.end(), [](const auto& pair1, const auto& pair2) {
@@ -355,21 +369,25 @@ void Network::fillLinkAttributesWithDefaultValues(
     shared(number_of_links, default_lanes_dict, default_speed_dict, default_capacity_dict)
   for (int64_t idx = 0; idx < number_of_links; ++idx) {
     Link* link = link_vector_[idx];
+    if (link->wayType() != WayType::HIGHWAY) {
+      continue;
+    }
+    const HighWayLinkType link_type = link->highwayLinkType();
     if (!default_lanes_dict.empty()) {
       if (!link->lanes().has_value()) {
-        link->setLanes(default_lanes_dict.at(link->highwayLinkType()));
+        link->setLanes(default_lanes_dict.at(link_type));
       }
     }
     if (!default_speed_dict.empty()) {
       if (!link->freeSpeed().has_value()) {
-        link->setFreeSpeed(default_speed_dict.at(link->highwayLinkType()));
+        link->setFreeSpeed(default_speed_dict.at(link_type));
       }
     }
     if (!default_capacity_dict.empty()) {
       if (!link->capacity().has_value()) {
         const int32_t lanes = link->lanes().has_value() ? link->lanes().value()  // NOLINT
-                                                        : getPresetDefaultLanesDict().at(link->highwayLinkType());
-        link->setCapacity(lanes * default_capacity_dict.at(link->highwayLinkType()));
+                                                        : getPresetDefaultLanesDict().at(link_type);
+        link->setCapacity(lanes * default_capacity_dict.at(link_type));
       }
     }
   }
@@ -457,16 +475,13 @@ void Network::createNodesAndLinksFromOsmNetwork() {
 #pragma omp parallel for schedule(dynamic) default(none) shared(osm_way_vector, number_of_osm_ways, m_link_vector)
   for (int64_t idx = 0; idx < number_of_osm_ways; ++idx) {
     OsmWay* osm_way = osm_way_vector[idx];
-    if (osm_way->wayType() == WayType::HIGHWAY && osm_way->isTargetLinkType()) {
-      createNodesAndLinksFromOneWay(osm_way, m_link_vector);
+    if (osm_way->wayType() == WayType::HIGHWAY) {
+      if (osm_way->isTargetLinkType() || osm_way->isTargetConnector()) {
+        createLinksFromWay(osm_way, m_link_vector);
+      }
+    } else if (osm_way->wayType() == WayType::RAILWAY || osm_way->wayType() == WayType::AEROWAY) {
+      createLinksFromWay(osm_way, m_link_vector);
     }
-  }
-  const std::vector<OsmWay*> connector_ways = identifyConnectorWays();
-  const size_t number_of_connector_ways = connector_ways.size();
-#pragma omp parallel for schedule(dynamic) default(none) shared(connector_ways, number_of_connector_ways, m_link_vector)
-  for (int64_t idx = 0; idx < number_of_connector_ways; ++idx) {
-    OsmWay* osm_way = connector_ways[idx];
-    createNodesAndLinksFromOneWay(osm_way, m_link_vector);
   }
   const size_t total_links =
       std::accumulate(m_link_vector.begin(), m_link_vector.end(), 0,
@@ -521,7 +536,7 @@ void Network::createNodesAndLinksFromOsmNetwork() {
   }
 }
 
-void Network::createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<std::vector<Link*>>& m_link_vector) {
+void Network::createLinksFromWay(const OsmWay* osm_way, std::vector<std::vector<Link*>>& m_link_vector) {
   for (const std::vector<OsmNode*>& segment_nodes : osm_way->segmentNodesVector()) {
     if (segment_nodes.size() < 2) {
       continue;
@@ -535,42 +550,6 @@ void Network::createNodesAndLinksFromOneWay(const OsmWay* osm_way, std::vector<s
       m_link_vector[omp_get_thread_num()].push_back(link);
     }
   }
-}
-
-bool checkNodeConnecting(const std::vector<OsmWay*>& connecting_osm_ways) {
-  return std::any_of(connecting_osm_ways.begin(), connecting_osm_ways.end(), [](const OsmWay* osm_way) {
-    return osm_way->wayType() == WayType::HIGHWAY && osm_way->isTargetLinkType();
-  });
-}
-
-bool checkConnectorNode(OsmNode* osm_node) {
-  return checkNodeConnecting(osm_node->incomingWayVector()) || checkNodeConnecting(osm_node->outgoingWayVector());
-}
-
-std::vector<OsmWay*> Network::identifyConnectorWays() const {
-  std::vector<OsmWay*> connector_ways;
-  if (connector_link_types_.empty()) {
-    return connector_ways;
-  }
-
-  for (OsmWay* osm_way : osmnet_->osmWayVector()) {
-    if (osm_way->wayType() != WayType::HIGHWAY) {
-      continue;
-    }
-    if (osm_way->isTargetLinkType()) {
-      continue;
-    }
-    if (!osm_way->isTargetConnectorLinkType()) {
-      continue;
-    }
-    if (osm_way->refNodeVector().empty()) {
-      continue;
-    }
-    if (checkConnectorNode(osm_way->fromNode()) || checkConnectorNode(osm_way->toNode())) {
-      connector_ways.push_back(osm_way);
-    }
-  }
-  return connector_ways;
 }
 
 void Network::createPOIsFromOsmNetwork() {
