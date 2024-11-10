@@ -440,6 +440,8 @@ void OsmWay::configAttributes() {
     if (!is_oneway_.has_value()) {
       is_oneway_ = getDefaultOneWayFlag(highway_link_type_);
     }
+  } else {
+    is_oneway_ = true;
   }
 }
 

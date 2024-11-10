@@ -171,7 +171,7 @@ class OsmWay {
   std::optional<int32_t> lanes_;
   std::optional<int32_t> forward_lanes_;
   std::optional<int32_t> backward_lanes_;
-  std::optional<bool> is_oneway_{true};
+  std::optional<bool> is_oneway_;
   bool is_reversed_{false};  // ToDo: use when generating segments
   std::optional<float> max_speed_;
   std::string toll_;
