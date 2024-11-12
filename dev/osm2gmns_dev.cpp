@@ -22,11 +22,13 @@ int main(int /*argc*/, char* /*argv*/[]) {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
     // const auto map_folder = std::filesystem::path("maps/Texas");
-    const auto map_folder = std::filesystem::path("maps/Dallas");
+    // const auto map_folder = std::filesystem::path("maps/Dallas");
+    const auto map_folder = std::filesystem::path("maps/Columbus Ohio Data");
 
     // const std::string map_filename = "map.osm.pbf";
     // const std::string map_filename = "northwest-latest.osm.pbf";
-    const std::string map_filename = "map_sub.osm";
+    // const std::string map_filename = "map_sub.osm";
+    const std::string map_filename = "Columbus, Franklin County, Ohio, United States.pbf";
 
     Network* network = getNetFromFile(map_folder / map_filename,
                                       {ModeType::AUTO, ModeType::BIKE, ModeType::RAILWAY, ModeType::AEROWAY},
