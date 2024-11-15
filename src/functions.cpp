@@ -17,10 +17,32 @@ Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::f
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
                         float POI_sampling_ratio, bool strict_boundary) {
+  absl::flat_hash_set<HighWayLinkType> connector_link_types_(connector_link_types);
+  if (!connector_link_types_.empty()) {
+    if (link_types.empty()) {
+      LOG(WARNING) << "You are using the default value for the argument link_types, which includes all link types. The "
+                      "arguments link_types and connector_link_types should not contain any common elements. Elements "
+                      "in connector_link_types have been discarded.";
+      connector_link_types_.clear();
+    } else {
+      std::vector<HighWayLinkType> invalid_connector_link_types;
+      for (const auto& link_type : link_types) {
+        auto iter = connector_link_types_.find(link_type);
+        if (iter != connector_link_types_.end()) {
+          invalid_connector_link_types.push_back(link_type);
+          connector_link_types_.erase(iter);
+        }
+      }
+      if (!invalid_connector_link_types.empty()) {
+        LOG(WARNING) << "The arguments link_types and connector_link_types should not contain any common elements. "
+                        "Duplicate elements have been removed from connector_link_types.";
+      }
+    }
+  }
   LOG(INFO) << "loading data from osm file";
-  auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types, POI, strict_boundary);
+  auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types_, POI, strict_boundary);
   LOG(INFO) << "start to build network";
-  auto* network = new Network(osmnet, link_types, connector_link_types, POI, POI_sampling_ratio);
+  auto* network = new Network(osmnet, link_types, connector_link_types_, POI, POI_sampling_ratio);
   LOG(INFO) << "build network done";
   return network;
 };
