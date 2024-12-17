@@ -569,7 +569,7 @@ void Network::createPOIsFromOsmNetwork() {
     pois.clear();
   }
 
-  NetIdType poi_id = 0;
+  NetIdType poi_id = 1;
   for (POI* poi : poi_vector_) {
     poi->setPOIId(poi_id++);
   }
