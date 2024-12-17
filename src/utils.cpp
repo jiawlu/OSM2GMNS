@@ -4,14 +4,21 @@
 
 #include "utils.h"
 
+#include <geos/geom/Coordinate.h>
 #include <geos/geom/CoordinateSequence.h>
+#include <geos/geom/Geometry.h>
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/LineString.h>
+#include <geos/geom/LinearRing.h>
+#include <geos/geom/Point.h>
 #include <geos/geom/Polygon.h>
 
+#include <GeographicLib/UTMUPS.hpp>
 #include <cmath>
 #include <cstddef>
 #include <memory>
+#include <utility>
+#include <vector>
 
 constexpr double EARTH_RADIUS = 6371000.0;
 
@@ -52,3 +59,87 @@ double calculateLineStringLength(const geos::geom::LineString* lineString) {
   }
   return totalLength;
 }
+
+std::unique_ptr<geos::geom::Point> projectPointToUTM(const geos::geom::Point* point,
+                                                     const geos::geom::GeometryFactory* factory) {
+  double utm_x = 0.0;                                           // Easting (x) in meters
+  double utm_y = 0.0;                                           // Northing (y) in meters
+  int zone = 0;                                                 // UTM zone
+  bool northp = true;                                           // Whether coordinate is in northern hemisphere
+  GeographicLib::UTMUPS::Forward(point->getY(), point->getX(),  // Input latitude, longitude
+                                 zone, northp,                  // Output zone and hemisphere
+                                 utm_x, utm_y);                 // Output easting, northing
+  return factory->createPoint(geos::geom::Coordinate(utm_x, utm_y));
+}
+
+std::unique_ptr<geos::geom::LineString> projectLineStringToUTM(const geos::geom::LineString* line,
+                                                               const geos::geom::GeometryFactory* factory) {
+  double utm_x = 0.0;  // Easting (x) in meters
+  double utm_y = 0.0;  // Northing (y) in meters
+  int zone = 0;        // UTM zone
+  bool northp = true;  // Whether coordinate is in northern hemisphere
+  geos::geom::CoordinateSequence coord_seq;
+  for (size_t pnt_idx = 0; pnt_idx < line->getNumPoints(); ++pnt_idx) {
+    const geos::geom::Coordinate& coord = line->getCoordinateN(pnt_idx);
+    GeographicLib::UTMUPS::Forward(coord.y, coord.x,  // Input latitude, longitude
+                                   zone, northp,      // Output zone and hemisphere
+                                   utm_x, utm_y);     // Output easting, northing
+    coord_seq.add(utm_x, utm_y);
+  }
+  return factory->createLineString(coord_seq);
+}
+
+std::unique_ptr<geos::geom::Polygon> projectPolygonToUTM(const geos::geom::Polygon* poly,
+                                                         const geos::geom::GeometryFactory* factory) {
+  double utm_x = 0.0;  // Easting (x) in meters
+  double utm_y = 0.0;  // Northing (y) in meters
+  int zone = 0;        // UTM zone
+  bool northp = true;  // Whether coordinate is in northern hemisphere
+  geos::geom::CoordinateSequence coord_seq;
+  const geos::geom::LinearRing* ring = poly->getExteriorRing();
+  for (size_t pnt_idx = 0; pnt_idx < ring->getNumPoints(); ++pnt_idx) {
+    const geos::geom::Coordinate& coord = ring->getCoordinateN(pnt_idx);
+    GeographicLib::UTMUPS::Forward(coord.y, coord.x,  // Input latitude, longitude
+                                   zone, northp,      // Output zone and hemisphere
+                                   utm_x, utm_y);     // Output easting, northing
+    coord_seq.add(utm_x, utm_y);
+  }
+  return factory->createPolygon(std::move(coord_seq));
+}
+
+std::unique_ptr<geos::geom::Geometry> projectGeometryToUTM(const geos::geom::Geometry* geometry,
+                                                           const geos::geom::GeometryFactory* factory) {
+  const geos::geom::GeometryTypeId geometry_type_id = geometry->getGeometryTypeId();
+  if (geometry_type_id == geos::geom::GEOS_POINT) {
+    return projectPointToUTM(dynamic_cast<const geos::geom::Point*>(geometry), factory);
+  }
+  if (geometry_type_id == geos::geom::GEOS_LINESTRING) {
+    return projectLineStringToUTM(dynamic_cast<const geos::geom::LineString*>(geometry), factory);
+  }
+  if (geometry_type_id == geos::geom::GEOS_POLYGON) {
+    return projectPolygonToUTM(dynamic_cast<const geos::geom::Polygon*>(geometry), factory);
+  }
+
+  // if (geometry->isCollection())
+  if (geometry_type_id == geos::geom::GEOS_MULTIPOLYGON) {
+    const size_t number_of_geometries = geometry->getNumGeometries();
+    std::vector<std::unique_ptr<geos::geom::Geometry>> geo_vector;
+    geo_vector.reserve(number_of_geometries);
+    for (size_t geo_idx = 0; geo_idx < number_of_geometries; ++geo_idx) {
+      geo_vector.push_back(
+          projectPolygonToUTM(dynamic_cast<const geos::geom::Polygon*>(geometry->getGeometryN(geo_idx)), factory));
+    }
+    return factory->createMultiPolygon(std::move(geo_vector));
+  }
+  return nullptr;
+}
+
+// const GeographicLib::Geodesic& geod = GeographicLib::Geodesic::WGS84();
+//   // Distance from JFK to LHR
+//   double
+//     lat1 = 40.6, lon1 = -73.8, // JFK Airport
+//     lat2 = 51.6, lon2 = -0.5;  // LHR Airport
+//   double s12;
+//   geod.Inverse(lat1, lon1, lat2, lon2, s12);
+//   std::cout << s12 / 1000 << " km\n";
+//   std::cout << std::endl;

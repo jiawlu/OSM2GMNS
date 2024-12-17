@@ -155,6 +155,7 @@ class POI {
   [[nodiscard]] const std::string& leisure() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Geometry>& geometry() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& centroidGeometry() const;
+  [[nodiscard]] double area() const;
 
   void setPOIId(NetIdType poi_id);
 
@@ -169,6 +170,7 @@ class POI {
 
   std::unique_ptr<geos::geom::Geometry> geometry_;
   std::unique_ptr<geos::geom::Point> centroid_geometry_;
+  std::unique_ptr<geos::geom::Geometry> geometry_utm_;
 };
 
 class Zone {
