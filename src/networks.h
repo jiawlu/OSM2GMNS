@@ -243,9 +243,9 @@ class Network {
   std::vector<Link*> link_vector_;
   std::vector<POI*> poi_vector_;
 
-  NetIdType max_node_id_{0};
-  NetIdType max_link_id_{0};
-  NetIdType max_intersection_id_{0};
+  NetIdType max_node_id_{1};
+  NetIdType max_link_id_{1};
+  NetIdType max_intersection_id_{1};
 };
 
 #endif  // OSM2GMNS_NETWORKS_H
