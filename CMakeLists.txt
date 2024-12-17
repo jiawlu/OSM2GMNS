@@ -156,6 +156,16 @@ FetchContent_Declare(
 FetchContent_Populate(fast-cpp-csv-parser)
 include_directories(SYSTEM ${fast-cpp-csv-parser_SOURCE_DIR})
 
+FetchContent_Declare(
+        geographiclib
+        GIT_REPOSITORY https://github.com/geographiclib/geographiclib.git
+        GIT_TAG  v2.4
+        SYSTEM
+)
+FetchContent_MakeAvailable(geographiclib)
+set(Required_Libraries ${Required_Libraries} GeographicLib::GeographicLib)
+include_directories(SYSTEM ${geographiclib_SOURCE_DIR}/include)
+
 add_subdirectory(src)
 
 option(OSM2GMNS_BUILD_EXE "Build osm2gmns executable" ON)

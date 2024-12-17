@@ -29,6 +29,7 @@
 
 constexpr int COORDINATE_OUTPUT_PRECISION = 6;
 constexpr int LENGTH_OUTPUT_PRECISION = 2;
+constexpr int AREA_OUTPUT_PRECISION = 1;
 
 std::string getHighWayLinkTypeStr(const HighWayLinkType& highway_link_type) {
   static const absl::flat_hash_map<HighWayLinkType, std::string> highway_link_type_dict = {
@@ -178,7 +179,8 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     const std::string& leisure = absl::StrContains(poi->leisure(), ',') ? "\"" + poi->leisure() + "\"" : poi->leisure();
     poi_file << name << "," << poi->poiId() << "," << osm_way_id << "," << osm_relation_id << "," << building << ","
              << amenity << "," << leisure << ",,\"" << poi->geometry()->toString() << "\",\""
-             << poi->centroidGeometry()->toString() << "\",,\n";
+             << poi->centroidGeometry()->toString() << "\"," << std::fixed << std::setprecision(AREA_OUTPUT_PRECISION)
+             << poi->area() << ",\n";
   }
   poi_file.close();
 

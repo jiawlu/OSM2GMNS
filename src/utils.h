@@ -9,6 +9,8 @@
 #include <geos/geom/LineString.h>
 #include <geos/geom/Polygon.h>
 
+#include <memory>
+
 constexpr double MIN_LAT = -90.0;
 constexpr double MAX_LAT = 90.0;
 constexpr double MIN_LON = -180.0;
@@ -24,4 +26,6 @@ double calculateLineStringLength(const geos::geom::LineString* lineString);
 // std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<OsmNode*>& osm_nodes,
 //                                                             const geos::geom::GeometryFactory* factory);
 
+std::unique_ptr<geos::geom::Geometry> projectGeometryToUTM(const geos::geom::Geometry* geometry,
+                                                           const geos::geom::GeometryFactory* factory);
 #endif  // OSM2GMNS_UTILS_H
