@@ -93,7 +93,7 @@ C_API Network* getNetFromFilePy(const char* osm_filepath, const char** mode_type
   const absl::flat_hash_set<HighWayLinkType> connector_link_types =
       parseLinkTypes(connector_link_types_val, connector_link_types_len);
   Network* network = getNetFromFile(osm_filepath, mode_types, link_types, connector_link_types, POI, POI_sampling_ratio,
-                                    strict_boundary);
+                                    nullptr, strict_boundary);
   return network;
 };
 

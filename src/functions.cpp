@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <vector>
 
+#include "config.h"
 #include "io.h"
 #include "networks.h"
 #include "osmconfig.h"
@@ -16,7 +17,7 @@
 Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::flat_hash_set<ModeType>& mode_types,
                         const absl::flat_hash_set<HighWayLinkType>& link_types,
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
-                        float POI_sampling_ratio, bool strict_boundary) {
+                        float POI_sampling_ratio, const OsmParsingConfig* osm_parsing_config, bool strict_boundary) {
   absl::flat_hash_set<HighWayLinkType> connector_link_types_(connector_link_types);
   if (!connector_link_types_.empty()) {
     if (link_types.empty()) {
@@ -40,9 +41,10 @@ Network* getNetFromFile(const std::filesystem::path& osm_filepath, const absl::f
     }
   }
   LOG(INFO) << "loading data from osm file";
-  auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types_, POI, strict_boundary);
+  auto* osmnet = new OsmNetwork(osm_filepath, mode_types, link_types, connector_link_types_, POI, osm_parsing_config,
+                                strict_boundary);
   LOG(INFO) << "start to build network";
-  auto* network = new Network(osmnet, link_types, connector_link_types_, POI, POI_sampling_ratio);
+  auto* network = new Network(osmnet, link_types, connector_link_types_, POI, POI_sampling_ratio, osm_parsing_config);
   LOG(INFO) << "build network done";
   return network;
 };

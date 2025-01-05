@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
 #include "osmconfig.h"
 
 class OsmNode;
@@ -31,7 +32,8 @@ class OsmRelation;
 class OsmHandler : public osmium::handler::Handler {
  public:
   explicit OsmHandler(const absl::flat_hash_set<ModeType>& mode_types, absl::flat_hash_set<HighWayLinkType> link_types,
-                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI);
+                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI,
+                      const OsmParsingConfig* osm_parsing_config);
 
   void node(const osmium::Node& node);
   void way(const osmium::Way& way);
@@ -56,6 +58,7 @@ class OsmHandler : public osmium::handler::Handler {
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_{false};
+  const OsmParsingConfig* osm_parsing_config_;
 
   std::vector<OsmNode*> osm_node_vector_;
   std::vector<OsmWay*> osm_way_vector_;
@@ -64,13 +67,14 @@ class OsmHandler : public osmium::handler::Handler {
 
 class OsmNode {
  public:
-  explicit OsmNode(const osmium::Node& node);
+  explicit OsmNode(const osmium::Node& node, const std::vector<const char*>& osm_node_attributes);
 
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] double getX() const;
   [[nodiscard]] double getY() const;
   // [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] const std::vector<const char*>& osmAttributes() const;
   [[nodiscard]] bool isSignalized() const;
   [[nodiscard]] int32_t usageCount() const;
   [[nodiscard]] bool isTypologyNode() const;
@@ -91,7 +95,7 @@ class OsmNode {
   // std::unique_ptr<geos::geom::Point> geometry_;
   double x, y;
   std::string highway_;
-  // std::string signal_;
+  std::vector<const char*> osm_attributes_;
 
   bool is_signalized_{false};
   bool in_region_{true};
@@ -240,7 +244,8 @@ class OsmNetwork {
  public:
   explicit OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_hash_set<ModeType> mode_types,
                       absl::flat_hash_set<HighWayLinkType> link_types,
-                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_boundary);
+                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI,
+                      const OsmParsingConfig* osm_parsing_config, bool strict_boundary);
   ~OsmNetwork();
   OsmNetwork(const OsmNetwork&) = delete;
   OsmNetwork& operator=(const OsmNetwork&) = delete;
@@ -260,6 +265,7 @@ class OsmNetwork {
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_;
+  const OsmParsingConfig* osm_parsing_config_;
   bool strict_boundary_;
 
   geos::geom::GeometryFactory::Ptr factory_;

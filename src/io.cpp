@@ -27,7 +27,7 @@
 #include "networks.h"
 #include "osmconfig.h"
 
-constexpr int COORDINATE_OUTPUT_PRECISION = 6;
+constexpr int COORDINATE_OUTPUT_PRECISION = 7;
 constexpr int LENGTH_OUTPUT_PRECISION = 2;
 constexpr int AREA_OUTPUT_PRECISION = 1;
 
@@ -94,7 +94,12 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     LOG(ERROR) << "Cannot open file " << node_filepath;
     return;
   }
-  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,is_boundary,activity_type,poi_id,zone_id,notes\n";
+  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord";
+  for (const char* attr_name : network->osmParsingConfig()->osm_node_attributes) {
+    node_file << "," << attr_name;
+  }
+  node_file << ",is_boundary,activity_type,poi_id,zone_id,notes\n";
+
   for (const Node* node : network->nodeVector()) {
     const std::string& name = absl::StrContains(node->name(), ',') ? "\"" + node->name() + "\"" : node->name();
     const std::string& ctrl_type = node->isSignalized() ? "signal" : "";
@@ -105,8 +110,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
         node->activityType().has_value() ? getHighWayLinkTypeStr(node->activityType().value()) : "";  // NOLINT
     node_file << name << "," << node->nodeId() << "," << node->osmNodeId() << "," << ctrl_type << "," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
-              << node->geometry()->getY() << std::defaultfloat << "," << boundary << "," << activity_type << ",,"
-              << zone_id << ",\n";
+              << node->geometry()->getY() << std::defaultfloat;
+    for (const char* attr_value : node->osmAttributes()) {
+      node_file << "," << attr_value;
+    }
+    node_file << "," << boundary << "," << activity_type << ",," << zone_id << ",\n";
   }
   node_file.close();
 

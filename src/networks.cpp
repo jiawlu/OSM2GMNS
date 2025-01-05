@@ -36,7 +36,10 @@
 #include "utils.h"
 
 Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory)
-    : osm_nodes_({osm_node}), name_(osm_node->name()), is_signalized_(osm_node->isSignalized()) {
+    : osm_nodes_({osm_node}),
+      name_(osm_node->name()),
+      is_signalized_(osm_node->isSignalized()),
+      osm_attributes_(osm_node->osmAttributes()) {
   geometry_ = factory->createPoint(geos::geom::Coordinate(osm_node->getX(), osm_node->getY()));
 }
 
@@ -87,6 +90,7 @@ std::string Node::osmNodeId() const {
 const std::string& Node::name() const { return name_; }
 bool Node::isSignalized() const { return is_signalized_; }
 const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geometry_; }
+const std::vector<const char*>& Node::osmAttributes() const { return osm_attributes_; };
 std::optional<NetIdType> Node::zoneId() const { return zone_id_; }
 std::optional<int16_t> Node::boundary() const { return boundary_; }
 std::optional<HighWayLinkType> Node::activityType() const { return activity_type_; }
@@ -226,12 +230,14 @@ const std::unique_ptr<geos::geom::Geometry>& Zone::geometry() const { return geo
 Intersection::Intersection() = default;
 
 Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
-                 absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio)
+                 absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio,
+                 const OsmParsingConfig* osm_parsing_config)
     : osmnet_(osmnet),
       link_types_(std::move(link_types)),
       connector_link_types_(std::move(connector_link_types)),
       POI_(POI),
-      POI_sampling_ratio_(POI_sampling_ratio) {
+      POI_sampling_ratio_(POI_sampling_ratio),
+      osm_parsing_config_(osm_parsing_config) {
   factory_ = geos::geom::GeometryFactory::create();
   if (osmnet_->boundary().has_value()) {
     boundary_ = static_cast<std::unique_ptr<geos::geom::Polygon>>(osmnet_->boundary().value()->clone());  // NOLINT
@@ -268,6 +274,7 @@ Network::~Network() {
 }
 
 bool Network::poi() const { return POI_; }
+const OsmParsingConfig* Network::osmParsingConfig() const { return osm_parsing_config_; }
 size_t Network::numberOfNodes() const { return node_vector_.size(); }
 size_t Network::numberOfLinks() const { return link_vector_.size(); }
 const std::vector<Node*>& Network::nodeVector() const { return node_vector_; }

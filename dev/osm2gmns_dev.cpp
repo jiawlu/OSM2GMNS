@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 
+#include "config.h"
 #include "functions.h"
 #include "io.h"
 #include "networks.h"
@@ -30,11 +31,13 @@ int main(int /*argc*/, char* /*argv*/[]) {
     // const std::string map_filename = "map_sub.osm";
     const std::string map_filename = "Columbus, Franklin County, Ohio, United States.pbf";
 
+    const auto* osm_parsing_config = new OsmParsingConfig{{"highway"}, {"speed"}, {"poi_name"}};
+
     Network* network = getNetFromFile(map_folder / map_filename,
                                       {ModeType::AUTO, ModeType::BIKE, ModeType::RAILWAY, ModeType::AEROWAY},
                                       {HighWayLinkType::MOTORWAY, HighWayLinkType::TRUNK, HighWayLinkType::PRIMARY,
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
-                                      {HighWayLinkType::RESIDENTIAL}, true, 1.0, true);
+                                      {HighWayLinkType::RESIDENTIAL}, true, 1.0, osm_parsing_config, true);
 
     // consolidateComplexIntersections(network, true);
 

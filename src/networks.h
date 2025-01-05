@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
 #include "osmconfig.h"
 #include "osmnetwork.h"
 
@@ -49,6 +50,7 @@ class Node {
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] bool isSignalized() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] const std::vector<const char*>& osmAttributes() const;
   [[nodiscard]] std::optional<NetIdType> zoneId() const;
   [[nodiscard]] std::optional<int16_t> boundary() const;
   [[nodiscard]] std::optional<HighWayLinkType> activityType() const;
@@ -63,6 +65,8 @@ class Node {
   std::string name_;
   bool is_signalized_{false};
   std::unique_ptr<geos::geom::Point> geometry_;
+  std::vector<const char*> osm_attributes_;
+
   std::optional<NetIdType> zone_id_;
   // boundary: 0 - not a boundary node; -1 - incoming only; 1 - outgoing only; 2 - both incoming and outgoing
   std::optional<int16_t> boundary_;
@@ -196,7 +200,8 @@ class Intersection {
 class Network {
  public:
   explicit Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
-                   absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio);
+                   absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio,
+                   const OsmParsingConfig* osm_parsing_config);
   ~Network();
   Network(const Network&) = delete;
   Network& operator=(const Network&) = delete;
@@ -204,6 +209,7 @@ class Network {
   Network& operator=(Network&&) = delete;
 
   [[nodiscard]] bool poi() const;
+  [[nodiscard]] const OsmParsingConfig* osmParsingConfig() const;
   [[nodiscard]] size_t numberOfNodes() const;
   [[nodiscard]] size_t numberOfLinks() const;
   [[nodiscard]] const std::vector<Node*>& nodeVector() const;
@@ -236,6 +242,7 @@ class Network {
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_;
   float POI_sampling_ratio_;
+  const OsmParsingConfig* osm_parsing_config_;
 
   // absl::flat_hash_map<NetIdType, Node*> node_dict_;
   // absl::flat_hash_map<NetIdType, Link*> link_dict_;
