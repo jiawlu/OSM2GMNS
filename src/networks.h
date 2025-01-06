@@ -50,7 +50,7 @@ class Node {
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] bool isSignalized() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
-  [[nodiscard]] const std::vector<const char*>& osmAttributes() const;
+  [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
   [[nodiscard]] std::optional<NetIdType> zoneId() const;
   [[nodiscard]] std::optional<int16_t> boundary() const;
   [[nodiscard]] std::optional<HighWayLinkType> activityType() const;
@@ -65,7 +65,7 @@ class Node {
   std::string name_;
   bool is_signalized_{false};
   std::unique_ptr<geos::geom::Point> geometry_;
-  std::vector<const char*> osm_attributes_;
+  std::vector<std::string> osm_attributes_;
 
   std::optional<NetIdType> zone_id_;
   // boundary: 0 - not a boundary node; -1 - incoming only; 1 - outgoing only; 2 - both incoming and outgoing
@@ -111,6 +111,7 @@ class Link {
   [[nodiscard]] std::optional<int32_t> capacity() const;
   [[nodiscard]] const std::vector<ModeType>& allowedModeTypes() const;
   [[nodiscard]] const std::string& toll() const;
+  [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
 
   void setLinkId(NetIdType link_id);
   void setFromNode(Node* from_node);
@@ -143,6 +144,7 @@ class Link {
   std::optional<int32_t> capacity_;
   std::vector<ModeType> allowed_mode_types_;
   std::string toll_;
+  std::vector<std::string> osm_attributes_;
 };
 
 class POI {

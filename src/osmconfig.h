@@ -12,7 +12,7 @@
 
 using OsmIdType = int64_t;
 
-enum class WayType : uint8_t { HIGHWAY, RAILWAY, AEROWAY, POI, OTHER };
+enum class WayType : uint8_t { HIGHWAY, RAILWAY, AEROWAY, POI, POI_COMPONENT, OTHER };
 
 enum class ModeType : uint8_t { AUTO, BIKE, WALK, RAILWAY, AEROWAY, OTHER };
 

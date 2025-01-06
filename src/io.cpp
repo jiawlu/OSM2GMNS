@@ -111,7 +111,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     node_file << name << "," << node->nodeId() << "," << node->osmNodeId() << "," << ctrl_type << "," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
               << node->geometry()->getY() << std::defaultfloat;
-    for (const char* attr_value : node->osmAttributes()) {
+    for (const std::string& attr_value : node->osmAttributes()) {
       node_file << "," << attr_value;
     }
     node_file << "," << boundary << "," << activity_type << ",," << zone_id << ",\n";
@@ -125,7 +125,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,link_"
-               "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
+               "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll";
+  for (const char* attr_name : network->osmParsingConfig()->osm_link_attributes) {
+    link_file << "," << attr_name;
+  }
+  link_file << ",notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string& name = absl::StrContains(link->name(), ',') ? "\"" + link->name() + "\"" : link->name();
     const std::string& facility_type =
@@ -161,7 +165,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
               << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << "," << facility_type << "," << type_no
               << "," << free_speed << "," << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses
-              << "," << toll << ",\n";
+              << "," << toll;
+    for (const std::string& attr_value : link->osmAttributes()) {
+      link_file << "," << attr_value;
+    }
+    link_file << ",\n";
   }
   link_file.close();
 

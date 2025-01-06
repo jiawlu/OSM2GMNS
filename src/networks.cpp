@@ -90,7 +90,7 @@ std::string Node::osmNodeId() const {
 const std::string& Node::name() const { return name_; }
 bool Node::isSignalized() const { return is_signalized_; }
 const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geometry_; }
-const std::vector<const char*>& Node::osmAttributes() const { return osm_attributes_; };
+const std::vector<std::string>& Node::osmAttributes() const { return osm_attributes_; };
 std::optional<NetIdType> Node::zoneId() const { return zone_id_; }
 std::optional<int16_t> Node::boundary() const { return boundary_; }
 std::optional<HighWayLinkType> Node::activityType() const { return activity_type_; }
@@ -108,7 +108,8 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
       free_speed_(osm_way->maxSpeed()),
       free_speed_raw_(osm_way->maxSpeedRaw()),
       allowed_mode_types_(osm_way->allowedModeTypes()),
-      toll_(osm_way->toll()) {
+      toll_(osm_way->toll()),
+      osm_attributes_(osm_way->osmLinkAttributes()) {
   if (osm_nodes.size() < 2) {
     return;
   }
@@ -179,6 +180,7 @@ std::string Link::freeSpeedRaw() const { return free_speed_raw_; }
 std::optional<int32_t> Link::capacity() const { return capacity_; }
 const std::vector<ModeType>& Link::allowedModeTypes() const { return allowed_mode_types_; }
 const std::string& Link::toll() const { return toll_; }
+const std::vector<std::string>& Link::osmAttributes() const { return osm_attributes_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
 void Link::setFromNode(Node* from_node) { from_node_ = from_node; }
