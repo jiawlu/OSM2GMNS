@@ -182,7 +182,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     std::cout << "Cannot open file " << poi_filepath;
     return;
   }
-  poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2\n";
+  poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2";
+  for (const char* attr_name : network->osmParsingConfig()->osm_poi_attributes) {
+    poi_file << "," << attr_name;
+  }
+  poi_file << "\n";
   for (const POI* poi : network->poiVector()) {
     const std::string& name = absl::StrContains(poi->name(), ',') ? "\"" + poi->name() + "\"" : poi->name();
     const std::string osm_way_id =
@@ -196,7 +200,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     poi_file << name << "," << poi->poiId() << "," << osm_way_id << "," << osm_relation_id << "," << building << ","
              << amenity << "," << leisure << ",,\"" << poi->geometry()->toString() << "\",\""
              << poi->centroidGeometry()->toString() << "\"," << std::fixed << std::setprecision(AREA_OUTPUT_PRECISION)
-             << poi->area() << ",\n";
+             << poi->area() << ",";
+    for (const std::string& attr_value : poi->osmAttributes()) {
+      poi_file << "," << attr_value;
+    }
+    poi_file << "\n";
   }
   poi_file.close();
 

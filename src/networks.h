@@ -159,6 +159,7 @@ class POI {
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;
   [[nodiscard]] const std::string& leisure() const;
+  [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Geometry>& geometry() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::Point>& centroidGeometry() const;
   [[nodiscard]] double area() const;
@@ -173,6 +174,7 @@ class POI {
   std::string building_;
   std::string amenity_;
   std::string leisure_;
+  std::vector<std::string> osm_attributes_;
 
   std::unique_ptr<geos::geom::Geometry> geometry_;
   std::unique_ptr<geos::geom::Point> centroid_geometry_;

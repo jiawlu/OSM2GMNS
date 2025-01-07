@@ -88,7 +88,7 @@ void OsmHandler::relation(const osmium::Relation& relation) {
   if (!parse_relation_) {
     return;
   }
-  auto* osm_relation = new OsmRelation(relation);
+  auto* osm_relation = new OsmRelation(relation, osm_parsing_config_->osm_poi_attributes);
   if (osm_relation->building().empty() && osm_relation->amenity().empty() && osm_relation->leisure().empty()) {
     delete osm_relation;
     return;
@@ -485,7 +485,7 @@ void OsmWay::configAttributes() {
   }
 }
 
-OsmRelation::OsmRelation(const osmium::Relation& relation)
+OsmRelation::OsmRelation(const osmium::Relation& relation, const std::vector<const char*>& osm_poi_attributes)
     : osm_relation_id_(relation.id()),
       building_(getOSMTagValue(relation.tags(), "building")),
       amenity_(getOSMTagValue(relation.tags(), "amenity")),
@@ -494,6 +494,10 @@ OsmRelation::OsmRelation(const osmium::Relation& relation)
     member_id_vector_.push_back(member.ref());
     member_type_vector_.push_back(member.type());
     member_role_vector_.emplace_back(member.role());
+  }
+  osm_attributes_.reserve(osm_poi_attributes.size());
+  for (const char* attr : osm_poi_attributes) {
+    osm_attributes_.push_back(getOSMTagValue(relation.tags(), attr));
   }
 }
 
@@ -529,6 +533,7 @@ const std::vector<std::string>& OsmRelation::memberWayRoleVector() const { retur
 const std::string& OsmRelation::building() const { return building_; }
 const std::string& OsmRelation::amenity() const { return amenity_; }
 const std::string& OsmRelation::leisure() const { return leisure_; }
+const std::vector<std::string>& OsmRelation::osmAttributes() const { return osm_attributes_; }
 
 OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_hash_set<ModeType> mode_types,
                        absl::flat_hash_set<HighWayLinkType> link_types,

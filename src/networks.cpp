@@ -196,6 +196,7 @@ POI::POI(const OsmWay* osm_way, std::unique_ptr<geos::geom::Polygon> geometry)
       building_(osm_way->building()),
       amenity_(osm_way->amenity()),
       leisure_(osm_way->leisure()),
+      osm_attributes_(osm_way->osmPoiAttributes()),
       geometry_(std::move(geometry)),
       centroid_geometry_(std::move(geometry_->getCentroid())),
       geometry_utm_(std::move(projectGeometryToUTM(geometry_.get(), geometry_->getFactory()))) {}
@@ -206,6 +207,7 @@ POI::POI(const OsmRelation* osm_relation, std::unique_ptr<geos::geom::MultiPolyg
       building_(osm_relation->building()),
       amenity_(osm_relation->amenity()),
       leisure_(osm_relation->leisure()),
+      osm_attributes_(osm_relation->osmAttributes()),
       geometry_(std::move(geometry)),
       centroid_geometry_(std::move(geometry_->getCentroid())),
       geometry_utm_(std::move(projectGeometryToUTM(geometry_.get(), geometry_->getFactory()))) {}
@@ -217,6 +219,7 @@ std::optional<OsmIdType> POI::osmRelationId() const { return osm_relation_id_; }
 const std::string& POI::building() const { return building_; }
 const std::string& POI::amenity() const { return amenity_; }
 const std::string& POI::leisure() const { return leisure_; }
+const std::vector<std::string>& POI::osmAttributes() const { return osm_attributes_; }
 const std::unique_ptr<geos::geom::Geometry>& POI::geometry() const { return geometry_; }
 const std::unique_ptr<geos::geom::Point>& POI::centroidGeometry() const { return centroid_geometry_; }
 double POI::area() const { return geometry_utm_ != nullptr ? geometry_utm_->getArea() : 0.0; }

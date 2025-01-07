@@ -222,7 +222,7 @@ class OsmWay {
 
 class OsmRelation {
  public:
-  explicit OsmRelation(const osmium::Relation& relation);
+  explicit OsmRelation(const osmium::Relation& relation, const std::vector<const char*>& osm_poi_attributes);
 
   void initOsmRelation(const absl::flat_hash_map<OsmIdType, OsmWay*>& osm_way_dict);
 
@@ -235,6 +235,7 @@ class OsmRelation {
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;
   [[nodiscard]] const std::string& leisure() const;
+  [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
 
  private:
   OsmIdType osm_relation_id_;
@@ -247,6 +248,8 @@ class OsmRelation {
   std::string building_;
   std::string amenity_;
   std::string leisure_;
+
+  std::vector<std::string> osm_attributes_;
 };
 
 class OsmNetwork {

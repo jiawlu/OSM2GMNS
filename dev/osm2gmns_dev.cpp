@@ -31,7 +31,8 @@ int main(int /*argc*/, char* /*argv*/[]) {
     // const std::string map_filename = "map_sub.osm";
     const std::string map_filename = "Columbus, Franklin County, Ohio, United States.pbf";
 
-    const auto* osm_parsing_config = new OsmParsingConfig{{"highway", "ref"}, {"sidewalk", "maxspeed"}, {"poi_name"}};
+    const auto* osm_parsing_config =
+        new OsmParsingConfig{{"highway", "ref"}, {"sidewalk", "maxspeed"}, {"building", "type"}};
 
     Network* network = getNetFromFile(map_folder / map_filename,
                                       {ModeType::AUTO, ModeType::BIKE, ModeType::RAILWAY, ModeType::AEROWAY},
