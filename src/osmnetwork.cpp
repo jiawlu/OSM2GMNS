@@ -38,6 +38,7 @@
 #include <utility>
 #include <vector>
 
+#include "config.h"
 #include "constants.h"
 #include "osmconfig.h"
 
@@ -47,8 +48,12 @@ const char* getOSMTagValue(const osmium::TagList& tag_list, const char* tag_key)
 }
 
 OsmHandler::OsmHandler(const absl::flat_hash_set<ModeType>& mode_types, absl::flat_hash_set<HighWayLinkType> link_types,
-                       absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI)
-    : link_types_(std::move(link_types)), connector_link_types_(std::move(connector_link_types)), POI_(POI) {
+                       absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI,
+                       const OsmParsingConfig* osm_parsing_config)
+    : link_types_(std::move(link_types)),
+      connector_link_types_(std::move(connector_link_types)),
+      POI_(POI),
+      osm_parsing_config_(osm_parsing_config) {
   for (const ModeType mode_type : mode_types) {
     if (mode_type == ModeType::RAILWAY) {
       include_railway_ = true;
@@ -61,7 +66,7 @@ OsmHandler::OsmHandler(const absl::flat_hash_set<ModeType>& mode_types, absl::fl
 }
 void OsmHandler::node(const osmium::Node& node) {
   if (parse_node_ && nodes_used_in_ways_.find(node.id()) != nodes_used_in_ways_.end()) {
-    osm_node_vector_.push_back(new OsmNode(node));
+    osm_node_vector_.push_back(new OsmNode(node, osm_parsing_config_->osm_node_attributes));
   }
 }
 void OsmHandler::way(const osmium::Way& way) {
@@ -71,18 +76,19 @@ void OsmHandler::way(const osmium::Way& way) {
   auto* osm_way = new OsmWay(way);
   osm_way->identifyWayType(highway_mode_types_, include_railway_, include_aeroway_, link_types_, connector_link_types_,
                            POI_, ways_used_in_relations_);
-  if (osm_way->includeTheWay()) {
-    osm_way_vector_.push_back(osm_way);
-    nodes_used_in_ways_.insert(osm_way->refNodeIdVector().begin(), osm_way->refNodeIdVector().end());
-  } else {
+  if (!osm_way->includeTheWay()) {
     delete osm_way;
+    return;
   }
+  osm_way_vector_.push_back(osm_way);
+  nodes_used_in_ways_.insert(osm_way->refNodeIdVector().begin(), osm_way->refNodeIdVector().end());
+  osm_way->updateOsmAttributes(way, osm_parsing_config_->osm_link_attributes, osm_parsing_config_->osm_poi_attributes);
 }
 void OsmHandler::relation(const osmium::Relation& relation) {
   if (!parse_relation_) {
     return;
   }
-  auto* osm_relation = new OsmRelation(relation);
+  auto* osm_relation = new OsmRelation(relation, osm_parsing_config_->osm_poi_attributes);
   if (osm_relation->building().empty() && osm_relation->amenity().empty() && osm_relation->leisure().empty()) {
     delete osm_relation;
     return;
@@ -107,7 +113,7 @@ std::vector<OsmNode*>& OsmHandler::osmNodeVector() { return osm_node_vector_; }
 std::vector<OsmWay*>& OsmHandler::osmWayVector() { return osm_way_vector_; }
 std::vector<OsmRelation*>& OsmHandler::osmRelationVector() { return osm_relation_vector_; }
 
-OsmNode::OsmNode(const osmium::Node& node)
+OsmNode::OsmNode(const osmium::Node& node, const std::vector<std::string>& osm_node_attributes)
     : osm_node_id_(node.id()),
       x(node.location().lon()),
       y(node.location().lat()),
@@ -116,6 +122,10 @@ OsmNode::OsmNode(const osmium::Node& node)
   if (absl::StrContains(highway_, "signal")) {
     is_signalized_ = true;
   }
+  osm_attributes_.reserve(osm_node_attributes.size());
+  for (const std::string& attr : osm_node_attributes) {
+    osm_attributes_.push_back(getOSMTagValue(node.tags(), attr.data()));
+  }
 }
 
 OsmIdType OsmNode::osmNodeId() const { return osm_node_id_; }
@@ -123,6 +133,7 @@ const std::string& OsmNode::name() const { return name_; }
 double OsmNode::getX() const { return x; }
 double OsmNode::getY() const { return y; }
 // const std::unique_ptr<geos::geom::Point>& OsmNode::geometry() const { return geometry_; }
+const std::vector<std::string>& OsmNode::osmAttributes() const { return osm_attributes_; };
 bool OsmNode::isSignalized() const { return is_signalized_; }
 int32_t OsmNode::usageCount() const { return usage_count_; }
 bool OsmNode::isTypologyNode() const { return is_typology_node_; }
@@ -193,6 +204,8 @@ const std::string& OsmWay::toll() const { return toll_; }
 const std::string& OsmWay::building() const { return building_; }
 const std::string& OsmWay::amenity() const { return amenity_; }
 const std::string& OsmWay::leisure() const { return leisure_; }
+const std::vector<std::string>& OsmWay::osmLinkAttributes() const { return osm_link_attributes_; }
+const std::vector<std::string>& OsmWay::osmPoiAttributes() const { return osm_poi_attributes_; }
 
 const std::vector<OsmIdType>& OsmWay::refNodeIdVector() const { return ref_node_id_vector_; }
 const std::vector<ModeType>& OsmWay::allowedModeTypes() const { return allowed_mode_types_; }
@@ -227,6 +240,7 @@ void OsmWay::identifyWayType(const absl::flat_hash_set<ModeType>& highway_mode_t
   }
 
   if (POI && ways_used_in_relations.find(osm_way_id_) != ways_used_in_relations.end()) {
+    way_type_ = WayType::POI_COMPONENT;
     include_the_way_ = true;
   }
 }
@@ -273,6 +287,32 @@ void OsmWay::identifyAerowayType() {
   way_type_ = WayType::AEROWAY;
   allowed_mode_types_ = {ModeType::AEROWAY};
   include_the_way_ = true;
+}
+
+void OsmWay::updateOsmAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes,
+                                 const std::vector<std::string>& osm_poi_attributes) {
+  if (way_type_ == WayType::HIGHWAY || way_type_ == WayType::RAILWAY || way_type_ == WayType::AEROWAY) {
+    if (!osm_link_attributes.empty()) {
+      updateOsmLinkAttributes(way, osm_link_attributes);
+    }
+  } else if (way_type_ == WayType::POI) {
+    if (!osm_poi_attributes.empty()) {
+      updateOsmPoiAttributes(way, osm_poi_attributes);
+    }
+  }
+}
+
+void OsmWay::updateOsmLinkAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes) {
+  osm_link_attributes_.reserve(osm_link_attributes.size());
+  for (const std::string& attr : osm_link_attributes) {
+    osm_link_attributes_.push_back(getOSMTagValue(way.tags(), attr.data()));
+  }
+}
+void OsmWay::updateOsmPoiAttributes(const osmium::Way& way, const std::vector<std::string>& osm_poi_attributes) {
+  osm_poi_attributes_.reserve(osm_poi_attributes.size());
+  for (const std::string& attr : osm_poi_attributes) {
+    osm_poi_attributes_.push_back(getOSMTagValue(way.tags(), attr.data()));
+  }
 }
 
 void OsmWay::initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict) {
@@ -445,7 +485,7 @@ void OsmWay::configAttributes() {
   }
 }
 
-OsmRelation::OsmRelation(const osmium::Relation& relation)
+OsmRelation::OsmRelation(const osmium::Relation& relation, const std::vector<std::string>& osm_poi_attributes)
     : osm_relation_id_(relation.id()),
       building_(getOSMTagValue(relation.tags(), "building")),
       amenity_(getOSMTagValue(relation.tags(), "amenity")),
@@ -454,6 +494,10 @@ OsmRelation::OsmRelation(const osmium::Relation& relation)
     member_id_vector_.push_back(member.ref());
     member_type_vector_.push_back(member.type());
     member_role_vector_.emplace_back(member.role());
+  }
+  osm_attributes_.reserve(osm_poi_attributes.size());
+  for (const std::string& attr : osm_poi_attributes) {
+    osm_attributes_.push_back(getOSMTagValue(relation.tags(), attr.data()));
   }
 }
 
@@ -489,14 +533,17 @@ const std::vector<std::string>& OsmRelation::memberWayRoleVector() const { retur
 const std::string& OsmRelation::building() const { return building_; }
 const std::string& OsmRelation::amenity() const { return amenity_; }
 const std::string& OsmRelation::leisure() const { return leisure_; }
+const std::vector<std::string>& OsmRelation::osmAttributes() const { return osm_attributes_; }
 
 OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_hash_set<ModeType> mode_types,
                        absl::flat_hash_set<HighWayLinkType> link_types,
-                       absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_boundary)
+                       absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI,
+                       const OsmParsingConfig* osm_parsing_config, bool strict_boundary)
     : mode_types_(std::move(mode_types)),
       link_types_(std::move(link_types)),
       connector_link_types_(std::move(connector_link_types)),
       POI_(POI),
+      osm_parsing_config_(osm_parsing_config),
       strict_boundary_(strict_boundary) {
   if (!std::filesystem::exists(osm_filepath)) {
     LOG(FATAL) << "osm file " << osm_filepath << " does not exist";
@@ -506,7 +553,7 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
   factory_ = geos::geom::GeometryFactory::create();
 
   const auto time1 = std::chrono::high_resolution_clock::now();
-  OsmHandler handler(mode_types_, link_types_, connector_link_types_, POI_);
+  OsmHandler handler(mode_types_, link_types_, connector_link_types_, POI_, osm_parsing_config_);
   try {
     const osmium::io::File input_file{osm_filepath.string()};
     osmium::io::Reader reader{input_file};
@@ -526,10 +573,12 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
       osmium::apply(reader, handler);
     }
     reader.close();
+
     osmium::io::Reader reader_way{input_file};
     handler.updateParseTargets(false, true, false);
     osmium::apply(reader_way, handler);
     reader_way.close();
+
     osmium::io::Reader reader_node{input_file};
     handler.updateParseTargets(true, false, false);
     osmium::apply(reader_node, handler);

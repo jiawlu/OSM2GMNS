@@ -37,6 +37,9 @@ def initlib():
                                        ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
                                        ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
                                        ctypes.c_bool, ctypes.c_float,
+                                       ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
+                                       ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
+                                       ctypes.POINTER(ctypes.c_char_p), ctypes.c_size_t,
                                        ctypes.c_bool]
     oglib.getNetFromFilePy.restype = ctypes.c_void_p
 
@@ -79,6 +82,7 @@ def _checkStringToTuple(arg_val):
     return (arg_val,) if isinstance(arg_val, str) else arg_val
 
 def getNetFromFile(filename='map.osm', mode_types=('auto',), link_types=(), connector_link_types=(), POI=False, POI_sampling_ratio=1.0,
+                   osm_node_attributes=(), osm_link_attributes=(), osm_poi_attributes=(),
                    strict_boundary=True, **kwargs):
     network = Network()
 
@@ -91,15 +95,24 @@ def getNetFromFile(filename='map.osm', mode_types=('auto',), link_types=(), conn
 
     link_types_byte_string = [link_type.encode() for link_type in _checkStringToTuple(link_types)]
     link_types_arr = (ctypes.c_char_p * len(link_types_byte_string))(*link_types_byte_string)
-
     connector_link_types_byte_string = [link_type.encode() for link_type in _checkStringToTuple(connector_link_types)]
     connector_link_types_arr = (ctypes.c_char_p * len(connector_link_types_byte_string))(*connector_link_types_byte_string)
+
+    osm_node_attributes_byte_string = [attr.encode() for attr in _checkStringToTuple(osm_node_attributes)]
+    osm_node_attributes_arr = (ctypes.c_char_p * len(osm_node_attributes_byte_string))(*osm_node_attributes_byte_string)
+    osm_link_attributes_byte_string = [attr.encode() for attr in _checkStringToTuple(osm_link_attributes)]
+    osm_link_attributes_arr = (ctypes.c_char_p * len(osm_link_attributes_byte_string))(*osm_link_attributes_byte_string)
+    osm_poi_attributes_byte_string = [attr.encode() for attr in _checkStringToTuple(osm_poi_attributes)]
+    osm_poi_attributes_arr = (ctypes.c_char_p * len(osm_poi_attributes_byte_string))(*osm_poi_attributes_byte_string)
 
     network.cnet = oglib.getNetFromFilePy(filename.encode(),
                                           mode_types_arr, len(mode_types_arr),
                                           link_types_arr, len(link_types_arr),
                                           connector_link_types_arr, len(connector_link_types_arr),
                                           POI, POI_sampling_ratio,
+                                          osm_node_attributes_arr, len(osm_node_attributes_arr),
+                                          osm_link_attributes_arr, len(osm_link_attributes_arr),
+                                          osm_poi_attributes_arr, len(osm_poi_attributes_arr),
                                           strict_boundary)
     return network
 

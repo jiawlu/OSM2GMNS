@@ -27,7 +27,7 @@
 #include "networks.h"
 #include "osmconfig.h"
 
-constexpr int COORDINATE_OUTPUT_PRECISION = 6;
+constexpr int COORDINATE_OUTPUT_PRECISION = 7;
 constexpr int LENGTH_OUTPUT_PRECISION = 2;
 constexpr int AREA_OUTPUT_PRECISION = 1;
 
@@ -94,7 +94,12 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     LOG(ERROR) << "Cannot open file " << node_filepath;
     return;
   }
-  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord,is_boundary,activity_type,poi_id,zone_id,notes\n";
+  node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord";
+  for (const std::string& attr_name : network->osmParsingConfig()->osm_node_attributes) {
+    node_file << "," << attr_name;
+  }
+  node_file << ",is_boundary,activity_type,poi_id,zone_id,notes\n";
+
   for (const Node* node : network->nodeVector()) {
     const std::string& name = absl::StrContains(node->name(), ',') ? "\"" + node->name() + "\"" : node->name();
     const std::string& ctrl_type = node->isSignalized() ? "signal" : "";
@@ -105,8 +110,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
         node->activityType().has_value() ? getHighWayLinkTypeStr(node->activityType().value()) : "";  // NOLINT
     node_file << name << "," << node->nodeId() << "," << node->osmNodeId() << "," << ctrl_type << "," << std::fixed
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
-              << node->geometry()->getY() << std::defaultfloat << "," << boundary << "," << activity_type << ",,"
-              << zone_id << ",\n";
+              << node->geometry()->getY() << std::defaultfloat;
+    for (const std::string& attr_value : node->osmAttributes()) {
+      node_file << "," << attr_value;
+    }
+    node_file << "," << boundary << "," << activity_type << ",," << zone_id << ",\n";
   }
   node_file.close();
 
@@ -117,7 +125,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,link_"
-               "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll,notes\n";
+               "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll";
+  for (const std::string& attr_name : network->osmParsingConfig()->osm_link_attributes) {
+    link_file << "," << attr_name;
+  }
+  link_file << ",notes\n";
   for (const Link* link : network->linkVector()) {
     const std::string& name = absl::StrContains(link->name(), ',') ? "\"" + link->name() + "\"" : link->name();
     const std::string& facility_type =
@@ -153,7 +165,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
               << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << "," << facility_type << "," << type_no
               << "," << free_speed << "," << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses
-              << "," << toll << ",\n";
+              << "," << toll;
+    for (const std::string& attr_value : link->osmAttributes()) {
+      link_file << "," << attr_value;
+    }
+    link_file << ",\n";
   }
   link_file.close();
 
@@ -166,7 +182,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     std::cout << "Cannot open file " << poi_filepath;
     return;
   }
-  poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2\n";
+  poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2";
+  for (const std::string& attr_name : network->osmParsingConfig()->osm_poi_attributes) {
+    poi_file << "," << attr_name;
+  }
+  poi_file << "\n";
   for (const POI* poi : network->poiVector()) {
     const std::string& name = absl::StrContains(poi->name(), ',') ? "\"" + poi->name() + "\"" : poi->name();
     const std::string osm_way_id =
@@ -180,7 +200,11 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     poi_file << name << "," << poi->poiId() << "," << osm_way_id << "," << osm_relation_id << "," << building << ","
              << amenity << "," << leisure << ",,\"" << poi->geometry()->toString() << "\",\""
              << poi->centroidGeometry()->toString() << "\"," << std::fixed << std::setprecision(AREA_OUTPUT_PRECISION)
-             << poi->area() << ",\n";
+             << poi->area() << ",";
+    for (const std::string& attr_value : poi->osmAttributes()) {
+      poi_file << "," << attr_value;
+    }
+    poi_file << "\n";
   }
   poi_file.close();
 

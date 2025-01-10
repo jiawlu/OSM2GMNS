@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "config.h"
 #include "osmconfig.h"
 
 class OsmNode;
@@ -31,7 +32,8 @@ class OsmRelation;
 class OsmHandler : public osmium::handler::Handler {
  public:
   explicit OsmHandler(const absl::flat_hash_set<ModeType>& mode_types, absl::flat_hash_set<HighWayLinkType> link_types,
-                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI);
+                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI,
+                      const OsmParsingConfig* osm_parsing_config);
 
   void node(const osmium::Node& node);
   void way(const osmium::Way& way);
@@ -56,6 +58,7 @@ class OsmHandler : public osmium::handler::Handler {
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_{false};
+  const OsmParsingConfig* osm_parsing_config_;
 
   std::vector<OsmNode*> osm_node_vector_;
   std::vector<OsmWay*> osm_way_vector_;
@@ -64,13 +67,14 @@ class OsmHandler : public osmium::handler::Handler {
 
 class OsmNode {
  public:
-  explicit OsmNode(const osmium::Node& node);
+  explicit OsmNode(const osmium::Node& node, const std::vector<std::string>& osm_node_attributes);
 
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
   [[nodiscard]] double getX() const;
   [[nodiscard]] double getY() const;
   // [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
   [[nodiscard]] bool isSignalized() const;
   [[nodiscard]] int32_t usageCount() const;
   [[nodiscard]] bool isTypologyNode() const;
@@ -91,7 +95,7 @@ class OsmNode {
   // std::unique_ptr<geos::geom::Point> geometry_;
   double x, y;
   std::string highway_;
-  // std::string signal_;
+  std::vector<std::string> osm_attributes_;
 
   bool is_signalized_{false};
   bool in_region_{true};
@@ -132,6 +136,8 @@ class OsmWay {
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;
   [[nodiscard]] const std::string& leisure() const;
+  [[nodiscard]] const std::vector<std::string>& osmLinkAttributes() const;
+  [[nodiscard]] const std::vector<std::string>& osmPoiAttributes() const;
 
   [[nodiscard]] const std::vector<OsmIdType>& refNodeIdVector() const;
   [[nodiscard]] const std::vector<ModeType>& allowedModeTypes() const;
@@ -142,6 +148,8 @@ class OsmWay {
                        bool include_aeroway, const absl::flat_hash_set<HighWayLinkType>& link_types,
                        const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
                        const absl::flat_hash_set<OsmIdType>& ways_used_in_relations);
+  void updateOsmAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes,
+                           const std::vector<std::string>& osm_poi_attributes);
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void identifyTargetConnector();
   void splitIntoSegments();
@@ -155,6 +163,8 @@ class OsmWay {
   void identifyRailwayType();
   void identifyAerowayType();
   void generateHighwayAllowedModeTypes(const absl::flat_hash_set<ModeType>& highway_mode_types);
+  void updateOsmLinkAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes);
+  void updateOsmPoiAttributes(const osmium::Way& way, const std::vector<std::string>& osm_poi_attributes);
   void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void configAttributes();
 
@@ -188,6 +198,9 @@ class OsmWay {
   std::string foot_;
   std::string bicycle_;
 
+  std::vector<std::string> osm_link_attributes_;
+  std::vector<std::string> osm_poi_attributes_;
+
   std::vector<OsmIdType> ref_node_id_vector_;
   std::vector<OsmNode*> ref_node_vector_;
   OsmNode* from_node_{nullptr};
@@ -209,7 +222,7 @@ class OsmWay {
 
 class OsmRelation {
  public:
-  explicit OsmRelation(const osmium::Relation& relation);
+  explicit OsmRelation(const osmium::Relation& relation, const std::vector<std::string>& osm_poi_attributes);
 
   void initOsmRelation(const absl::flat_hash_map<OsmIdType, OsmWay*>& osm_way_dict);
 
@@ -222,6 +235,7 @@ class OsmRelation {
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;
   [[nodiscard]] const std::string& leisure() const;
+  [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
 
  private:
   OsmIdType osm_relation_id_;
@@ -234,13 +248,16 @@ class OsmRelation {
   std::string building_;
   std::string amenity_;
   std::string leisure_;
+
+  std::vector<std::string> osm_attributes_;
 };
 
 class OsmNetwork {
  public:
   explicit OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_hash_set<ModeType> mode_types,
                       absl::flat_hash_set<HighWayLinkType> link_types,
-                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, bool strict_boundary);
+                      absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI,
+                      const OsmParsingConfig* osm_parsing_config, bool strict_boundary);
   ~OsmNetwork();
   OsmNetwork(const OsmNetwork&) = delete;
   OsmNetwork& operator=(const OsmNetwork&) = delete;
@@ -260,6 +277,7 @@ class OsmNetwork {
   absl::flat_hash_set<HighWayLinkType> link_types_;
   absl::flat_hash_set<HighWayLinkType> connector_link_types_;
   bool POI_;
+  const OsmParsingConfig* osm_parsing_config_;
   bool strict_boundary_;
 
   geos::geom::GeometryFactory::Ptr factory_;

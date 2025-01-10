@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <filesystem>
 
+#include "config.h"
 #include "networks.h"
 #include "osmconfig.h"
 
@@ -20,7 +21,8 @@ Network* getNetFromFile(const std::filesystem::path& osm_filepath,
                         const absl::flat_hash_set<ModeType>& mode_types = {ModeType::AUTO},
                         const absl::flat_hash_set<HighWayLinkType>& link_types = {},
                         const absl::flat_hash_set<HighWayLinkType>& connector_link_types = {}, bool POI = false,
-                        float POI_sampling_ratio = 1.0, bool strict_boundary = true);
+                        float POI_sampling_ratio = 1.0, const OsmParsingConfig* osm_parsing_config = nullptr,
+                        bool strict_boundary = true);
 
 void consolidateComplexIntersections(Network* network, bool auto_identify = false,
                                      const std::filesystem::path& intersection_file = "",

@@ -12,7 +12,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <vector>
 
+#include "src/config.h"
 #include "src/functions.h"
 #include "src/io.h"
 #include "src/networks.h"
@@ -54,6 +56,24 @@ absl::flat_hash_set<ModeType> parseModeTypes(const char** mode_types_val, size_t
   return mode_types;
 }
 
+std::vector<const char*> parseChars(const char** chars_val, size_t chars_len) {
+  std::vector<const char*> char_vector;
+  char_vector.reserve(chars_len);
+  for (size_t idx = 0; idx < chars_len; ++idx) {
+    char_vector.push_back(chars_val[idx]);  // NOLINT
+  }
+  return char_vector;
+}
+
+std::vector<std::string> parseCharArraysToStringVector(const char** chars_val, size_t chars_len) {
+  std::vector<std::string> char_vector;
+  char_vector.reserve(chars_len);
+  for (size_t idx = 0; idx < chars_len; ++idx) {
+    char_vector.emplace_back(chars_val[idx]);  // NOLINT
+  }
+  return char_vector;
+}
+
 template <typename T>
 struct StrNumDict {
   const char* key;
@@ -87,13 +107,20 @@ C_API void releaseNetworkMemoryPy(Network* network) { delete network; };
 C_API Network* getNetFromFilePy(const char* osm_filepath, const char** mode_types_val, size_t mode_types_len,
                                 const char** link_types_val, size_t link_types_len,
                                 const char** connector_link_types_val, size_t connector_link_types_len, bool POI,
-                                float POI_sampling_ratio, bool strict_boundary) {
+                                float POI_sampling_ratio, const char** osm_node_attributes_val,
+                                size_t osm_node_attributes_len, const char** osm_link_attributes_val,
+                                size_t osm_link_attributes_len, const char** osm_poi_attributes_val,
+                                size_t osm_poi_attributes_len, bool strict_boundary) {
   const absl::flat_hash_set<ModeType> mode_types = parseModeTypes(mode_types_val, mode_types_len);
   const absl::flat_hash_set<HighWayLinkType> link_types = parseLinkTypes(link_types_val, link_types_len);
   const absl::flat_hash_set<HighWayLinkType> connector_link_types =
       parseLinkTypes(connector_link_types_val, connector_link_types_len);
+  auto* osm_parsing_config =
+      new OsmParsingConfig{parseCharArraysToStringVector(osm_node_attributes_val, osm_node_attributes_len),
+                           parseCharArraysToStringVector(osm_link_attributes_val, osm_link_attributes_len),
+                           parseCharArraysToStringVector(osm_poi_attributes_val, osm_poi_attributes_len)};
   Network* network = getNetFromFile(osm_filepath, mode_types, link_types, connector_link_types, POI, POI_sampling_ratio,
-                                    strict_boundary);
+                                    osm_parsing_config, strict_boundary);
   return network;
 };
 

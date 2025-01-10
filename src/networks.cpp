@@ -36,7 +36,10 @@
 #include "utils.h"
 
 Node::Node(const OsmNode* osm_node, const geos::geom::GeometryFactory* factory)
-    : osm_nodes_({osm_node}), name_(osm_node->name()), is_signalized_(osm_node->isSignalized()) {
+    : osm_nodes_({osm_node}),
+      name_(osm_node->name()),
+      is_signalized_(osm_node->isSignalized()),
+      osm_attributes_(osm_node->osmAttributes()) {
   geometry_ = factory->createPoint(geos::geom::Coordinate(osm_node->getX(), osm_node->getY()));
 }
 
@@ -87,6 +90,7 @@ std::string Node::osmNodeId() const {
 const std::string& Node::name() const { return name_; }
 bool Node::isSignalized() const { return is_signalized_; }
 const std::unique_ptr<geos::geom::Point>& Node::geometry() const { return geometry_; }
+const std::vector<std::string>& Node::osmAttributes() const { return osm_attributes_; };
 std::optional<NetIdType> Node::zoneId() const { return zone_id_; }
 std::optional<int16_t> Node::boundary() const { return boundary_; }
 std::optional<HighWayLinkType> Node::activityType() const { return activity_type_; }
@@ -104,7 +108,8 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
       free_speed_(osm_way->maxSpeed()),
       free_speed_raw_(osm_way->maxSpeedRaw()),
       allowed_mode_types_(osm_way->allowedModeTypes()),
-      toll_(osm_way->toll()) {
+      toll_(osm_way->toll()),
+      osm_attributes_(osm_way->osmLinkAttributes()) {
   if (osm_nodes.size() < 2) {
     return;
   }
@@ -175,6 +180,7 @@ std::string Link::freeSpeedRaw() const { return free_speed_raw_; }
 std::optional<int32_t> Link::capacity() const { return capacity_; }
 const std::vector<ModeType>& Link::allowedModeTypes() const { return allowed_mode_types_; }
 const std::string& Link::toll() const { return toll_; }
+const std::vector<std::string>& Link::osmAttributes() const { return osm_attributes_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
 void Link::setFromNode(Node* from_node) { from_node_ = from_node; }
@@ -190,6 +196,7 @@ POI::POI(const OsmWay* osm_way, std::unique_ptr<geos::geom::Polygon> geometry)
       building_(osm_way->building()),
       amenity_(osm_way->amenity()),
       leisure_(osm_way->leisure()),
+      osm_attributes_(osm_way->osmPoiAttributes()),
       geometry_(std::move(geometry)),
       centroid_geometry_(std::move(geometry_->getCentroid())),
       geometry_utm_(std::move(projectGeometryToUTM(geometry_.get(), geometry_->getFactory()))) {}
@@ -200,6 +207,7 @@ POI::POI(const OsmRelation* osm_relation, std::unique_ptr<geos::geom::MultiPolyg
       building_(osm_relation->building()),
       amenity_(osm_relation->amenity()),
       leisure_(osm_relation->leisure()),
+      osm_attributes_(osm_relation->osmAttributes()),
       geometry_(std::move(geometry)),
       centroid_geometry_(std::move(geometry_->getCentroid())),
       geometry_utm_(std::move(projectGeometryToUTM(geometry_.get(), geometry_->getFactory()))) {}
@@ -211,6 +219,7 @@ std::optional<OsmIdType> POI::osmRelationId() const { return osm_relation_id_; }
 const std::string& POI::building() const { return building_; }
 const std::string& POI::amenity() const { return amenity_; }
 const std::string& POI::leisure() const { return leisure_; }
+const std::vector<std::string>& POI::osmAttributes() const { return osm_attributes_; }
 const std::unique_ptr<geos::geom::Geometry>& POI::geometry() const { return geometry_; }
 const std::unique_ptr<geos::geom::Point>& POI::centroidGeometry() const { return centroid_geometry_; }
 double POI::area() const { return geometry_utm_ != nullptr ? geometry_utm_->getArea() : 0.0; }
@@ -226,12 +235,14 @@ const std::unique_ptr<geos::geom::Geometry>& Zone::geometry() const { return geo
 Intersection::Intersection() = default;
 
 Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
-                 absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio)
+                 absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio,
+                 const OsmParsingConfig* osm_parsing_config)
     : osmnet_(osmnet),
       link_types_(std::move(link_types)),
       connector_link_types_(std::move(connector_link_types)),
       POI_(POI),
-      POI_sampling_ratio_(POI_sampling_ratio) {
+      POI_sampling_ratio_(POI_sampling_ratio),
+      osm_parsing_config_(osm_parsing_config) {
   factory_ = geos::geom::GeometryFactory::create();
   if (osmnet_->boundary().has_value()) {
     boundary_ = static_cast<std::unique_ptr<geos::geom::Polygon>>(osmnet_->boundary().value()->clone());  // NOLINT
@@ -268,6 +279,7 @@ Network::~Network() {
 }
 
 bool Network::poi() const { return POI_; }
+const OsmParsingConfig* Network::osmParsingConfig() const { return osm_parsing_config_; }
 size_t Network::numberOfNodes() const { return node_vector_.size(); }
 size_t Network::numberOfLinks() const { return link_vector_.size(); }
 const std::vector<Node*>& Network::nodeVector() const { return node_vector_; }
