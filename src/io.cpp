@@ -95,7 +95,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   node_file << "name,node_id,osm_node_id,ctrl_type,x_coord,y_coord";
-  for (const char* attr_name : network->osmParsingConfig()->osm_node_attributes) {
+  for (const std::string& attr_name : network->osmParsingConfig()->osm_node_attributes) {
     node_file << "," << attr_name;
   }
   node_file << ",is_boundary,activity_type,poi_id,zone_id,notes\n";
@@ -126,7 +126,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
   }
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,link_"
                "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll";
-  for (const char* attr_name : network->osmParsingConfig()->osm_link_attributes) {
+  for (const std::string& attr_name : network->osmParsingConfig()->osm_link_attributes) {
     link_file << "," << attr_name;
   }
   link_file << ",notes\n";
@@ -183,7 +183,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   poi_file << "name,poi_id,osm_way_id,osm_relation_id,building,amenity,leisure,way,geometry,centroid,area,area_ft2";
-  for (const char* attr_name : network->osmParsingConfig()->osm_poi_attributes) {
+  for (const std::string& attr_name : network->osmParsingConfig()->osm_poi_attributes) {
     poi_file << "," << attr_name;
   }
   poi_file << "\n";

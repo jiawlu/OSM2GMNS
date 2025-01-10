@@ -5,12 +5,13 @@
 #ifndef OSM2GMNS_CONFIG_H
 #define OSM2GMNS_CONFIG_H
 
+#include <string>
 #include <vector>
 
 struct OsmParsingConfig {
-  std::vector<const char*> osm_node_attributes;
-  std::vector<const char*> osm_link_attributes;
-  std::vector<const char*> osm_poi_attributes;
+  std::vector<std::string> osm_node_attributes;
+  std::vector<std::string> osm_link_attributes;
+  std::vector<std::string> osm_poi_attributes;
 };
 
 #endif  // OSM2GMNS_CONFIG_H

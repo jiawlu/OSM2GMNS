@@ -67,7 +67,7 @@ class OsmHandler : public osmium::handler::Handler {
 
 class OsmNode {
  public:
-  explicit OsmNode(const osmium::Node& node, const std::vector<const char*>& osm_node_attributes);
+  explicit OsmNode(const osmium::Node& node, const std::vector<std::string>& osm_node_attributes);
 
   [[nodiscard]] OsmIdType osmNodeId() const;
   [[nodiscard]] const std::string& name() const;
@@ -148,8 +148,8 @@ class OsmWay {
                        bool include_aeroway, const absl::flat_hash_set<HighWayLinkType>& link_types,
                        const absl::flat_hash_set<HighWayLinkType>& connector_link_types, bool POI,
                        const absl::flat_hash_set<OsmIdType>& ways_used_in_relations);
-  void updateOsmAttributes(const osmium::Way& way, const std::vector<const char*>& osm_link_attributes,
-                           const std::vector<const char*>& osm_poi_attributes);
+  void updateOsmAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes,
+                           const std::vector<std::string>& osm_poi_attributes);
   void initOsmWay(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void identifyTargetConnector();
   void splitIntoSegments();
@@ -163,8 +163,8 @@ class OsmWay {
   void identifyRailwayType();
   void identifyAerowayType();
   void generateHighwayAllowedModeTypes(const absl::flat_hash_set<ModeType>& highway_mode_types);
-  void updateOsmLinkAttributes(const osmium::Way& way, const std::vector<const char*>& osm_link_attributes);
-  void updateOsmPoiAttributes(const osmium::Way& way, const std::vector<const char*>& osm_poi_attributes);
+  void updateOsmLinkAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes);
+  void updateOsmPoiAttributes(const osmium::Way& way, const std::vector<std::string>& osm_poi_attributes);
   void mapRefNodes(const absl::flat_hash_map<OsmIdType, OsmNode*>& osm_node_dict);
   void configAttributes();
 
@@ -222,7 +222,7 @@ class OsmWay {
 
 class OsmRelation {
  public:
-  explicit OsmRelation(const osmium::Relation& relation, const std::vector<const char*>& osm_poi_attributes);
+  explicit OsmRelation(const osmium::Relation& relation, const std::vector<std::string>& osm_poi_attributes);
 
   void initOsmRelation(const absl::flat_hash_map<OsmIdType, OsmWay*>& osm_way_dict);
 

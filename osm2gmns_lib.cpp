@@ -65,6 +65,15 @@ std::vector<const char*> parseChars(const char** chars_val, size_t chars_len) {
   return char_vector;
 }
 
+std::vector<std::string> parseCharArraysToStringVector(const char** chars_val, size_t chars_len) {
+  std::vector<std::string> char_vector;
+  char_vector.reserve(chars_len);
+  for (size_t idx = 0; idx < chars_len; ++idx) {
+    char_vector.emplace_back(chars_val[idx]);  // NOLINT
+  }
+  return char_vector;
+}
+
 template <typename T>
 struct StrNumDict {
   const char* key;
@@ -106,9 +115,10 @@ C_API Network* getNetFromFilePy(const char* osm_filepath, const char** mode_type
   const absl::flat_hash_set<HighWayLinkType> link_types = parseLinkTypes(link_types_val, link_types_len);
   const absl::flat_hash_set<HighWayLinkType> connector_link_types =
       parseLinkTypes(connector_link_types_val, connector_link_types_len);
-  auto* osm_parsing_config = new OsmParsingConfig{parseChars(osm_node_attributes_val, osm_node_attributes_len),
-                                                  parseChars(osm_link_attributes_val, osm_link_attributes_len),
-                                                  parseChars(osm_poi_attributes_val, osm_poi_attributes_len)};
+  auto* osm_parsing_config =
+      new OsmParsingConfig{parseCharArraysToStringVector(osm_node_attributes_val, osm_node_attributes_len),
+                           parseCharArraysToStringVector(osm_link_attributes_val, osm_link_attributes_len),
+                           parseCharArraysToStringVector(osm_poi_attributes_val, osm_poi_attributes_len)};
   Network* network = getNetFromFile(osm_filepath, mode_types, link_types, connector_link_types, POI, POI_sampling_ratio,
                                     osm_parsing_config, strict_boundary);
   return network;

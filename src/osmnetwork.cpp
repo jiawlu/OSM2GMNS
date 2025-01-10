@@ -113,7 +113,7 @@ std::vector<OsmNode*>& OsmHandler::osmNodeVector() { return osm_node_vector_; }
 std::vector<OsmWay*>& OsmHandler::osmWayVector() { return osm_way_vector_; }
 std::vector<OsmRelation*>& OsmHandler::osmRelationVector() { return osm_relation_vector_; }
 
-OsmNode::OsmNode(const osmium::Node& node, const std::vector<const char*>& osm_node_attributes)
+OsmNode::OsmNode(const osmium::Node& node, const std::vector<std::string>& osm_node_attributes)
     : osm_node_id_(node.id()),
       x(node.location().lon()),
       y(node.location().lat()),
@@ -123,8 +123,8 @@ OsmNode::OsmNode(const osmium::Node& node, const std::vector<const char*>& osm_n
     is_signalized_ = true;
   }
   osm_attributes_.reserve(osm_node_attributes.size());
-  for (const char* attr : osm_node_attributes) {
-    osm_attributes_.push_back(getOSMTagValue(node.tags(), attr));
+  for (const std::string& attr : osm_node_attributes) {
+    osm_attributes_.push_back(getOSMTagValue(node.tags(), attr.data()));
   }
 }
 
@@ -289,8 +289,8 @@ void OsmWay::identifyAerowayType() {
   include_the_way_ = true;
 }
 
-void OsmWay::updateOsmAttributes(const osmium::Way& way, const std::vector<const char*>& osm_link_attributes,
-                                 const std::vector<const char*>& osm_poi_attributes) {
+void OsmWay::updateOsmAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes,
+                                 const std::vector<std::string>& osm_poi_attributes) {
   if (way_type_ == WayType::HIGHWAY || way_type_ == WayType::RAILWAY || way_type_ == WayType::AEROWAY) {
     if (!osm_link_attributes.empty()) {
       updateOsmLinkAttributes(way, osm_link_attributes);
@@ -302,16 +302,16 @@ void OsmWay::updateOsmAttributes(const osmium::Way& way, const std::vector<const
   }
 }
 
-void OsmWay::updateOsmLinkAttributes(const osmium::Way& way, const std::vector<const char*>& osm_link_attributes) {
+void OsmWay::updateOsmLinkAttributes(const osmium::Way& way, const std::vector<std::string>& osm_link_attributes) {
   osm_link_attributes_.reserve(osm_link_attributes.size());
-  for (const char* attr : osm_link_attributes) {
-    osm_link_attributes_.push_back(getOSMTagValue(way.tags(), attr));
+  for (const std::string& attr : osm_link_attributes) {
+    osm_link_attributes_.push_back(getOSMTagValue(way.tags(), attr.data()));
   }
 }
-void OsmWay::updateOsmPoiAttributes(const osmium::Way& way, const std::vector<const char*>& osm_poi_attributes) {
+void OsmWay::updateOsmPoiAttributes(const osmium::Way& way, const std::vector<std::string>& osm_poi_attributes) {
   osm_poi_attributes_.reserve(osm_poi_attributes.size());
-  for (const char* attr : osm_poi_attributes) {
-    osm_poi_attributes_.push_back(getOSMTagValue(way.tags(), attr));
+  for (const std::string& attr : osm_poi_attributes) {
+    osm_poi_attributes_.push_back(getOSMTagValue(way.tags(), attr.data()));
   }
 }
 
@@ -485,7 +485,7 @@ void OsmWay::configAttributes() {
   }
 }
 
-OsmRelation::OsmRelation(const osmium::Relation& relation, const std::vector<const char*>& osm_poi_attributes)
+OsmRelation::OsmRelation(const osmium::Relation& relation, const std::vector<std::string>& osm_poi_attributes)
     : osm_relation_id_(relation.id()),
       building_(getOSMTagValue(relation.tags(), "building")),
       amenity_(getOSMTagValue(relation.tags(), "amenity")),
@@ -496,8 +496,8 @@ OsmRelation::OsmRelation(const osmium::Relation& relation, const std::vector<con
     member_role_vector_.emplace_back(member.role());
   }
   osm_attributes_.reserve(osm_poi_attributes.size());
-  for (const char* attr : osm_poi_attributes) {
-    osm_attributes_.push_back(getOSMTagValue(relation.tags(), attr));
+  for (const std::string& attr : osm_poi_attributes) {
+    osm_attributes_.push_back(getOSMTagValue(relation.tags(), attr.data()));
   }
 }
 
