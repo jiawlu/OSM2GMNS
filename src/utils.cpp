@@ -13,6 +13,7 @@
 #include <geos/geom/Point.h>
 #include <geos/geom/Polygon.h>
 
+#include <GeographicLib/Geodesic.hpp>
 #include <GeographicLib/UTMUPS.hpp>
 #include <cmath>
 #include <cstddef>
@@ -58,6 +59,13 @@ double calculateLineStringLength(const geos::geom::LineString* lineString) {
     totalLength += haversineDistance(point_1.x, point_1.y, point_2.x, point_2.y);
   }
   return totalLength;
+}
+
+double calculateDistanceBetweenTwoPoints(const geos::geom::Point* point1, const geos::geom::Point* point2) {
+  const GeographicLib::Geodesic& geod = GeographicLib::Geodesic::WGS84();
+  double distance = 0.0;
+  geod.Inverse(point1->getY(), point1->getX(), point2->getY(), point2->getX(), distance);
+  return distance;
 }
 
 std::unique_ptr<geos::geom::Point> projectPointToUTM(const geos::geom::Point* point,

@@ -23,13 +23,11 @@ int main(int /*argc*/, char* /*argv*/[]) {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
     // const auto map_folder = std::filesystem::path("maps/Texas");
-    // const auto map_folder = std::filesystem::path("maps/Dallas");
-    const auto map_folder = std::filesystem::path("maps/Columbus Ohio Data");
+    const auto map_folder = std::filesystem::path("maps/Dallas");
 
     // const std::string map_filename = "map.osm.pbf";
     // const std::string map_filename = "northwest-latest.osm.pbf";
-    // const std::string map_filename = "map_sub.osm";
-    const std::string map_filename = "Columbus, Franklin County, Ohio, United States.pbf";
+    const std::string map_filename = "map.osm";
 
     const auto* osm_parsing_config =
         new OsmParsingConfig{{"highway", "ref"}, {"sidewalk", "maxspeed"}, {"building", "type"}};
@@ -40,7 +38,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, 1.0, osm_parsing_config, true);
 
-    // consolidateComplexIntersections(network, true);
+    consolidateComplexIntersections(network, false, map_folder / "intersection.csv");
 
     // generateNodeActivityInfo(network);
 

@@ -5,9 +5,11 @@
 #include "io.h"
 
 #include <absl/container/flat_hash_map.h>
+#include <absl/container/flat_hash_set.h>
 #include <absl/log/log.h>
 #include <absl/strings/match.h>
 #include <geos/geom/Geometry.h>
+#include <geos/geom/Point.h>
 #include <geos/io/WKTReader.h>
 
 #include <cstddef>
@@ -260,4 +262,40 @@ std::vector<Zone*> readZoneFile(const std::filesystem::path& zone_file) {
   return zone_vector;
 }
 
-std::vector<Intersection*> readIntersectionFile(const std::filesystem::path& /*intersection_file*/) { return {}; }
+std::vector<Intersection*> readIntersectionFile(const std::filesystem::path& intersection_file) {
+  if (!std::filesystem::exists(intersection_file)) {
+    LOG(ERROR) << "intersection file " << intersection_file << " does not exist";
+    return {};
+  }
+
+  constexpr int16_t number_of_columns = 4;
+  io::CSVReader<number_of_columns, io::trim_chars<' '>, io::double_quote_escape<',', '\"'>> in_file(
+      intersection_file.string().c_str());
+  in_file.read_header(io::ignore_extra_column, "intersection_id", "x_coord", "y_coord", "int_buffer");
+  if (!(in_file.has_column("intersection_id") && in_file.has_column("x_coord") && in_file.has_column("y_coord") &&
+        in_file.has_column("int_buffer"))) {
+    LOG(ERROR)
+        << "intersection file should have intersection_id, x_coord and y_coord columns. the file will be not loaded";
+    return {};
+  }
+
+  std::vector<Intersection*> int_vector;
+  NetIdType int_id = 0;
+  double x_coord = 0.0;
+  double y_coord = 0.0;
+  float int_buffer = 0.0;
+  geos::geom::GeometryFactory::Ptr factory = geos::geom::GeometryFactory::create();
+  absl::flat_hash_set<NetIdType> loaded_int_ids;
+  while (in_file.read_row(int_id, x_coord, y_coord, int_buffer)) {
+    if (loaded_int_ids.contains(int_id)) {
+      LOG(WARNING) << "intersection id " << int_id << " is duplicated in the intersection file";
+      continue;
+    }
+    std::unique_ptr<geos::geom::Point> geometry = factory->createPoint(geos::geom::Coordinate(x_coord, y_coord));
+    int_vector.push_back(int_buffer > 0 ? new Intersection(int_id, std::move(geometry), int_buffer)
+                                        : new Intersection(int_id, std::move(geometry)));
+    loaded_int_ids.insert(int_id);
+  }
+  LOG(INFO) << "intersection file loaded. " << int_vector.size() << " intersections";
+  return int_vector;
+}

@@ -232,7 +232,18 @@ Zone::Zone(NetIdType zone_id, std::unique_ptr<geos::geom::Geometry> geometry)
 NetIdType Zone::zoneId() const { return zone_id_; }
 const std::unique_ptr<geos::geom::Geometry>& Zone::geometry() const { return geometry_; }
 
-Intersection::Intersection() = default;
+// Intersection::Intersection(NetIdType intersection_id, double x_coord, double y_coord)
+//     : intersection_id_(intersection_id), x_coord_(x_coord), y_coord_(y_coord) {}
+// Intersection::Intersection(NetIdType intersection_id, double x_coord, double y_coord, float int_buffer)
+//     : intersection_id_(intersection_id), x_coord_(x_coord), y_coord_(y_coord), int_buffer_(int_buffer) {}
+Intersection::Intersection(NetIdType intersection_id, std::unique_ptr<geos::geom::Point> geometry)
+    : intersection_id_(intersection_id), geometry_(std::move(geometry)) {}
+Intersection::Intersection(NetIdType intersection_id, std::unique_ptr<geos::geom::Point> geometry, float int_buffer)
+    : intersection_id_(intersection_id), geometry_(std::move(geometry)), int_buffer_(int_buffer) {}
+
+NetIdType Intersection::intersectionId() const { return intersection_id_; }
+const std::unique_ptr<geos::geom::Point>& Intersection::geometry() const { return geometry_; }
+std::optional<float> Intersection::intBuffer() const { return int_buffer_; }
 
 Network::Network(OsmNetwork* osmnet, absl::flat_hash_set<HighWayLinkType> link_types,
                  absl::flat_hash_set<HighWayLinkType> connector_link_types, bool POI, float POI_sampling_ratio,
@@ -411,7 +422,7 @@ void Network::fillLinkAttributesWithDefaultValues(
 void Network::consolidateComplexIntersections(bool auto_identify, const std::vector<Intersection*>& intersection_vector,
                                               float int_buffer) {
   if (!intersection_vector.empty()) {
-    // _designateComplexIntersectionsFromIntFile(network, intersection_file, int_buffer)
+    designateComplexIntersectionsFromIntFile(intersection_vector, int_buffer);
   }
   if (auto_identify) {
     identifyComplexIntersections(int_buffer);
@@ -744,6 +755,25 @@ void Network::createPOIsFromOneOsmRelation(const OsmRelation* osm_relation,
   }
   std::unique_ptr<geos::geom::MultiPolygon> poi_geometry = factory_->createMultiPolygon(std::move(polygon_vector));
   m_poi_vector[omp_get_thread_num()].push_back(new POI(osm_relation, std::move(poi_geometry)));
+}
+
+void Network::designateComplexIntersectionsFromIntFile(const std::vector<Intersection*>& intersection_vector,
+                                                       float int_buffer) {
+  for (const Intersection* intersection : intersection_vector) {
+    const float buffer_ = intersection->intBuffer().has_value() ? intersection->intBuffer().value() : int_buffer;
+    const NetIdType& intersection_id = intersection->intersectionId();
+    for (Node* node : node_vector_) {
+      if (node->intersectionId().has_value()) {
+        continue;
+      }
+      if (calculateDistanceBetweenTwoPoints(intersection->geometry().get(), node->geometry().get()) <= buffer_) {
+        node->setIntersectionId(intersection_id);
+      }
+    }
+    if (intersection_id >= max_intersection_id_) {
+      max_intersection_id_ = intersection_id + 1;
+    }
+  }
 }
 
 void Network::identifyComplexIntersections(float int_buffer) {
