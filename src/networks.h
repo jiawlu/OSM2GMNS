@@ -195,10 +195,17 @@ class Zone {
 
 class Intersection {
  public:
-  explicit Intersection();
+  explicit Intersection(NetIdType intersection_id, std::unique_ptr<geos::geom::Point> geometry);
+  explicit Intersection(NetIdType intersection_id, std::unique_ptr<geos::geom::Point> geometry, float int_buffer);
+
+  [[nodiscard]] NetIdType intersectionId() const;
+  [[nodiscard]] const std::unique_ptr<geos::geom::Point>& geometry() const;
+  [[nodiscard]] std::optional<float> intBuffer() const;
 
  private:
-  NetIdType intersection_id_{};
+  NetIdType intersection_id_;
+  std::unique_ptr<geos::geom::Point> geometry_;
+  std::optional<float> int_buffer_;
 };
 
 class Network {
@@ -237,6 +244,8 @@ class Network {
   void createPOIsFromOsmRelations(std::vector<std::vector<POI*>>& m_poi_vector);
   void createPOIsFromOneOsmRelation(const OsmRelation* osm_relation, std::vector<std::vector<POI*>>& m_poi_vector);
 
+  void designateComplexIntersectionsFromIntFile(const std::vector<Intersection*>& intersection_vector,
+                                                float int_buffer);
   void identifyComplexIntersections(float int_buffer);
 
   OsmNetwork* osmnet_;

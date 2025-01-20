@@ -56,15 +56,6 @@ absl::flat_hash_set<ModeType> parseModeTypes(const char** mode_types_val, size_t
   return mode_types;
 }
 
-std::vector<const char*> parseChars(const char** chars_val, size_t chars_len) {
-  std::vector<const char*> char_vector;
-  char_vector.reserve(chars_len);
-  for (size_t idx = 0; idx < chars_len; ++idx) {
-    char_vector.push_back(chars_val[idx]);  // NOLINT
-  }
-  return char_vector;
-}
-
 std::vector<std::string> parseCharArraysToStringVector(const char** chars_val, size_t chars_len) {
   std::vector<std::string> char_vector;
   char_vector.reserve(chars_len);
