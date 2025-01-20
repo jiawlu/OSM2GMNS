@@ -131,8 +131,6 @@ class OsmWay {
   [[nodiscard]] std::optional<bool> isOneway() const;
   [[nodiscard]] bool isReversed() const;
   [[nodiscard]] std::optional<float> maxSpeed() const;
-  [[nodiscard]] std::string maxSpeedRaw() const;
-  [[nodiscard]] const std::string& toll() const;
   [[nodiscard]] const std::string& building() const;
   [[nodiscard]] const std::string& amenity() const;
   [[nodiscard]] const std::string& leisure() const;
@@ -184,7 +182,6 @@ class OsmWay {
   std::optional<bool> is_oneway_;
   bool is_reversed_{false};  // ToDo: use when generating segments
   std::optional<float> max_speed_;
-  std::string toll_;
 
   std::string building_;
   std::string amenity_;
