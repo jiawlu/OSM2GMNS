@@ -164,7 +164,6 @@ OsmWay::OsmWay(const osmium::Way& way)
       backward_lanes_raw_(getOSMTagValue(way.tags(), "lanes:backward")),
       oneway_raw_(getOSMTagValue(way.tags(), "oneway")),
       max_speed_raw_(getOSMTagValue(way.tags(), "maxspeed")),
-      toll_(getOSMTagValue(way.tags(), "toll")),
       building_(getOSMTagValue(way.tags(), "building")),
       amenity_(getOSMTagValue(way.tags(), "amenity")),
       leisure_(getOSMTagValue(way.tags(), "leisure")),
@@ -199,8 +198,6 @@ bool OsmWay::isTargetConnector() const { return is_target_connector_; }
 std::optional<bool> OsmWay::isOneway() const { return is_oneway_; }
 bool OsmWay::isReversed() const { return is_reversed_; }
 std::optional<float> OsmWay::maxSpeed() const { return max_speed_; }
-std::string OsmWay::maxSpeedRaw() const { return max_speed_raw_; }
-const std::string& OsmWay::toll() const { return toll_; }
 const std::string& OsmWay::building() const { return building_; }
 const std::string& OsmWay::amenity() const { return amenity_; }
 const std::string& OsmWay::leisure() const { return leisure_; }

@@ -106,9 +106,7 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
       osm_way_seq_(osm_way_seq_),
       name_(osm_way->name()),
       free_speed_(osm_way->maxSpeed()),
-      free_speed_raw_(osm_way->maxSpeedRaw()),
       allowed_mode_types_(osm_way->allowedModeTypes()),
-      toll_(osm_way->toll()),
       osm_attributes_(osm_way->osmLinkAttributes()) {
   if (osm_nodes.size() < 2) {
     return;
@@ -176,10 +174,8 @@ double Link::length() const { return length_; }
 // bool Link::isValid() const { return is_valid_; }
 std::optional<int32_t> Link::lanes() const { return lanes_; }
 std::optional<float> Link::freeSpeed() const { return free_speed_; }
-std::string Link::freeSpeedRaw() const { return free_speed_raw_; }
 std::optional<int32_t> Link::capacity() const { return capacity_; }
 const std::vector<ModeType>& Link::allowedModeTypes() const { return allowed_mode_types_; }
-const std::string& Link::toll() const { return toll_; }
 const std::vector<std::string>& Link::osmAttributes() const { return osm_attributes_; }
 
 void Link::setLinkId(NetIdType link_id) { link_id_ = link_id; }
@@ -232,10 +228,6 @@ Zone::Zone(NetIdType zone_id, std::unique_ptr<geos::geom::Geometry> geometry)
 NetIdType Zone::zoneId() const { return zone_id_; }
 const std::unique_ptr<geos::geom::Geometry>& Zone::geometry() const { return geometry_; }
 
-// Intersection::Intersection(NetIdType intersection_id, double x_coord, double y_coord)
-//     : intersection_id_(intersection_id), x_coord_(x_coord), y_coord_(y_coord) {}
-// Intersection::Intersection(NetIdType intersection_id, double x_coord, double y_coord, float int_buffer)
-//     : intersection_id_(intersection_id), x_coord_(x_coord), y_coord_(y_coord), int_buffer_(int_buffer) {}
 Intersection::Intersection(NetIdType intersection_id, std::unique_ptr<geos::geom::Point> geometry)
     : intersection_id_(intersection_id), geometry_(std::move(geometry)) {}
 Intersection::Intersection(NetIdType intersection_id, std::unique_ptr<geos::geom::Point> geometry, float int_buffer)

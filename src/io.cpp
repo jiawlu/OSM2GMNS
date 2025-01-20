@@ -114,7 +114,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
               << std::setprecision(COORDINATE_OUTPUT_PRECISION) << node->geometry()->getX() << ","
               << node->geometry()->getY() << std::defaultfloat;
     for (const std::string& attr_value : node->osmAttributes()) {
-      node_file << "," << attr_value;
+      node_file << "," << (absl::StrContains(attr_value, ',') ? "\"" + attr_value + "\"" : attr_value);
     }
     node_file << "," << boundary << "," << activity_type << ",," << zone_id << ",\n";
   }
@@ -127,7 +127,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
     return;
   }
   link_file << "link_id,name,osm_way_id,from_node_id,to_node_id,directed,geometry,dir_flag,length,facility_type,link_"
-               "type,free_speed,free_speed_raw,lanes,capacity,allowed_uses,toll";
+               "type,free_speed,lanes,capacity,allowed_uses";
   for (const std::string& attr_name : network->osmParsingConfig()->osm_link_attributes) {
     link_file << "," << attr_name;
   }
@@ -146,8 +146,6 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
             : (link->wayType() == WayType::RAILWAY
                    ? std::to_string(getRailwayLinkTypeNo())
                    : (link->wayType() == WayType::AEROWAY ? std::to_string(getAerowayLinkTypeNo()) : ""));
-    const std::string& free_speed_raw =
-        absl::StrContains(link->freeSpeedRaw(), ',') ? "\"" + link->freeSpeedRaw() + "\"" : link->freeSpeedRaw();
     const std::string& lanes = link->lanes().has_value() ? std::to_string(link->lanes().value()) : "";  // NOLINT
     std::string free_speed;
     if (link->freeSpeed().has_value()) {
@@ -162,14 +160,12 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
       allowed_uses += ";" + getModeTypeStr(link->allowedModeTypes().at(idx));
     }
 
-    const std::string& toll = absl::StrContains(link->toll(), ',') ? "\"" + link->toll() + "\"" : link->toll();
     link_file << link->linkId() << "," << name << "," << link->osmWayId() << "," << link->fromNode()->nodeId() << ","
               << link->toNode()->nodeId() << ",1,\"" << link->geometry()->toString() << "\",1," << std::fixed
               << std::setprecision(LENGTH_OUTPUT_PRECISION) << link->length() << "," << facility_type << "," << type_no
-              << "," << free_speed << "," << free_speed_raw << "," << lanes << "," << capacity << "," << allowed_uses
-              << "," << toll;
+              << "," << free_speed << "," << lanes << "," << capacity << "," << allowed_uses;
     for (const std::string& attr_value : link->osmAttributes()) {
-      link_file << "," << attr_value;
+      link_file << "," << (absl::StrContains(attr_value, ',') ? "\"" + attr_value + "\"" : attr_value);
     }
     link_file << ",\n";
   }
@@ -204,7 +200,7 @@ void outputNetToCSV(const Network* network, const std::filesystem::path& output_
              << poi->centroidGeometry()->toString() << "\"," << std::fixed << std::setprecision(AREA_OUTPUT_PRECISION)
              << poi->area() << ",";
     for (const std::string& attr_value : poi->osmAttributes()) {
-      poi_file << "," << attr_value;
+      poi_file << "," << (absl::StrContains(attr_value, ',') ? "\"" + attr_value + "\"" : attr_value);
     }
     poi_file << "\n";
   }

@@ -104,13 +104,10 @@ class Link {
   [[nodiscard]] const std::string& aerowayLinkType() const;
   [[nodiscard]] const std::unique_ptr<geos::geom::LineString>& geometry() const;
   [[nodiscard]] double length() const;
-  // [[nodiscard]] bool isValid() const;
   [[nodiscard]] std::optional<int32_t> lanes() const;
   [[nodiscard]] std::optional<float> freeSpeed() const;
-  [[nodiscard]] std::string freeSpeedRaw() const;
   [[nodiscard]] std::optional<int32_t> capacity() const;
   [[nodiscard]] const std::vector<ModeType>& allowedModeTypes() const;
-  [[nodiscard]] const std::string& toll() const;
   [[nodiscard]] const std::vector<std::string>& osmAttributes() const;
 
   void setLinkId(NetIdType link_id);
@@ -140,10 +137,8 @@ class Link {
   // bool is_valid_{true};
   std::optional<int32_t> lanes_;
   std::optional<float> free_speed_;
-  std::string free_speed_raw_;
   std::optional<int32_t> capacity_;
   std::vector<ModeType> allowed_mode_types_;
-  std::string toll_;
   std::vector<std::string> osm_attributes_;
 };
 
