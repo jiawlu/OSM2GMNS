@@ -7,6 +7,7 @@
 
 #include <geos/geom/GeometryFactory.h>
 #include <geos/geom/LineString.h>
+#include <geos/geom/Point.h>
 #include <geos/geom/Polygon.h>
 
 #include <memory>
@@ -25,6 +26,8 @@ constexpr double MAX_LON = 180.0;
 double calculateLineStringLength(const geos::geom::LineString* lineString);
 // std::unique_ptr<geos::geom::Polygon> getPolygonFromOsmNodes(const std::vector<OsmNode*>& osm_nodes,
 //                                                             const geos::geom::GeometryFactory* factory);
+
+double calculateDistanceBetweenTwoPoints(const geos::geom::Point* point1, const geos::geom::Point* point2);
 
 std::unique_ptr<geos::geom::Geometry> projectGeometryToUTM(const geos::geom::Geometry* geometry,
                                                            const geos::geom::GeometryFactory* factory);

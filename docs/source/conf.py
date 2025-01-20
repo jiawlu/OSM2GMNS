@@ -23,11 +23,11 @@ autodoc_mock_imports = [
 # -- Project information -----------------------------------------------------
 
 project = 'osm2gmns'
-copyright = '2020-, Jiawei Lu, Xiangyong Luo, Xuesong (Simon) Zhou'
-author = 'Jiawei Lu, Xiangyong Luo, Xuesong (Simon) Zhou'
+copyright = '2020-, Jiawei Lu, Xuesong (Simon) Zhou'
+author = 'Jiawei Lu, Xuesong (Simon) Zhou'
 
 # The full version, including alpha/beta/rc tags
-release = '0.7.6'
+release = '1.0.0b5'
 
 
 # -- General configuration ---------------------------------------------------
