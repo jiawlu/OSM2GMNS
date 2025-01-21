@@ -127,7 +127,7 @@ endif ()
 FetchContent_Declare(
         osmium
         GIT_REPOSITORY https://github.com/osmcode/libosmium.git
-        GIT_TAG v2.20.0
+        GIT_TAG v2.21.0
         SYSTEM
 )
 FetchContent_Populate(osmium)
