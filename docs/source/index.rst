@@ -1,7 +1,7 @@
 osm2gmns
 ====================================
 | **Authors**: Jiawei Lu, Xuesong (Simon) Zhou
-| **Email**: jiaweil9@asu.edu, xzhou74@asu.edu
+| **Email**: lujiaweiwk@gmail.com, xzhou74@asu.edu
 
 
 osm2gmns is an open-source Python package that enables users to conveniently obtain and 

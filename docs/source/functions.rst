@@ -5,7 +5,7 @@ Functions
 
 osm2gmns.osmnet
 ==================================================
-.. autofunction:: osm2gmns.osmnet.build_net.getNetFromFile
+.. autofunction:: osm2gmns.osm2gmns.getNetFromFile
 .. autofunction:: osm2gmns.osmnet.complex_intersection.consolidateComplexIntersections
 .. autofunction:: osm2gmns.osmnet.combine_links.combineShortLinks
 .. autofunction:: osm2gmns.osmnet.enrich_net_info.generateNodeActivityInfo

@@ -84,6 +84,56 @@ def _checkStringToTuple(arg_val):
 def getNetFromFile(filename='map.osm', mode_types=('auto',), link_types=(), connector_link_types=(), POI=False, POI_sampling_ratio=1.0,
                    osm_node_attributes=(), osm_link_attributes=(), osm_poi_attributes=(),
                    strict_boundary=True, **kwargs):
+    """
+    Get an osm2gmns Network object from an osm file
+
+    Parameters
+    ----------
+    filename: str
+        path of an osm file; can be absolute or relative path; supported osm file formats: .osm, .xml, and .pbf
+    network_types: str, tuple of strings, list of strings, or set of strings
+        osm2gmns supports five different network types, including auto, bike, walk, railway, and aeroway.
+        network_types can be any one or any combinations of the five supported network types
+    link_types: str, tuple of strings, list of strings, or set of strings
+        supported link types: motorway, trunk, primary, secondary, tertiary, residential, service, cycleway,
+        footway, track, unclassified, connector, railway, and aeroway.
+    POI: bool
+        if extract point of interest information
+    POI_sampling_ratio: float
+        prcentage of POIs to be extracted if POI is set as True. this value should be a float number between 0.0 and 1.0.
+    strict_mode: bool
+        if True, network elements (node, link, poi) outside the boundary will be discarded
+    offset: str
+        offset overlapping links. the value of this argument can be 'left', 'right', or 'no'
+    min_nodes: int
+        a network return by the function may contain several sub-networks that are disconnected from each other.
+        sub-networks with the number of nodes less than min_nodes will be discarded
+    combine: bool
+        if True, adjacent short links with the same attributes will be combined into a long link. the operation will only
+        be performed on short links connected with a two-degree nodes (one incoming link and one outgoing link)
+    bbox: tuple of four float/int values, list of four float/int values, None
+        specify the boundary of the network to be extracted, consisting of minimum latitude, minimum longtitude, maximum latitude, and maximum longitud.
+        if None, osm2gmns will try to find network boundary from the input osm file
+    default_lanes: bool, dict
+        if True, assign a default value for links without lanes information based on built-in settings. if a dict,
+        assign a default value for links without lanes information based on the dict passed by users.
+    default_speed: bool, dict
+        if True, assign a default value for links without speed information based on built-in settings. if a dict,
+        assign a default value for links without speed information based on the dict passed by users.
+    default_capacity: bool, dict
+        if True, assign a default value for links without capacity information based on built-in settings. if a dict,
+        assign a default value for links without capacity information based on the dict passed by users.
+    start_node_id: int
+        osm2gmns assigns node_ids to generated nodes starting from start_node_id.
+    start_link_id: int
+        osm2gmns assigns link_ids to generated links starting from start_link_id
+
+    Returns
+    -------
+    network: Network
+        osm2gmns Network object
+    """
+        
     network = Network()
 
     mode_types_ = _checkStringToTuple(mode_types)
