@@ -6,13 +6,6 @@ Functions
 osm2gmns.osmnet
 ==================================================
 .. autofunction:: osm2gmns.osm2gmns.getNetFromFile
-.. autofunction:: osm2gmns.osmnet.complex_intersection.consolidateComplexIntersections
-.. autofunction:: osm2gmns.osmnet.combine_links.combineShortLinks
-.. autofunction:: osm2gmns.osmnet.enrich_net_info.generateNodeActivityInfo
-.. autofunction:: osm2gmns.osmnet.enrich_net_info.generateLinkVDFInfo
-.. autofunction:: osm2gmns.osmnet.pois.connectPOIWithNet
-.. autofunction:: osm2gmns.osmnet.visualization.show
-.. autofunction:: osm2gmns.osmnet.visualization.saveFig
 
 
 osm2gmns.io

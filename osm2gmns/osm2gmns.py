@@ -17,7 +17,10 @@ elif current_os == "Linux":
 else:
     raise OSError("Unsupported operating system")
 
-oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
+try:
+    oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
+except OSError:
+    print("failed to load osm2gmns dynamic library.")
 
 
 class StrIntDict(ctypes.Structure):
