@@ -6,6 +6,7 @@ Functions
 osm2gmns.osm2gmns
 ==================================================
 .. autofunction:: osm2gmns.osm2gmns.getNetFromFile
+.. autofunction:: osm2gmns.getNetFromFile
 
 
 osm2gmns.io
