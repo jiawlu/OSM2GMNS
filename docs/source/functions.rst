@@ -3,7 +3,7 @@ Functions
 =========
 
 
-osm2gmns.osmnet
+osm2gmns.osm2gmns
 ==================================================
 .. autofunction:: osm2gmns.osm2gmns.getNetFromFile
 
