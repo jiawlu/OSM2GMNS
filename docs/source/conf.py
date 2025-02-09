@@ -13,7 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
-sys.path.insert(0, os.path.abspath('../../osm2gmns'))
+# sys.path.insert(0, os.path.abspath('../../osm2gmns'))
 
 autodoc_mock_imports = [
     "shapely",
