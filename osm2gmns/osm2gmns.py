@@ -17,8 +17,10 @@ elif current_os == "Linux":
 else:
     raise OSError("Unsupported operating system")
 
+lib_loaded = False
 try:
     oglib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), library_name))
+    lib_loaded = True
 except OSError:
     print("failed to load osm2gmns dynamic library.")
 
@@ -31,6 +33,9 @@ class StrFloatDict(ctypes.Structure):
 
 
 def initlib():
+    if not lib_loaded:
+        return
+    
     oglib.initializeAbslLoggingPy.argtypes = []
 
     oglib.releaseNetworkMemoryPy.argtypes = [ctypes.c_void_p]
