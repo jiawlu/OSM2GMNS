@@ -137,7 +137,9 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
   }
 
   if (osm_way->isOneway().value()) {  // NOLINT
-    if (osm_way->lanes().has_value()) {
+    if (osm_way->forward_lanes().has_value()) {
+      lanes_ = osm_way->forward_lanes().value();  // NOLINT
+    } else if (osm_way->lanes().has_value()) {
       lanes_ = osm_way->lanes().value();  // NOLINT
     }
   } else {
@@ -145,13 +147,13 @@ Link::Link(const OsmWay* osm_way, const std::vector<OsmNode*>& osm_nodes, bool f
       if (osm_way->forward_lanes().has_value()) {
         lanes_ = osm_way->forward_lanes().value();  // NOLINT
       } else if (osm_way->lanes().has_value()) {
-        lanes_ = static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0));  // NOLINT
+        lanes_ = std::max(1, static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0)));  // NOLINT
       }
     } else {
       if (osm_way->backward_lanes().has_value()) {
         lanes_ = osm_way->backward_lanes().value();  // NOLINT
       } else if (osm_way->lanes().has_value()) {
-        lanes_ = static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0));  // NOLINT
+        lanes_ = std::max(1, static_cast<int32_t>(std::floor(osm_way->lanes().value() / 2.0)));  // NOLINT
       }
     }
   }
