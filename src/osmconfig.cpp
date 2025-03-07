@@ -130,7 +130,7 @@ bool checkAllowedUsedWalkExAccess(const std::string& access) {
 
 bool getDefaultOneWayFlag(HighWayLinkType highway_link_type) {
   static const absl::flat_hash_map<HighWayLinkType, bool> default_oneway_dict = {
-      {HighWayLinkType::MOTORWAY, false},      {HighWayLinkType::TRUNK, false},
+      {HighWayLinkType::MOTORWAY, true},       {HighWayLinkType::TRUNK, false},
       {HighWayLinkType::PRIMARY, false},       {HighWayLinkType::SECONDARY, false},
       {HighWayLinkType::TERTIARY, false},      {HighWayLinkType::RESIDENTIAL, false},
       {HighWayLinkType::LIVING_STREET, false}, {HighWayLinkType::SERVICE, false},

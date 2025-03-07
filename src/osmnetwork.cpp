@@ -469,13 +469,14 @@ void OsmWay::configAttributes() {
         is_oneway_ = false;
       } else {
         DLOG(WARNING) << "new oneway type detected at way " << osm_way_id_ << " " << oneway_raw_;
-        if (junction_ == "circular" || junction_ == "roundabout") {
-          is_oneway_ = true;
-        }
       }
     }
     if (!is_oneway_.has_value()) {
-      is_oneway_ = getDefaultOneWayFlag(highway_link_type_);
+      if (junction_ == "circular" || junction_ == "roundabout") {
+        is_oneway_ = true;
+      } else {
+        is_oneway_ = getDefaultOneWayFlag(highway_link_type_);
+      }
     }
   } else {
     is_oneway_ = true;
