@@ -95,4 +95,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
+          name: dist-source
           path: dist/*.tar.gz
