@@ -19,13 +19,12 @@ and applications on traffic modeling.
 .. note::
 
     osm2gmns v1.x is not fully backward compatible with v0.x. In v1.x, the core of osm2gmns is
-rewritten in c++ for efficiency. In addition, many new features and functionalities are introduced,
-therefore, public API functions are changed accordingly. Users should refer to the correct
-version of user guide for the corresponding version of osm2gmns.
+    rewritten in c++ for efficiency. In addition, many new features and functionalities are introduced,
+    therefore, public API functions are changed accordingly. Users should refer to the correct
+    version of user guide for the corresponding version of osm2gmns.
 
     As of today, the multi-resolution modeling (MRM) feature is not available in osm2gmns v1.x yet.
-Users who need MRM should use osm2gmns v0.x. The user guide for osm2gmns v0.x can be found
-`here`_.
+    Users who need MRM should use osm2gmns v0.x. The user guide for osm2gmns v0.x can be found `here`_.
 
 Publication
 ====================================
