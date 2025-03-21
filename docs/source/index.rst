@@ -5,7 +5,10 @@ osm2gmns
 
 
 osm2gmns is an open-source Python package that enables users to conveniently obtain and 
-manipulate any networks from `OpenStreetMap`_ (OSM). With a single line of Python code, 
+manipulate any networks from `OpenStreetMap`_ (OSM). The core of osm2gmns is written using
+c++ for efficiency and the package is wrapped in Python for ease of use.
+
+With a single line of Python code, 
 users can obtain and model drivable, bikeable, walkable, railway, and aeroway networks 
 for any region in the world and output networks to CSV files in `GMNS`_ format for seamless 
 data sharing and research collaboration. osm2gmns mainly focuses on providing researchers and 
@@ -13,6 +16,16 @@ practitioners with flexible, standard and ready-to-use multi-modal transportatio
 as well as a bunch of customized and practical functions to facilitate various research 
 and applications on traffic modeling.
 
+.. note::
+
+osm2gmns v1.x is not fully backward compatible with v0.x. In v1.x, the core of osm2gmns is
+rewritten in c++ for efficiency. In addition, many new features and functionalities are introduced,
+therefore, public API functions are changed accordingly. Users should refer to the correct
+version of user guide for the corresponding version of osm2gmns.
+
+As of today, the multi-resolution modeling (MRM) feature is not available in osm2gmns v1.x yet.
+Users who need MRM should use osm2gmns v0.x. The user guide for osm2gmns v0.x can be found
+`here`_.
 
 Publication
 ====================================
@@ -22,6 +35,7 @@ open-source tools for simplified and efficient connected and automated mobility 
 design based on general modeling network specification (GMNS). Transportation Research 
 Part C: Emerging Technologies, 153, 104223. `paper link`_
 
+If you use osm2gmns in your work, please cite the above paper.
 
 Main Features
 ====================================
@@ -65,6 +79,7 @@ transportation modelling visualization platform, in which network data are provi
 
 .. _`OpenStreetMap`: https://www.openstreetmap.org/
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
+.. _`here`: https://doi.org/10.1016/j.trc.2023.104223
 .. _`paper link`: https://doi.org/10.1016/j.trc.2023.104223
 .. _`homepage`: https://github.com/asu-trans-ai-lab
 .. _`link`: https://asu-trans-ai-lab.github.io/website_openlayer_4GMNS/
