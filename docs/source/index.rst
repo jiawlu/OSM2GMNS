@@ -1,45 +1,65 @@
 osm2gmns
 ====================================
-| **Authors**: Jiawei Lu, Xuesong (Simon) Zhou
-| **Email**: jiaweil9@asu.edu, xzhou74@asu.edu
+| **Authors**: `Jiawei Lu`_, `Xuesong (Simon) Zhou`_
+| **Email**: lujiaweiwk@gmail.com, xzhou74@asu.edu
 
 
-osm2gmns is an open-source Python package that enables users to conveniently obtain and 
-manipulate any networks from `OpenStreetMap`_ (OSM). With a single line of Python code, 
-users can obtain and model drivable, bikeable, walkable, railway, and aeroway networks 
-for any region in the world and output networks to CSV files in `GMNS`_ format for seamless 
-data sharing and research collaboration. osm2gmns mainly focuses on providing researchers and 
-practitioners with flexible, standard and ready-to-use multi-modal transportation networks, 
-as well as a bunch of customized and practical functions to facilitate various research 
-and applications on traffic modeling.
+osm2gmns is a high-performance Python package that transforms `OpenStreetMap`_ (OSM) 
+data into standardized transportation networks. With its C++ core wrapped in Python, 
+osm2gmns combines computational efficiency with ease of use, allowing researchers 
+and practitioners to obtain detailed multi-modal networks with minimal effort.
+
+With just a few lines of Python code, users can obtain and model drivable, bikeable, 
+walkable, railway, and aeroway networks for any region in the world. The package 
+outputs networks in `GMNS`_ (General Modeling Network Specification) format, facilitating 
+seamless data sharing and collaboration within the transportation research community.
+
+.. code-block:: python
+
+    >>> import osm2gmns as og
+    >>> net = og.getNetFromFile('map.osm')
+    >>> og.outputNetToCSV(net)
+
+.. note::
+    osm2gmns v1.x is not fully backward compatible with v0.x due to significant 
+    architectural changes and new features. The multi-resolution modeling (MRM) 
+    feature is currently available only in v0.x. For MRM functionality, please 
+    refer to the `v0.x user guide`_.
 
 
-Publication
+Key Features
 ====================================
+
+1. Performance and Usability
+
+- High-Performance Core: Written in C++ for maximum computational efficiency
+- Intuitive Python Interface: Simple API makes complex network extraction straightforward
+- Ready-to-Use Networks: Automatic inference of critical attributes (lanes, speed, capacity)
+
+2. Comprehensive Network Modeling
+
+- Multi-Modal Support: Generate networks for vehicles, bicycles, pedestrians, railways, and aeroways
+- Directed Network Generation: Automatic creation of directional links for bidirectional roadways
+- GMNS Compatibility: Standardized output format for interoperability with other tools
+
+3. Advanced Functionality
+
+- Intersection Consolidation: Simplifies complex junctions for various modeling needs
+- Movement Generation: Creates turning movements at intersections
+- Traffic Zone Creation: Supports origin-destination modeling
+- Short Link Combination: Improves network topology for simulation
+- Network Visualization: Built-in tools for visual inspection and verification
+
+
+Citation
+====================================
+
+If you use osm2gmns in your research, please cite:
 
 Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and 
 open-source tools for simplified and efficient connected and automated mobility (CAM) system 
 design based on general modeling network specification (GMNS). Transportation Research 
-Part C: Emerging Technologies, 153, 104223. `paper link`_
-
-
-Main Features
-====================================
-
-- Obtain any networks from OSM. osm2gmns parses map data from OSM and output networks to 
-  csv files in GMNS format.
-- Standard network format. osm2gmns adopts GMNS as the network format for seamless data 
-  sharing and research collaboration.
-- Ready-to-use network. osm2gmns cleans erroneous information from OSM map data and is able 
-  to fill up critical missing values, e.g., lanes, speed and capacity, to quickly provide 
-  ready-to-use networks.
-- Directed network. two directed links are generated for each bi-directional osm ways identified by osm2gmns.
-- Multi-modal support. five different network types are supported, including auto, bike, walk, railway, and aeroway
-- Customized and practical functions to facilitate traffic modeling. functions include 
-  complex intersection consolidation, moevement generation, traffic zone creation, short link combination, 
-  network visualization.
-- Multi-resolution modeling. osm2gmns automatically constructs the corresponding mesoscopic and microscopic
-  networks for any macroscopic networks in GMNS format.
+Part C: Emerging Technologies, 153, 104223. [`link`_]
 
 
 Contents
@@ -49,22 +69,17 @@ Contents
    :maxdepth: 2
 
    installation
+   quick-start
+   public-api
    gmns
    mrm
-   quick-start
-   functions
    sample-net
    acknowledgement
+   
 
-
-For program source code and sample network files, readers can visit the project  `homepage`_
-at ASU Trans+AI Lab Github. Interested readers can also check the `link`_ for our online
-transportation modelling visualization platform, in which network data are provided by osm2gmns.
-
-
-
-.. _`OpenStreetMap`: https://www.openstreetmap.org/
+.. _`Jiawei Lu`: https://www.linkedin.com/in/jiawlu/
+.. _`Xuesong (Simon) Zhou`: https://www.linkedin.com/in/xzhou/
+.. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
-.. _`paper link`: https://doi.org/10.1016/j.trc.2023.104223
-.. _`homepage`: https://github.com/asu-trans-ai-lab
-.. _`link`: https://asu-trans-ai-lab.github.io/website_openlayer_4GMNS/
+.. _`v0.x user guide`: https://osm2gmns.readthedocs.io/en/v0.x
+.. _`link`: https://doi.org/10.1016/j.trc.2023.104223
