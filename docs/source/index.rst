@@ -17,9 +17,7 @@ seamless data sharing and collaboration within the transportation research commu
 .. code-block:: python
 
     >>> import osm2gmns as og
-
     >>> net = og.getNetFromFile('map.osm')
-
     >>> og.outputNetToCSV(net)
 
 .. note::
@@ -71,15 +69,15 @@ Contents
    :maxdepth: 2
 
    installation
+   quick-start
+   public-api
    gmns
    mrm
-   quick-start
-   functions
    sample-net
    acknowledgement
    
 
-.. _`Jiawei Lu`: https://www.linkedin.com/in/jiawei-lu-7b09231a7/
+.. _`Jiawei Lu`: https://www.linkedin.com/in/jiawlu/
 .. _`Xuesong (Simon) Zhou`: https://www.linkedin.com/in/xzhou/
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
