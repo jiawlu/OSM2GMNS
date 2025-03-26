@@ -1,11 +1,8 @@
 osm2gmns
 ====================================
-| **Authors**: Jiawei Lu, Xuesong (Simon) Zhou
+| **Authors**: `Jiawei Lu`_, `Xuesong (Simon) Zhou`_
 | **Email**: lujiaweiwk@gmail.com, xzhou74@asu.edu
 
-
-Overview
-====================================
 
 osm2gmns is a high-performance Python package that transforms `OpenStreetMap`_ (OSM) 
 data into standardized transportation networks. With its C++ core wrapped in Python, 
@@ -35,19 +32,19 @@ seamless data sharing and collaboration within the transportation research commu
 Key Features
 ====================================
 
-Performance and Usability
+1. Performance and Usability
 
 - High-Performance Core: Written in C++ for maximum computational efficiency
 - Intuitive Python Interface: Simple API makes complex network extraction straightforward
 - Ready-to-Use Networks: Automatic inference of critical attributes (lanes, speed, capacity)
 
-Comprehensive Network Modeling
+2. Comprehensive Network Modeling
 
 - Multi-Modal Support: Generate networks for vehicles, bicycles, pedestrians, railways, and aeroways
 - Directed Network Generation: Automatic creation of directional links for bidirectional roadways
 - GMNS Compatibility: Standardized output format for interoperability with other tools
 
-Advanced Functionality
+3. Advanced Functionality
 
 - Intersection Consolidation: Simplifies complex junctions for various modeling needs
 - Movement Generation: Creates turning movements at intersections
@@ -64,10 +61,27 @@ If you use osm2gmns in your research, please cite:
 Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and 
 open-source tools for simplified and efficient connected and automated mobility (CAM) system 
 design based on general modeling network specification (GMNS). Transportation Research 
-Part C: Emerging Technologies, 153, 104223. `paper link`_
+Part C: Emerging Technologies, 153, 104223. [`link`_]
 
 
+Contents
+====================================
+
+.. toctree::
+   :maxdepth: 2
+
+   installation
+   gmns
+   mrm
+   quick-start
+   functions
+   sample-net
+   acknowledgement
+   
+
+.. _`Jiawei Lu`: https://www.linkedin.com/in/jiawei-lu-7b09231a7/
+.. _`Xuesong (Simon) Zhou`: https://www.linkedin.com/in/xzhou/
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
 .. _`v0.x user guide`: https://osm2gmns.readthedocs.io/en/v0.x
-.. _`paper link`: https://doi.org/10.1016/j.trc.2023.104223
+.. _`link`: https://doi.org/10.1016/j.trc.2023.104223
