@@ -23,14 +23,17 @@ int main(int /*argc*/, char* /*argv*/[]) {
     absl::SetStderrThreshold(absl::LogSeverityAtLeast::kInfo);
 
     // const auto map_folder = std::filesystem::path("maps/Texas");
-    const auto map_folder = std::filesystem::path("maps/Dallas");
+    // const auto map_folder = std::filesystem::path("maps/Dallas");
+    // const auto map_folder = std::filesystem::path("maps/Debug/Wickenburg");
+    const auto map_folder = std::filesystem::path("maps/Debug/AZ");
 
     // const std::string map_filename = "map.osm.pbf";
     // const std::string map_filename = "northwest-latest.osm.pbf";
-    const std::string map_filename = "map.osm";
+    // const std::string map_filename = "map.osm";
+    const std::string map_filename = "arizona.pbf";
 
     const auto* osm_parsing_config =
-        new OsmParsingConfig{{"highway", "ref"}, {"sidewalk", "maxspeed"}, {"building", "type"}};
+        new OsmParsingConfig{{"highway", "ref"}, {"oneway", "junction", "lanes"}, {"building", "type"}};
 
     Network* network = getNetFromFile(map_folder / map_filename,
                                       {ModeType::AUTO, ModeType::BIKE, ModeType::RAILWAY, ModeType::AEROWAY},
@@ -38,7 +41,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
                                        HighWayLinkType::SECONDARY, HighWayLinkType::TERTIARY},
                                       {HighWayLinkType::RESIDENTIAL}, true, 1.0, osm_parsing_config, true);
 
-    consolidateComplexIntersections(network, false, map_folder / "intersection.csv");
+    // consolidateComplexIntersections(network, false, map_folder / "intersection.csv");
 
     // generateNodeActivityInfo(network);
 
