@@ -92,16 +92,17 @@ def getNetFromFile(filename='map.osm', mode_types=('auto',), link_types=(), conn
                    osm_node_attributes=(), osm_link_attributes=(), osm_poi_attributes=(),
                    strict_boundary=True, **kwargs):
     """
-    Get an osm2gmns Network object from an osm file
+    Parse an osm file and return an osm2gmns Network object
 
     Parameters
     ----------
     filename: str
         path of an osm file; can be absolute or relative path; supported osm file formats: .osm, .xml, and .pbf
-    network_types: str, tuple of strings, list of strings, or set of strings
-        osm2gmns supports five different network types, including auto, bike, walk, railway, and aeroway.
-        network_types can be any one or any combinations of the five supported network types
+    mode_types: str, tuple of strings, list of strings, or set of strings
+        osm2gmns supports five different mode types, including auto, bike, walk, railway, and aeroway.
+        mode_types can be any one or any combinations of the five supported mode types
     link_types: str, tuple of strings, list of strings, or set of strings
+        
         supported link types: motorway, trunk, primary, secondary, tertiary, residential, service, cycleway,
         footway, track, unclassified, connector, railway, and aeroway.
     POI: bool
