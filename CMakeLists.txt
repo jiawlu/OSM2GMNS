@@ -5,9 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-fstandalone-debug)
-endif()
 
 #include(cmake/StandardSettings.cmake)
 #include(cmake/rootutils.cmake)
