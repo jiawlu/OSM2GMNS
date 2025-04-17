@@ -13,7 +13,7 @@ To reduce uncertainties while directly parsing network data from the osm server 
 osm files to extract useful network information. As a result, the first step is preparing osm files.
 
 Thanks to the open-source nature of OpenStreetMap, there are lots of APIs and mirror sites that we can use to
-download osm map data. We introduce different download options in the get-osm-data section.
+download osm map data. We introduce different download options in the :ref:`section-get-osm-data` section.
 
 
 Parse OSM Data

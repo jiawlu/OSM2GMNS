@@ -70,6 +70,7 @@ Contents
 
    installation
    quick-start
+   get-osm-data
    public-api
    gmns
    mrm

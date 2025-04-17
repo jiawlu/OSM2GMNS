@@ -1,3 +1,5 @@
+.. _section-get-osm-data:
+
 ============
 Get OSM Data
 ============
