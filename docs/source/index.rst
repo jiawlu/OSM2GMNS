@@ -7,9 +7,7 @@ osm2gmns
 osm2gmns is a high-performance Python package designed to convert `OpenStreetMap`_ (OSM) 
 data into standardized transportation networks. Leveraging a C++ core wrapped in an 
 intuitive Python interface, osm2gmns offers both computational speed and ease of use. 
-It empowers researchers and practitioners to generate detailed, multi-modal networks 
-(driving, cycling, walking, railway, aeroway) for any region worldwide with minimal 
-coding effort.
+**It empowers researchers and practitioners to generate detailed, multi-modal networks (driving, cycling, walking, railway, aeroway) for any region worldwide with minimal coding effort**.
 
 The package outputs networks primarily in the `GMNS`_ (General Modeling Network Specification) 
 format, promoting interoperability and simplifying data exchange within the transportation 
@@ -30,32 +28,31 @@ modeling community.
 
    - We encourage users to adopt v1.x for the latest capabilities and ongoing development.
    - v0.x will only receive critical bug fixes moving forward.
-   - Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is 
-   planned for future v1.x releases. If you require MRM now, please consult the `v0.x user's guide`_.
+   - Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is planned for future v1.x releases. If you require MRM now, please consult the `v0.x user's guide`_.
 
 
 Key Features
 ====================================
 
-1. Performance and Usability
-
-- High-Performance Core: Written in C++ for maximum computational efficiency
-- Intuitive Python Interface: Simple API makes complex network extraction straightforward
-- Ready-to-Use Networks: Automatic inference of critical attributes (lanes, speed, capacity)
-
-2. Comprehensive Network Modeling
+1. Comprehensive Network Modeling
 
 - Multi-Modal Support: Generate networks for vehicles, bicycles, pedestrians, railways, and aeroways
 - Directed Network Generation: Automatic creation of directional links for bidirectional roadways
 - GMNS Compatibility: Standardized output format for interoperability with other tools
 
-3. Advanced Functionality
+2. Advanced Functionality
 
 - Intersection Consolidation: Simplifies complex junctions for various modeling needs
 - Movement Generation: Creates turning movements at intersections
 - Traffic Zone Creation: Supports origin-destination modeling
 - Short Link Combination: Improves network topology for simulation
 - Network Visualization: Built-in tools for visual inspection and verification
+
+3. Performance and Usability
+
+- High-Performance Core: Written in C++ for maximum computational efficiency
+- Intuitive Python Interface: Simple API makes complex network extraction straightforward
+- Ready-to-Use Networks: Automatic inference of critical attributes (lanes, speed, capacity)
 
 
 Citation
