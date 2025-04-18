@@ -36,23 +36,23 @@ Key Features
 
 1. Comprehensive Network Modeling
 
+- Worldwide Network: Generate networks from OpenStreetMap for any region globally
 - Multi-Modal Support: Generate networks for vehicles, bicycles, pedestrians, railways, and aeroways
-- Directed Network Generation: Automatic creation of directional links for bidirectional roadways
 - GMNS Compatibility: Standardized output format for interoperability with other tools
 
 2. Advanced Functionality
 
 - Intersection Consolidation: Simplifies complex junctions for various modeling needs
 - Movement Generation: Creates turning movements at intersections
+- Directed Network Generation: Automatic creation of directional links for bidirectional roadways
 - Traffic Zone Creation: Supports origin-destination modeling
-- Short Link Combination: Improves network topology for simulation
+- Ready-to-Use Networks: Automatic inference of critical attributes (lanes, speed, capacity)
 - Network Visualization: Built-in tools for visual inspection and verification
 
 3. Performance and Usability
 
 - High-Performance Core: Written in C++ for maximum computational efficiency
 - Intuitive Python Interface: Simple API makes complex network extraction straightforward
-- Ready-to-Use Networks: Automatic inference of critical attributes (lanes, speed, capacity)
 
 
 Citation
