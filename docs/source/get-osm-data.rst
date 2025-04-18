@@ -65,16 +65,11 @@ Submit the request; you will receive an email with a download link when the extr
 
 4) Overpass API (Programmatic Download by Relation ID)
 
-osm2gmns also enables users to download OSM data within the region of interest using a built-in function.
-A region can be a state, city, or even university. On OpenStreetMap `homepage`_, search the region name to get
-its unique relation id. The following example shows how to download Tempe city OSM data using function
-``downloadOSMData``.
-
-osm2gmns includes a function to download data directly via the Overpass API, 
+osm2gmns includes a function ``downloadOSMData`` to download data directly via the Overpass API, 
 using an OSM Relation ID.
 
 Go to the OpenStreetMap `homepage`_.
-Search for the administrative region or feature.
+Search for the administrative region or feature (can be a state, a city, or even an university).
 Click on the correct search result.
 The URL in your browser will contain the relation ID. The number is the ID. You can also often find it listed in the object's details/tags on the left panel.
 
@@ -84,6 +79,8 @@ The URL in your browser will contain the relation ID. The number is the ID. You 
     :width: 100%
 
     Finding the Relation ID for a region on OpenStreetMap
+
+Use the following code to download the OSM data for the region using the relation ID.
 
 .. code-block:: python
 

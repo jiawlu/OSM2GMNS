@@ -23,8 +23,8 @@ modeling community.
 
 .. note::
     Version Compatibility: osm2gmns v1.x introduces significant architectural changes 
-    and new features, therefore it is not fully backward compatible with v0.x. Key 
-    features like Multi-Resolution Modeling (MRM) are currently exclusive to v0.x. 
+    and new features, therefore it is not fully backward compatible with v0.x. 
+    Features like Multi-Resolution Modeling (MRM) are currently exclusive to v0.x. 
     For MRM, please consult the `v0.x user guide`_.
 
 

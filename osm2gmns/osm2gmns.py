@@ -98,7 +98,7 @@ def getNetFromFile(filepath, mode_types='auto', link_types=[], connector_link_ty
     ----------
     filepath : str
         Path to the input OSM file (.osm, .xml, or .pbf format).
-    mode_types : str or list of str, default 'auto'
+    mode_types : str or list of str
         Specifies the transportation modes to include. Options: 'auto', 'bike',
         'walk', 'railway', 'aeroway'. Can be a single string or a list of strings.
     link_types : str or list of str
@@ -172,13 +172,13 @@ def consolidateComplexIntersections(network, auto_identify=False, intersection_f
 
     Simplifies network topology by merging nodes that form complex junctions,
     often found at large, signalized intersections in OSM data. Consolidation
-    can be based on automatic detection, an external file defining intersections,
-    or pre-assigned 'intersection_id' attributes in nodes (if network is loaded from CSV,
+    can be based on (1) automatic detection, (2) an external file defining intersections,
+    or (3) pre-assigned 'intersection_id' attributes in nodes (if network is loaded from CSV,
     nodes with the same 'intersection_id' will be considered as belonging to the same
     complex intersection).
 
-    Priority for defining intersections: (1) Pre-existing 'intersection_id' in nodes,
-    (2) `intersection_filepath`, (3) `auto_identify`.
+    Priority for defining intersections: (3) Pre-existing 'intersection_id' in nodes,
+    (2) `intersection_filepath`, (1) `auto_identify`.
 
     Parameters
     ----------
@@ -263,13 +263,14 @@ def fillLinkAttributesWithDefaultValues(network,
         If True, assign default lane counts to links missing this attribute.
     default_lanes_dict : dict
         A dictionary mapping link types (str) to default lane counts (int).
-        Overrides built-in defaults for the specified link types. Example: {'motorway': 3}.
+        Overrides built-in defaults for the specified link types. Example: 
+        {'motorway': 3, 'primary': 3}.
     default_speed : bool
         If True, assign default speed limits (km/h) to links
         missing this attribute.
     default_speed_dict : dict
         A dictionary mapping link types (str) to default speed limits (float).
-        Overrides built-in defaults. Example: {'residential': 30.0}.
+        Overrides built-in defaults. Example: {'residential': 20.0}.
     default_capacity : bool
         If True, assign default capacities (vehicles per hour per lane) to links
         missing this attribute.
@@ -296,7 +297,7 @@ def outputNetToCSV(network, output_folder=''):
     """
     Exports the network object data to CSV files in GMNS format.
 
-    Writes the network's node, link, and potentially POI information into
+    Writes network information into
     separate CSV files (node.csv, link.csv, poi.csv) adhering to the
     General Modeling Network Specification (GMNS).
 

@@ -5,8 +5,6 @@ Quick Start
 This section provides introductory examples to demonstrate the core workflow of using 
 osm2gmns for generating, processing, and exporting transportation networks.
 
-Prerequisite: Obtaining OSM Data
-
 osm2gmns processes network data from local OpenStreetMap files (.osm, .xml, or .pbf 
 formats). Therefore, the first step is always to download the OSM data for your region 
 of interest. Several methods exist for this, detailed in the :ref:`section-get-osm-data` 
@@ -60,7 +58,7 @@ The resulting network can be visualized using tools like `QGIS`_ or `NeXTA`_
 to inspect the consolidated intersections.
 
 
-Mode Types and POI
+Network Types and POI
 =========================
 
 osm2gmns supports five different mode types, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
