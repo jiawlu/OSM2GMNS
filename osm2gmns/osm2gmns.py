@@ -92,45 +92,49 @@ def getNetFromFile(filepath, mode_types='auto', link_types=[], connector_link_ty
                    osm_node_attributes=[], osm_link_attributes=[], osm_poi_attributes=[],
                    strict_boundary=True):
     """
-    Read and parse an osm file.
+    Parses an OpenStreetMap file and creates a transportation network object.
 
     Parameters
     ----------
-    filepath: str
-        path of an osm file. supported osm file formats: ``.osm``, ``.xml``, and ``.pbf``.
-    mode_types: str or list of str, default 'auto'
-        osm2gmns supports five different mode types, including auto, bike, walk, railway, and aeroway.
-        mode_types can be any one or any combinations of the five supported mode types.
-    link_types: str or list of str, default []
-        supported link types: motorway, trunk, primary, secondary, tertiary, residential, service, cycleway,
-        footway, track, unclassified, connector, railway, and aeroway. an empty list means all link 
-        types are included.
-    connector_link_types: str or list of str, default []
-        supported connector link types: same as argument link_types. a link with its type in the 
-        connector_link_types will be included in the resulting network only if it is directly connected to 
-        another link with its type in the link_types. It is very useful when users want to keep some links
-        connected to the main network for traffic zone modeling purposes. An empty list means no connector
-        links.
-    POI: bool, default False
-        if parse point of interest information.
-    POI_sampling_ratio: float, default 1.0
-        prcentage of POIs to be extracted if POI is set as True. this value should be a float number between 0.0 and 1.0.
-    osm_node_attributes: str or list of str, default []
-        when parsing osm node data, osm2gmns will extract important pre-defined attributes, such as node_id, name.
-        If users want to extract other attributes, they can specify the attribute names in this argument.
-    osm_link_attributes: str or list of str, default []
-        similar to the argument osm_node_attributes, but for link attributes.
-    osm_poi_attributes: str or list of str, default []
-        similar to the argument osm_node_attributes, but for POI attributes.
-    strict_boundary: bool, default True
-        typically, a link will be included in the map file from osm database if part of the link 
-        lies in the region that users defined. True, link segments that outside the region will be 
-        cut off when parsing osm data. Otherwise, all links in the map file will be completely parsed and imported.
+    filepath : str
+        Path to the input OSM file (.osm, .xml, or .pbf format).
+    mode_types : str or list of str, default 'auto'
+        Specifies the transportation modes to include. Options: 'auto', 'bike',
+        'walk', 'railway', 'aeroway'. Can be a single string or a list of strings.
+    link_types : str or list of str
+        Filters the network to include only specified OSM link types. If 
+        empty, all relevant link types for the selected `mode_types` are included.
+        Supported types include: 'motorway', 'trunk', 'primary', 'secondary',
+        'tertiary', 'residential', 'service', 'cycleway', 'footway', 'track',
+        'unclassified', 'connector', 'railway', 'aeroway'.
+    connector_link_types : str or list of str
+        Specifies link types that should only be included if they connect directly
+        to links included via `link_types`. Useful for connecting main networks
+        to specific areas (e.g., for traffic zones). Same supported types as
+        `link_types`. If empty, no connector links are specifically handled
+        this way.
+    POI : bool
+        If True, extracts Points of Interest (POIs) from the OSM data.
+    POI_sampling_ratio : float
+        Fraction of POIs to extract if POI is True. Must be between 0.0 and 1.0.
+    osm_node_attributes : str or list of str
+        List of additional OSM tag keys whose values should be extracted as attributes
+        for nodes. If empty, only default attributes are extracted.
+    osm_link_attributes : str or list of str
+        List of additional OSM tag keys whose values should be extracted as attributes
+        for links. If empty, only default attributes are extracted.
+    osm_poi_attributes : str or list of str
+        List of additional OSM tag keys whose values should be extracted as attributes
+        for POIs. If empty, only default attributes are extracted.
+    strict_boundary : bool
+        If True, clips links that cross the boundary of the downloaded OSM region.
+        If False, includes the full geometry of any link that partially falls
+        within the region.
 
     Returns
     -------
-    network: Network
-        osm2gmns Network object
+    Network
+        An osm2gmns Network object containing the parsed transportation network data.
     """
         
     network = Network()
@@ -164,39 +168,40 @@ def getNetFromFile(filepath, mode_types='auto', link_types=[], connector_link_ty
 
 def consolidateComplexIntersections(network, auto_identify=False, intersection_filepath=None, int_buffer=20.0):
     """
-    Consolidate each complex intersection that are originally represented by multiple nodes in osm into one node. 
-    osm2gmns support the following three ways to define complex intersections.
+    Consolidates multiple OSM nodes representing a single complex intersection into one node.
 
-    (1) set the argument auto_identify as True, then osm2gmns will automatically identify complex intersections and assign
-    intersection_id for corresponding nodes.
+    Simplifies network topology by merging nodes that form complex junctions,
+    often found at large, signalized intersections in OSM data. Consolidation
+    can be based on automatic detection, an external file defining intersections,
+    or pre-assigned 'intersection_id' attributes in nodes (if network is loaded from CSV,
+    nodes with the same 'intersection_id' will be considered as belonging to the same
+    complex intersection).
 
-    (2) provide an intersection file that specifies the central position (required) and buffer (optional) of each complex intersection.
-
-    (3) if the target network is loaded from csv files using function loadNetFromCSV. before loading the network, 
-    the user can specify complex intersection information in the node.csv file. Nodes with the same intersection_id 
-    will be considered as belonging to the same complex intersection.
-
-    The priority of the three approaches is (3) > (2) > (1).
+    Priority for defining intersections: (1) Pre-existing 'intersection_id' in nodes,
+    (2) `intersection_filepath`, (3) `auto_identify`.
 
     Parameters
     ----------
-    network: Network
-        osm2gmns Network object
-    auto_identify: bool, default False
-        if automatically identify complex intersections using built-in methods in osm2gmns.
-        Rules to identify if two nodes belong to a complex intersection: (a) ctrl_type of the two nodes must be signal, and
-        (b) there is a link connecting these two nodes, and the length of the link is shorter than or equal to the argument int_buffer.
-    intersection_filepath: str or None, default None
-        path of an intersction csv file that specifies complex intersections. required fields: central position of intersections
-        (in the form of x_coord and y_coord); optional field: int_buffer (if not specified, the global int_buffer will be used,
-        i.e., the forth arugment). For each record in the intersection_file, osm2gmns consolidates all nodes with a distance to the
-        central position shorter than buffer.
-    int_buffer: float
-        the threshold used to check if two nodes belong to one complex intersection. the unit is meter
+    network : Network
+        The osm2gmns Network object to modify.
+    auto_identify : bool
+        If True, attempts to automatically identify complex intersections based on
+        built-in rules: nodes must have 'ctrl_type' = 'signal' and be connected
+        by a link shorter than or equal to `int_buffer`.
+    intersection_filepath : str or None
+        Path to a CSV file defining complex intersections. Required columns:
+        'x_coord', 'y_coord' (defining the intersection center). Optional column:
+        'int_buffer' (overrides the global `int_buffer` for that specific intersection).
+        Nodes within the buffer distance of a defined center will be consolidated.
+    int_buffer : float
+        The distance threshold (in meters) used for consolidation. Applied globally
+        if `auto_identify` is True, or per-intersection if not specified in the
+        `intersection_filepath`.
 
     Returns
     -------
     None
+        Modifies the input `network` object in place.
     """
 
     oglib.consolidateComplexIntersectionsPy(network.cnet, 
@@ -207,26 +212,32 @@ def consolidateComplexIntersections(network, auto_identify=False, intersection_f
 
 def generateNodeActivityInfo(network, zone_filepath=None):
     """
-    Generate node activity information, including activity_type, is_boundary, zone_id for nodes. activity_type includes
-    motorway, primary, secondary, tertiary, residential, etc, and is determined by adjacent links.
+    Generates activity_type, is_boundary, zone_id for nodes in the network.
+
+    Analyzes the network topology to assign relevant attributes to nodes, useful
+    for transportation modeling. 'activity_type' (e.g., 'motorway', 'residential')
+    is inferred from adjacent links. 'is_boundary' indicates if a node is at the
+    edge of the defined network area. 'zone_id' assigns nodes to traffic analysis
+    zones (TAZs).
 
     Parameters
     ----------
-    network: Network
-        osm2gmns Network object
-    zone_filepath: str or None, default None
-        filepath of a zone file. If a zone_file is provided, zone_id of boundary nodes will be determined by the 
-        information provided in the zone_file. Otherwise, for each boundary node, its node_id will be used as zone_id.
-        format of the zone_file: csv file with the following fields: "zone_id", "x_coord", "y_coord", "geometry".
-        geometry can be POINT, POLYGON, or MULTIPOLYGON with WKT format. users can also use x_coord and y_coord to
-        provide POINT information.
-        for each boundary node, osm2gmns will find the zone (POLYGON or MULTIPOLYGON) that contains the node and assign 
-        the zone_id to the node. if the node is not in any zone, osm2gmns will find the nearest POINT and assign corresponding
-        zone_id.
+    network : Network
+        The osm2gmns Network object to modify.
+    zone_filepath : str or None
+        Path to a zone definition file (CSV). If provided, 'zone_id' for boundary
+        nodes is determined based on this file. Otherwise, the 'node_id' is used
+        as the 'zone_id' for boundary nodes.
+        Expected CSV fields: "zone_id", "x_coord", "y_coord", "geometry".
+        'geometry' should be in WKT format (POINT, POLYGON, or MULTIPOLYGON).
+        'x_coord' and 'y_coord' can alternatively define POINT geometry.
+        Boundary nodes are assigned the 'zone_id' of the containing polygon/multipolygon,
+        or the nearest point zone if not within any polygon.
 
     Returns
     -------
     None
+        Modifies the input `network` object in place by adding or updating node attributes.
     """
 
     oglib.generateNodeActivityInfoPy(network.cnet,
@@ -238,32 +249,38 @@ def fillLinkAttributesWithDefaultValues(network,
                                         default_speed=False, default_speed_dict={}, 
                                         default_capacity=False, default_capacity_dict={}):
     """
-    Fill link attributes with default values. If a link does not have a specific attribute,
-    osm2gmns will assign a default value for the attribute. The default value is determined by the link type.
-    Users can also provide a dictionary to overwrite the built-in default values for each link type.
-    The key is the link_type, and the value is the default value for the link type.
+    Assigns default values to link attributes (lanes, speed, capacity) if they are missing.
+
+    Populates essential link attributes based on 'link_type' for links where
+    this information wasn't available in the source OSM data. Users can rely on
+    built-in defaults or provide dictionaries to override them for specific link types.
 
     Parameters
     ----------
-    network: Network
-        osm2gmns Network object    
-    default_lanes: bool, default False
-        if True, assign a default lanes value for links without lanes information.
-    default_lanes_dict: dict
-        users can provide a dictionary to overwrite built-in default values for lanes.
-        No need to provide a default value for each link type. only provide a default value for each link type that needs to be overwritten.
-    default_speed: bool, default False
-        if True, assign a default speed value for links without speed information.
-    default_speed_dict: dict
-        smilar to the argument default_lanes_dict, but for speed.
-    default_capacity: bool, default False
-        if True, assign a default capacity value for links without capacity information.
-    default_capacity_dict: dict
-        similar to the argument default_lanes_dict, but for capacity.
+    network : Network
+        The osm2gmns Network object to modify.
+    default_lanes : bool
+        If True, assign default lane counts to links missing this attribute.
+    default_lanes_dict : dict
+        A dictionary mapping link types (str) to default lane counts (int).
+        Overrides built-in defaults for the specified link types. Example: {'motorway': 3}.
+    default_speed : bool
+        If True, assign default speed limits (km/h) to links
+        missing this attribute.
+    default_speed_dict : dict
+        A dictionary mapping link types (str) to default speed limits (float).
+        Overrides built-in defaults. Example: {'residential': 30.0}.
+    default_capacity : bool
+        If True, assign default capacities (vehicles per hour per lane) to links
+        missing this attribute.
+    default_capacity_dict : dict
+        A dictionary mapping link types (str) to default capacities (int).
+        Overrides built-in defaults. Example: {'primary': 1800}.
 
     Returns
     -------
     None
+        Modifies the input `network` object in place by adding or updating link attributes.
     """
 
     default_lanes_dict_ = (StrIntDict * len(default_lanes_dict))(*[(k.encode(), v) for k, v in default_lanes_dict.items()])
@@ -277,18 +294,24 @@ def fillLinkAttributesWithDefaultValues(network,
 
 def outputNetToCSV(network, output_folder=''):
     """
-    Output an osm2gmns network object to csv files in GMNS format
+    Exports the network object data to CSV files in GMNS format.
+
+    Writes the network's node, link, and potentially POI information into
+    separate CSV files (node.csv, link.csv, poi.csv) adhering to the
+    General Modeling Network Specification (GMNS).
 
     Parameters
     ----------
-    network: Network
-        an osm2gmns network object
-    output_folder: str
-        path of the folder to store network files.
+    network : Network
+        The osm2gmns Network object containing the data to be exported.
+    output_folder : str
+        The directory path where the CSV files will be saved. If empty or not
+        provided, defaults to the current working directory.
 
     Returns
     -------
     None
+        Creates CSV files in the specified output folder.
     """
     
     oglib.outputNetToCSVPy(network.cnet, output_folder.encode())

@@ -2,24 +2,25 @@
 Quick Start
 ===========
 
-In this section, some examples are provided to quickly show how to use osm2gmns 
-to generate, manipulate and output networks.
+This section provides introductory examples to demonstrate the core workflow of using 
+osm2gmns for generating, processing, and exporting transportation networks.
 
-To reduce uncertainties while directly parsing network data from the osm server via APIs, osm2gmns 
-uses downloaded osm files to extract useful network information. As a result, the first step is preparing 
-osm files.
+Prerequisite: Obtaining OSM Data
 
-Thanks to the open-source nature of OpenStreetMap, there are lots of APIs and mirror sites that we can use to
-download osm map data. Users are referred to the :ref:`section-get-osm-data` section for details.
+osm2gmns processes network data from local OpenStreetMap files (.osm, .xml, or .pbf 
+formats). Therefore, the first step is always to download the OSM data for your region 
+of interest. Several methods exist for this, detailed in the :ref:`section-get-osm-data` 
+section.
 
-In this guide, we use the region around Arizona State University, Tempe Campus as an example to introduce 
-some major functions in osm2gmns. The downloaded osm file is named as ``asu.osm``.
+In this guide, we use the area around Arizona State University, Tempe Campus as an 
+example to introduce some major functions in osm2gmns. The downloaded osm file is named 
+as ``asu.osm``.
 
 
-Parse OSM Data
+Basic Network Generation
 =========================
 
-Obtain a transportation network from an osm file and write it to csv files.
+Load a network from an OSM file and export it to GMNS-compliant CSV files.
 
 .. code-block:: python
 
@@ -27,20 +28,20 @@ Obtain a transportation network from an osm file and write it to csv files.
     >>> net = og.getNetFromFile('asu.osm')
     >>> og.outputNetToCSV(net)
 
-In this example, we use the function ``getNetFromFile`` to parse the osm file and obtain a network object. The
-network object is a ``net`` instance, which contains all the information of the network. The function
-``outputNetToCSV`` will output the parsed network to csv files. By default, the output folder is set as
-the current working directory. Users can specify the output folder by using the argument ``output_folder``.
-The default output files are ``node.csv`` and ``link.csv``, which contain node and link information respectively.
+By default, ``getNetFromFile`` extracts the drivable network (mode_types='auto'). 
+In the example, the output folder is set as the current working directory. Users 
+can specify the output folder by using the argument ``output_folder``. The output 
+files include ``node.csv`` and ``link.csv``, which contain node and link information 
+respectively.
 
 
 Consolidate Intersections
 =========================
 
-In OpenStreetMap, one large intersection is often represented by multiple nodes. This structure brings some
-difficulties when performing traffic-oriented modelings. osm2gmns enables users to consolidate intersections
-that are originally represented by multiple nodes into a single node. Note that osm2gmns only identifies and
-consolidates signalized intersections.
+In OpenStreetMap, large intersections are often mapped using multiple nodes. 
+For many traffic analysis tasks, it's beneficial to represent such intersections 
+as single nodes. The ``consolidateComplexIntersections`` function achieves this, 
+typically focusing on signalized junctions.
 
 .. code-block:: python
 
@@ -55,13 +56,14 @@ consolidates signalized intersections.
 
     Complex intersection consolidation
 
-Users can visualize the consolidated network in `QGIS`_ or `NeXTA`_.
+The resulting network can be visualized using tools like `QGIS`_ or `NeXTA`_
+to inspect the consolidated intersections.
 
 
-Network Types and POI
+Mode Types and POI
 =========================
 
-osm2gmns supports five different network types, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
+osm2gmns supports five different mode types, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
 Users can get different types of networks by specifying the argument ``mode_types``  (default: ``auto``).
 
 .. code-block:: python
@@ -79,8 +81,8 @@ Obtain POIs (Point of Interest) from osm map data.
 
     >>> net = og.getNetFromFile('asu.osm', POI=True)
 
-If ``POI`` is set as ``True``, a file named ``poi.csv`` will be generated when outputting
-a network using function ``outputNetToCSV``.
+If ``POI=True`` is used, ``outputNetToCSV`` will generate an additional ``poi.csv`` 
+file alongside ``node.csv`` and ``link.csv``.
 
 .. figure:: _images/poi1.png
     :name: poi1
@@ -89,19 +91,12 @@ a network using function ``outputNetToCSV``.
 
     Network with POIs
 
-Connect POIs with transportation network.
-
-.. code-block:: python
-
-    >>> net = og.getNetFromFile('asu.osm', POI=True)
-    >>> og.connectPOIWithNet(net)
-
 
 Generate Multi-Resolution Networks
 ==================================
 
-Multi-resolution functionalities are currently not available in v1 of osm2gmns.
-Users can the latest version of V0. Check out the v0 `user's guide`_ for details.
+Multi-resolution (MRM) functionalities are currently not available in v1.x.
+For MRM, users can use the latest v0.x. Check the v0.x `user's guide`_ for details.
 
 
 .. _`QGIS`: https://qgis.org
