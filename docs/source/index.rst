@@ -4,15 +4,16 @@ osm2gmns
 | **Email**: lujiaweiwk@gmail.com, xzhou74@asu.edu
 
 
-osm2gmns is a high-performance Python package that transforms `OpenStreetMap`_ (OSM) 
-data into standardized transportation networks. With its C++ core wrapped in Python, 
-osm2gmns combines computational efficiency with ease of use, allowing researchers 
-and practitioners to obtain detailed multi-modal networks with minimal effort.
+osm2gmns is a high-performance Python package designed to convert `OpenStreetMap`_ (OSM) 
+data into standardized transportation networks. Leveraging a C++ core wrapped in an 
+intuitive Python interface, osm2gmns offers both computational speed and ease of use. 
+It empowers researchers and practitioners to generate detailed, multi-modal networks 
+(driving, cycling, walking, railway, aeroway) for any region worldwide with minimal 
+coding effort.
 
-With just a few lines of Python code, users can obtain and model drivable, bikeable, 
-walkable, railway, and aeroway networks for any region in the world. The package 
-outputs networks in `GMNS`_ (General Modeling Network Specification) format, facilitating 
-seamless data sharing and collaboration within the transportation research community.
+The package outputs networks primarily in the `GMNS`_ (General Modeling Network Specification) 
+format, promoting interoperability and simplifying data exchange within the transportation 
+modeling community.
 
 .. code-block:: python
 
@@ -21,10 +22,10 @@ seamless data sharing and collaboration within the transportation research commu
     >>> og.outputNetToCSV(net)
 
 .. note::
-    osm2gmns v1.x is not fully backward compatible with v0.x due to significant 
-    architectural changes and new features. The multi-resolution modeling (MRM) 
-    feature is currently available only in v0.x. For MRM functionality, please 
-    refer to the `v0.x user guide`_.
+    Version Compatibility: osm2gmns v1.x introduces significant architectural changes 
+    and new features, therefore it is not fully backward compatible with v0.x. 
+    Features like Multi-Resolution Modeling (MRM) are currently exclusive to v0.x. 
+    For MRM, please consult the `v0.x user guide`_.
 
 
 Key Features
@@ -54,7 +55,7 @@ Key Features
 Citation
 ====================================
 
-If you use osm2gmns in your research, please cite:
+If osm2gmns contributes to your research, please cite the following publication:
 
 Lu, J., & Zhou, X.S. (2023). Virtual track networks: A hierarchical modeling framework and 
 open-source tools for simplified and efficient connected and automated mobility (CAM) system 
@@ -70,6 +71,7 @@ Contents
 
    installation
    quick-start
+   get-osm-data
    public-api
    gmns
    mrm

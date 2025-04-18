@@ -2,7 +2,7 @@
 Installation
 ============
 
-You can install the latest release of osm2gmns at `PyPI`_ via `pip`_:
+You can install the latest release of osm2gmns at `PyPI`_ via ``pip``:
 
 .. code-block:: bash
 
@@ -10,4 +10,3 @@ You can install the latest release of osm2gmns at `PyPI`_ via `pip`_:
 
 
 .. _`PyPI`: https://pypi.org/project/osm2gmns
-.. _`pip`: https://packaging.python.org/key_projects/#pip
