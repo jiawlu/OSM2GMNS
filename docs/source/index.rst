@@ -21,11 +21,17 @@ modeling community.
     >>> net = og.getNetFromFile('map.osm')
     >>> og.outputNetToCSV(net)
 
+
 .. note::
-    Version Compatibility: osm2gmns v1.x introduces significant architectural changes 
-    and new features, therefore it is not fully backward compatible with v0.x. 
-    Features like Multi-Resolution Modeling (MRM) are currently exclusive to v0.x. 
-    For MRM, please consult the `v0.x user guide`_.
+   **Welcome to the osm2gmns v1.x Documentation!**
+
+   This version introduces significant architectural changes, performance improvements, and 
+   new features compared to v0.x, and is **not fully backward compatible**.
+
+   - We encourage users to adopt v1.x for the latest capabilities and ongoing development.
+   - v0.x will only receive critical bug fixes moving forward.
+   - Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is 
+   planned for future v1.x releases. If you require MRM now, please consult the `v0.x user's guide`_.
 
 
 Key Features
@@ -83,5 +89,5 @@ Contents
 .. _`Xuesong (Simon) Zhou`: https://www.linkedin.com/in/xzhou/
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
-.. _`v0.x user guide`: https://osm2gmns.readthedocs.io/en/v0.x
+.. _`v0.x user's guide`: https://osm2gmns.readthedocs.io/en/v0.x
 .. _`link`: https://doi.org/10.1016/j.trc.2023.104223
