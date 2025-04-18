@@ -27,11 +27,13 @@
 #include <osmium/io/file.hpp>       // NOLINT
 #include <osmium/io/reader.hpp>     // NOLINT
 #include <osmium/osm/box.hpp>
+#include <osmium/osm/entity_bits.hpp>
 #include <osmium/osm/item_type.hpp>
 #include <osmium/osm/node.hpp>
 #include <osmium/osm/relation.hpp>
 #include <osmium/osm/tag.hpp>
 #include <osmium/osm/way.hpp>
+#include <osmium/thread/pool.hpp>
 #include <osmium/visitor.hpp>  // NOLINT
 #include <regex>
 #include <string>
@@ -552,9 +554,11 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
 
   const auto time1 = std::chrono::high_resolution_clock::now();
   OsmHandler handler(mode_types_, link_types_, connector_link_types_, POI_, osm_parsing_config_);
+  osmium::thread::Pool pool{};
   try {
     const osmium::io::File input_file{osm_filepath.string()};
-    osmium::io::Reader reader{input_file};
+
+    osmium::io::Reader reader{input_file, pool};
     const osmium::Box& box = reader.header().box();
     if (reader.header().box().valid()) {
       boundary_ = factory_->createPolygon({geos::geom::Coordinate(box.bottom_left().lon(), box.bottom_left().lat()),
@@ -565,19 +569,21 @@ OsmNetwork::OsmNetwork(const std::filesystem::path& osm_filepath, absl::flat_has
     } else {
       LOG(INFO) << "no valid boundary information in the osm file";
     }
-
-    if (POI_) {
-      handler.updateParseTargets(false, false, true);
-      osmium::apply(reader, handler);
-    }
     reader.close();
 
-    osmium::io::Reader reader_way{input_file};
+    if (POI_) {
+      osmium::io::Reader reader_relation{input_file, osmium::osm_entity_bits::relation, pool};
+      handler.updateParseTargets(false, false, true);
+      osmium::apply(reader_relation, handler);
+      reader_relation.close();
+    }
+
+    osmium::io::Reader reader_way{input_file, osmium::osm_entity_bits::way, pool};
     handler.updateParseTargets(false, true, false);
     osmium::apply(reader_way, handler);
     reader_way.close();
 
-    osmium::io::Reader reader_node{input_file};
+    osmium::io::Reader reader_node{input_file, osmium::osm_entity_bits::node, pool};
     handler.updateParseTargets(true, false, false);
     osmium::apply(reader_node, handler);
     reader_node.close();
