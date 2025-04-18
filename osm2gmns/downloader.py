@@ -55,16 +55,16 @@ def _readCompressed(conn, urlpath, query, filename):
         print(f'map data has been written to {filename}')
 
 
-def downloadOSMData(area_id, output_filename='map.osm', url=_url):
+def downloadOSMData(area_id, output_filepath='map.osm', url=_url):
     """
     Download OpenStreetMap data via overpass API
 
     Parameters
     ----------
     area_id: int
-        relation_id of the area of interest
-    output_filename: int
-        full path where the downloaded network will be stored
+        relation_id of the area of interest (check ``Get OSM Data`` in the user's guide for details)
+    output_filepath: str
+        filepath where the downloaded network will be stored
     url: int
         OpenStreetMap API url
 
@@ -73,13 +73,13 @@ def downloadOSMData(area_id, output_filename='map.osm', url=_url):
     None
     """
 
-    file_name, file_extension = os.path.splitext(output_filename)
+    file_name, file_extension = os.path.splitext(output_filepath)
     if not file_extension:
-        print(f'WARNING: no file extension in output_filename {output_filename}, output_filename is changed to {file_name}.osm')
-        output_filename = f'{file_name}.osm'
+        print(f'WARNING: no file extension in output_filepath {output_filepath}, output_filepath is changed to {file_name}.osm')
+        output_filepath = f'{file_name}.osm'
     elif file_extension not in ['.osm', '.xml']:
-        print(f'WARNING:  the file extension in output_filename {output_filename} is not supported, output_filename is changed to {file_name}.osm')
-        output_filename = f'{file_name}.osm'
+        print(f'WARNING: the file extension in output_filepath {output_filepath} is not supported, output_filepath is changed to {file_name}.osm')
+        output_filepath = f'{file_name}.osm'
 
     if "http" in url:
         url = urlparse.urlparse(url)
@@ -101,6 +101,6 @@ def downloadOSMData(area_id, output_filename='map.osm', url=_url):
 
     if area_id < 3600000000:
         area_id += 3600000000
-    _readCompressed(conn, url.path, '<area-query ref="%s"/>' % area_id, output_filename)
+    _readCompressed(conn, url.path, '<area-query ref="%s"/>' % area_id, output_filepath)
 
     conn.close()

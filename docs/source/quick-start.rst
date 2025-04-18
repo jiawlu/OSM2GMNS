@@ -56,31 +56,22 @@ consolidates signalized intersections.
     Complex intersection consolidation
 
 Users can visualize the consolidated network in `QGIS`_ or `NeXTA`_.
-For complex interestions that were not successfully identified and consolidated by osm2gmns, users can manually specify
-them by revising the column "intersection_id" in node.csv and utilize the commands below to do the re-consolidation.
-Nodes assgined with the same "intersection_id" will be consolidated into a new node.
-
-.. code-block:: python
-
-    >>> net = og.loadNetFromCSV(node_file='node.csv', link_file='link.csv')
-    >>> og.consolidateComplexIntersections(net, auto_identify=False)
-    >>> og.outputNetToCSV(net, output_folder='consolidated')
 
 
 Network Types and POI
 =========================
 
 osm2gmns supports five different network types, including ``auto``, ``bike``, ``walk``, ``railway``, ``aeroway``.
-Users can get different types of networks by specifying the argument ``network_types``  (default: ``(auto,)``).
+Users can get different types of networks by specifying the argument ``mode_types``  (default: ``auto``).
 
 .. code-block:: python
 
     >>> # obtain the network for bike
-    >>> net = og.getNetFromFile('asu.osm', network_types='bike')
+    >>> net = og.getNetFromFile('asu.osm', mode_types='bike')
     >>> # obtain the network for walk and bike
-    >>> net = og.getNetFromFile('asu.osm', network_types=('walk','bike'))
+    >>> net = og.getNetFromFile('asu.osm', mode_types=['walk','bike'])
     >>> # obtain the network for auto, railway and aeroway
-    >>> net = og.getNetFromFile('asu.osm', network_types=('auto','railway','aeroway'))
+    >>> net = og.getNetFromFile('asu.osm', mode_types=['auto','railway','aeroway'])
 
 Obtain POIs (Point of Interest) from osm map data.
 
@@ -88,7 +79,7 @@ Obtain POIs (Point of Interest) from osm map data.
 
     >>> net = og.getNetFromFile('asu.osm', POI=True)
 
-If ``POI`` (default: ``False``) is set as ``True``, a file named ``poi.csv`` will be generated when outputting
+If ``POI`` is set as ``True``, a file named ``poi.csv`` will be generated when outputting
 a network using function ``outputNetToCSV``.
 
 .. figure:: _images/poi1.png
@@ -104,17 +95,6 @@ Connect POIs with transportation network.
 
     >>> net = og.getNetFromFile('asu.osm', POI=True)
     >>> og.connectPOIWithNet(net)
-
-By using function ``connectPOIWithNet``, a node located at the centroid of each POI will be generated to
-represent the POI. Then connector links will be built to connect the POI node with the nearest node in the
-transportation network.
-
-.. figure:: _images/poi2.png
-    :name: poi2
-    :align: center
-    :width: 100%
-
-    Connect POIs with network
 
 
 Generate Multi-Resolution Networks

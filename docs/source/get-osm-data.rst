@@ -4,7 +4,7 @@
 Get OSM Data
 ============
 
-Four options
+Four options are provided to download OSM data. Users can choose the one that best suits their needs.
 
 1) OpenStreetMap Homepage
 
@@ -83,48 +83,6 @@ its unique relation id. The following example shows how to download Tempe city O
     >>> import osm2gmns as og
 
     >>> og.downloadOSMData(110833, 'tempe.osm')
-
-
-osm2gmns built-in function: getOSMRelationID
-Get the relation id of a place of interest, eg. "Arizona State University", "Arizona, United States", "Tempe, AZ"...
-
-.. code-block:: python
-
-    >>> import osm2gmns as og
-    # get relation id of a place of interest
-    # For the place of interest, e.g. Arizona State University
-    # e.g. "Tempe, Arizona, United States"
-    # e.g. "Arizona, US"
-    # e.g. "Beijing Jiaotong University, Beijing, China"
-    >>> rel_id = og.getOSMRelationID('Arizona State University')
-    >>> rel_id
-        Info: Found relation id 3444656 from web
-        Info: location of the place of interest:
-        {
-            "place_id": 318528634,
-            "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
-            "osm_type": "relation",
-            "osm_id": 3444656,
-            "lat": "33.4213174",
-            "lon": "-111.93316305413154",
-            "class": "amenity",
-            "type": "university",
-            "place_rank": 30,
-            "importance": 0.5547365758311374,
-            "addresstype": "amenity",
-            "name": "Arizona State University",
-            "display_name": "Arizona State University, 1151, South Forest Avenue, Tempe Junction, Tempe, Maricopa County, Arizona, 85281, United States",
-            "boundingbox": [
-                "33.4102062",
-                "33.4329786",
-                "-111.9411651",
-                "-111.9092447"
-            ]
-        }
-    3444656
-
-    # download the corresponding osm file
-    >>> og.downloadOSMData(rel_id, 'asu.osm')
 
 
 .. _`homepage`: https://www.openstreetmap.org
