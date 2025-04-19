@@ -23,7 +23,7 @@ modeling community.
 .. note::
    **Welcome to the osm2gmns v1.x Documentation!**
 
-   This version introduces significant architectural changes, performance improvements, and 
+   This v1.x version introduces significant architectural changes, performance improvements, and 
    new features compared to v0.x, and is **not fully backward compatible**.
 
    - We encourage users to adopt v1.x for the latest capabilities and ongoing development.

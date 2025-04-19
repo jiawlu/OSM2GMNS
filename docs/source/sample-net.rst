@@ -2,7 +2,7 @@
 Sample Networks
 ===============
 
-Phoenix Sky Harbor International Airport
+Dallas Fort Worth International Airport
 ========================================
 
 .. figure:: _images/net_dfw.png
