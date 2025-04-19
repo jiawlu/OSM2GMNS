@@ -24,7 +24,7 @@ modeling community.
 
 - *We encourage users to adopt v1.x for the latest capabilities and ongoing development*.
 - *v0.x will only receive critical bug fixes moving forward*.
-- *Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is planned for future v1.x releases. If you require MRM now, please consult the `v0.x user's guide`_*.
+- *Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is planned for future v1.x releases. If you require MRM now, please consult the* `v0.x user's guide`_.
 
 
 Citation
