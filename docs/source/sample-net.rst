@@ -2,15 +2,15 @@
 Sample Networks
 ===============
 
-Phoenix Sky Harbor International Airport
+Dallas Fort Worth International Airport
 ========================================
 
-.. figure:: _images/net_phx.png
-    :name: net_phx
+.. figure:: _images/net_dfw.png
+    :name: net_dfw
     :align: center
     :width: 100%
 
-    Phoenix Sky Harbor International Airport
+    Dallas Fort Worth International Airport
 
 
 Arizona State University, Tempe Campus
