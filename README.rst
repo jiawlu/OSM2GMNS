@@ -7,9 +7,7 @@ osm2gmns
 osm2gmns is a high-performance Python package designed to convert `OpenStreetMap`_ (OSM) 
 data into standardized transportation networks. Leveraging a C++ core wrapped in an 
 intuitive Python interface, osm2gmns offers both computational speed and ease of use. 
-It empowers researchers and practitioners to generate detailed, multi-modal networks 
-(driving, cycling, walking, railway, aeroway) for any region worldwide with minimal 
-coding effort.
+**It empowers researchers and practitioners to generate detailed, multi-modal networks (driving, cycling, walking, railway, aeroway) for any region worldwide with minimal coding effort**.
 
 The package outputs networks primarily in the `GMNS`_ (General Modeling Network Specification) 
 format, promoting interoperability and simplifying data exchange within the transportation 
@@ -21,6 +19,17 @@ modeling community.
     >>> net = og.getNetFromFile('map.osm')
     >>> og.outputNetToCSV(net)
 
+
+.. note::
+   **Welcome to the osm2gmns v1.x Documentation!**
+
+   This version introduces significant architectural changes, performance improvements, and 
+   new features compared to v0.x, and is **not fully backward compatible**.
+
+   - We encourage users to adopt v1.x for the latest capabilities and ongoing development.
+   - v0.x will only receive critical bug fixes moving forward.
+   - Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is planned for future v1.x releases. If you require MRM now, please consult the `v0.x user's guide`_.
+   
 
 Citation
 ====================================
