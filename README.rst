@@ -20,11 +20,11 @@ modeling community.
     >>> og.outputNetToCSV(net)
 
 
-*This v1.x version introduces significant architectural changes, performance improvements, and new features compared to v0.x, and is not fully backward compatible*.
+*This v1.x version introduces significant architectural changes, performance improvements, and new features compared to* `v0.x`_, *and is not fully backward compatible*.
 
 - *We encourage users to adopt v1.x for the latest capabilities and ongoing development*.
 - *v0.x will only receive critical bug fixes moving forward*.
-- *Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is planned for future v1.x releases. If you require MRM now, please consult the* `v0.x user's guide`_.
+- *Functionality like Multi-Resolution Modeling (MRM), currently available only in v0.x, is planned for future v1.x releases*.
 
 
 Citation
@@ -49,6 +49,6 @@ Users are referred to `user's guide`_ for a detailed introduction of osm2gmns.
 .. _`Xuesong (Simon) Zhou`: https://www.linkedin.com/in/xzhou/
 .. _`OpenStreetMap`: https://www.openstreetmap.org
 .. _`GMNS`: https://github.com/zephyr-data-specs/GMNS
-.. _`v0.x user's guide`: https://osm2gmns.readthedocs.io/en/v0.x
+.. _`v0.x`: https://osm2gmns.readthedocs.io/en/v0.x
 .. _`link`: https://doi.org/10.1016/j.trc.2023.104223
 .. _`user's guide`: https://osm2gmns.readthedocs.io
