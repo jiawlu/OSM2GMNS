@@ -7,7 +7,7 @@ from osm2gmns.osm2gmns import initlib
 from osm2gmns.osm2gmns import getNetFromFile, generateNodeActivityInfo, fillLinkAttributesWithDefaultValues, consolidateComplexIntersections, outputNetToCSV
 from osm2gmns.downloader import downloadOSMData
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 initlib()
 
