@@ -106,7 +106,7 @@ def getNetFromFile(filepath, mode_types='auto', link_types=[], connector_link_ty
         empty, all relevant link types for the selected `mode_types` are included.
         Supported types include: 'motorway', 'trunk', 'primary', 'secondary',
         'tertiary', 'residential', 'service', 'cycleway', 'footway', 'track',
-        'unclassified', 'connector', 'railway', 'aeroway'.
+        'unclassified', 'railway', 'aeroway'.
     connector_link_types : str or list of str
         Specifies link types that should only be included if they connect directly
         to links included via `link_types`. Useful for connecting main networks
@@ -206,7 +206,7 @@ def consolidateComplexIntersections(network, auto_identify=False, intersection_f
 
     oglib.consolidateComplexIntersectionsPy(network.cnet, 
                                             auto_identify, 
-                                            intersection_filepath.encode() if intersection_filepath is not None else '', 
+                                            intersection_filepath.encode() if intersection_filepath is not None else ''.encode(), 
                                             int_buffer)
 
 
@@ -241,7 +241,7 @@ def generateNodeActivityInfo(network, zone_filepath=None):
     """
 
     oglib.generateNodeActivityInfoPy(network.cnet,
-                                     zone_filepath.encode() if zone_filepath is not None else '')
+                                     zone_filepath.encode() if zone_filepath is not None else ''.encode())
 
 
 def fillLinkAttributesWithDefaultValues(network, 
